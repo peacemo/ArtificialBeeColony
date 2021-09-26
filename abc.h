@@ -6,9 +6,33 @@
 #define ABC_ABC_H
 
 #include "classes/Food.h"
-#define ITERLIMIT 5
+#define LIMIT 10
 #define MAXITERTIME 500
+Food currentBestFood;
 
+
+/*!
+ * 复制 Food
+ * @param sFood 源 Food
+ * @param tFood 目标 Food
+ */
+void fdcpy(Food &sFood, Food &tFood) {
+    for (int i = 0; i < GoodsNum; ++i) {
+        // 将 sFood 序列的每一个值依次赋值给 tFood
+        // 这样做的目的是防止该属性的指针直接赋值，否则对复制 Food 修改时，源 Food 也会改变
+        tFood.setSequence(i, sFood.getSequence(i));
+    }
+    // 其他属性的复制
+    tFood.setFitness(sFood.getFitness());
+    tFood.setSeqLen(sFood.getSeqLen());
+    tFood.setCounts(sFood.getCounts());
+}
+
+/*!
+ * 计算第一次交叉之后的每一个食物源访问的概率
+ * @param _foods 所有的已经交叉之后的食物源
+ * @return 每一个食物源访问概率的数组
+ */
 double* calAccessProb(Food _foods[FoodsNum]) {
     static double P[FoodsNum] = {0};
     double total = 0;
@@ -21,16 +45,17 @@ double* calAccessProb(Food _foods[FoodsNum]) {
     return P;
 }
 
+/*!
+ * 交叉操作：
+ * 对于当前的食物源 f1，随机选取另外一个食物源 f2，从 f2 中选取其序列 s2 的三分之一 g2，
+ * 再从 f1 的序列 s1 中剔除掉与 g2 相同的序列，最后将 g2 连接到 s1 的后面
+ * @param foods 所有食物源
+ * @param j 当前食物源的index
+ */
 void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下一代，交叉的个体数量为总数量的三分之一（取整）
-//    Food tempFood = foods[j];
-    Food tempFood;
     // copy food[j] to tempFood and avoid using the same address of the time sequence
-    for (int i = 0; i < GoodsNum; ++i) { //将 foods[j] 序列的每一个值依次赋值给 tempFood
-        tempFood.setSequence(i, foods[j].getSequence(i));
-    }
-    tempFood.setFitness(foods[j].getFitness());
-    tempFood.setSeqLen(foods[j].getSeqLen());
-    tempFood.setCounts(foods[j].getCounts());
+    Food tempFood;
+    fdcpy(foods[j], tempFood);
 
     int r = rand()%( (GoodsNum - GoodsNum / 3) - 0 + 1) + 0; // 随机选取交叉序列的起始位置[0, 7]
     int rdFdIndex = rand()%( (FoodsNum - 1) - 0 + 1) + 0; // [0, FoodsNum-1]
@@ -52,26 +77,33 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
         foods[j] = tempFood;
         foods[j].calFitness();
         foods[j].setCounts(0);
+
+        if (foods[j].getFitness() < currentBestFood.getFitness()) {
+            // 每次交叉之后如果有更新，则与当前 Best 比较是否更新 Best
+            fdcpy(foods[j], currentBestFood);
+        }
     } else {
         foods[j].updateCounts();
     }
 }
 
 void abc() {
-
-    int empBeeNum = FoodsNum; //引领蜂
-    int onLookBeeNum = FoodsNum; //跟随蜂
-    int fitness[FoodsNum] = {0};
+    int empBeeNum = FoodsNum; // 引领蜂
+    int onLookBeeNum = FoodsNum; // 跟随蜂
 
     Food foods[FoodsNum];
+    fdcpy(foods[0], currentBestFood); // 初始化将第一个食物源设置为 Best
 
     for (int i = 0; i < FoodsNum; ++i) {
         std::cout << foods[i] << std::endl;
+        if (foods[i].getFitness() < currentBestFood.getFitness()) { // 第一轮迭代，找到当前 Best
+            fdcpy(foods[i], currentBestFood);
+        }
     }
 
     std::cout << "*****************************" << std::endl;
 
-    for (int i = 0; i < MAXITERTIME; ++i) {  //总迭代次数
+    for (int i = 0; i < MAXITERTIME; ++i) {  // 总迭代次数
 
         /**
          * 引领蜂对于每一个食物源进行访问（采集）
@@ -83,7 +115,7 @@ void abc() {
          *      （此部的目的是为了模拟食物源采集之后的消耗，若采集次数增加到一定数目 Limit，则舍弃该食物源，并生成一个新的食物源）
          * 直到所有的食物源都被采集
          * */
-        for (int j = 0; j < empBeeNum; ++j) {  //引领蜂采集阶段
+        for (int j = 0; j < empBeeNum; ++j) {  // 引领蜂采集阶段
             hybrid(foods, j);
         }
 
@@ -112,17 +144,23 @@ void abc() {
          * 侦查蜂阶段，蜜蜂抛弃不新鲜的食物源
          * */
         for (int s = 0; s < FoodsNum; ++s) {
-            if (foods[s].getCounts() > 10) {
+            if (foods[s].getCounts() > LIMIT) {
                 foods[s].stirSequence();
                 foods[s].calFitness();
                 foods[s].setCounts(0);
             }
         }
+
+        std::cout << currentBestFood.getFitness() << std::endl;
+        if (currentBestFood.getFitness() == 0) break;
     }
 
     for (int i = 0; i < FoodsNum; ++i) {
         std::cout << foods[i] << std::endl;
     }
+
+    std::cout << "*****************************" << std::endl;
+    std::cout << "The best ever: " << currentBestFood << std::endl;
 
 }
 
