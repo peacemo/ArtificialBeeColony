@@ -7,7 +7,7 @@
 
 #include "classes/Food.h"
 #define LIMIT 10
-#define MAXITERTIME 500
+#define MAXITERTIME 2000
 Food currentBestFood;
 
 
@@ -87,6 +87,9 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
     }
 }
 
+/*!
+ * ABC算法主体
+ */
 void abc() {
     int empBeeNum = FoodsNum; // 引领蜂
     int onLookBeeNum = FoodsNum; // 跟随蜂
@@ -151,7 +154,7 @@ void abc() {
             }
         }
 
-        std::cout << currentBestFood.getFitness() << std::endl;
+//        std::cout << currentBestFood.getFitness() << std::endl;
         if (currentBestFood.getFitness() == 0) break;
     }
 

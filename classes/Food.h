@@ -8,12 +8,11 @@
 #include <ostream>
 #include <vector>
 #define GoodsNum 10
-#define FoodsNum 50
+#define FoodsNum 10
 
 class Food {
 private:
     int *sequence;
-//    vector<int>seq;
     int seqLen;
     double fitness;
     int counts;
@@ -24,10 +23,6 @@ public:
 
 
     Food();
-
-//    const std::vector<int> &getSeq() const;
-//
-//    void setSeq(const std::vector<int> &seq);
 
     int getSequence(int index) const;
 
