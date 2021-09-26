@@ -2,23 +2,11 @@
 // Created by shikamaru on 2021/9/21.
 //
 #include <iostream>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <fstream>
-#include <cmath>
-#include <iomanip>
-#include <vector>
-#include <sstream>
 #include <algorithm>
 #include <time.h>
-#include <memory.h>
 #include <string>
-#include <random>
-#include <functional>
 #include <list>
-// #include<windows.h>
-#include<bits/stdc++.h>
 #include "Food.h"
 
 void randomArr(int G[],int len) {    // 对数组进行洗牌操作
@@ -88,20 +76,22 @@ void Food::stirSequence() {
 
 }
 
+/*!
+ * 计算序列的适应度值
+ */
 void Food::calFitness() {
-    // 计算序列的适应度值
-//    int target[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     double fit = 0;
     for (int i = 0; i < GoodsNum; ++i) {
-//        int a = this->seq[i];
-        int a = this->sequence[i];
-//        int b = target[i];
-        fit += (double)(abs(a - (i+1)));
+        fit += (double)(abs(this->sequence[i] - (i+1)));
     }
     this->setFitness(fit);
 }
 
-void Food::removeFromSequence(int target) { // 从序列中删除一个元素
+/*!
+ * 从序列中删除指定的元素
+ * @param target 需要删除的元素的值
+ */
+void Food::removeFromSequence(int target) {
     if(seqLen <= 0) return;
     for (int i = 0; i < this->seqLen; ++i) {
         if (this->sequence[i] == target) {
@@ -116,7 +106,11 @@ void Food::removeFromSequence(int target) { // 从序列中删除一个元素
 
 }
 
-void Food::addIntoSequence(int target) { // 向序列的末尾添加一个元素
+/*!
+ * 向序列的末尾添加一个元素
+ * @param target 待添加元素的值
+ */
+void Food::addIntoSequence(int target) {
     if(seqLen == GoodsNum) return;
     this->seqLen++;
     this->sequence[GoodsNum - 1] = target;
@@ -126,6 +120,12 @@ void Food::updateCounts() {
     this->counts++;
 }
 
+/*!
+ * 重载 ‘<<’ 用算符，格式化输出对象
+ * @param os
+ * @param food
+ * @return
+ */
 std::ostream &operator<<(std::ostream &os, const Food &food) {
     std::string tempSeq = {};
     for (int i = 0; i < GoodsNum; ++i) {
