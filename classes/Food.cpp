@@ -8,11 +8,13 @@
 #include <string>
 #include <list>
 #include "Food.h"
+//#include "../headers/head.h"
+//#include "../headers/init.h"
 
-void randomArr(int G[],int len) {    // 对数组进行洗牌操作
+void randomIndex(int G[],int len) { // 对数组进行洗牌操作
     for(int i = 0; i < len; i++){
-        int sit = rand()%(len-1) +1;//随机位置
-        int temp =G[i];		//交换当前位置的编码和随机位置的编码
+        int sit = rand()%(len-1) +1; // 产生一个随机位置
+        int temp =G[i];	// 交换当前位置的编码和随机位置的编码
         G[i] = G[sit];
         G[sit] = temp;
     }
@@ -69,7 +71,7 @@ void Food::stirSequence() {
     for(int j = 0; j < GoodsNum; j++){
         temSeq[j] = j+1;
     }
-    randomArr(temSeq, GoodsNum);
+    randomIndex(temSeq, GoodsNum);
     for(int m = 0; m < GoodsNum; m++) {//写入到种群
         this->sequence[m] = temSeq[m];
     }
@@ -134,6 +136,10 @@ std::ostream &operator<<(std::ostream &os, const Food &food) {
     os << "seq: " << tempSeq << "\tseqLen: " << food.seqLen << "\tfitness: " << food.fitness << "\tcounts: "
        << food.counts;
     return os;
+}
+
+int *Food::getSequenceAddress() const {
+    return sequence;
 }
 
 

@@ -6,15 +6,18 @@
 #define ABC_ABC_H
 
 #include "classes/Food.h"
+#include "headers/head.h"
+#include "headers/init.h"
 #define LIMIT 10
-#define MAXITERTIME 2000
+#define MAXITERTIME 100
 Food currentBestFood;
 
+void findMinMax(Food *pFood, double &min, double &max);
 
 /*!
  * 复制 Food
- * @param sFood 源 Food
- * @param tFood 目标 Food
+ * @param sFood source food
+ * @param tFood target food
  */
 void fdcpy(Food &sFood, Food &tFood) {
     for (int i = 0; i < GoodsNum; ++i) {
@@ -35,14 +38,66 @@ void fdcpy(Food &sFood, Food &tFood) {
  */
 double* calAccessProb(Food _foods[FoodsNum]) {
     static double P[FoodsNum] = {0};
-    double total = 0;
+//    double total = 0;
+//    for (int i = 0; i < FoodsNum; ++i) {
+//        total += _foods[i].getFitness();
+//    }
+//    for (int i = 0; i < FoodsNum; ++i) {
+//        P[i] = _foods[i].getFitness() / total;
+//    }
+//    return P;
+
+    double min = 0; // 存储当前食物源中的最小 fitness
+    double max = 0; // 存储当前食物源中的最大 fitness
+    findMinMax(_foods, min, max); // 确定最小值与最大值
     for (int i = 0; i < FoodsNum; ++i) {
-        total += _foods[i].getFitness();
+        // 对所有的适应度值进行归一化，均缩小为 [0, 1] 之间的数
+        P[i] = abs(_foods[i].getFitness() - max) / (max - min);
     }
-    for (int i = 0; i < FoodsNum; ++i) {
-        P[i] = _foods[i].getFitness() / total;
-    }
+
     return P;
+
+}
+
+/*!
+ * 找到所有 fitness 中的最大值与最小值
+ * @param foods  所有输入的食物源
+ * @param min  最小 fitness
+ * @param max  最大 fitness
+ */
+void findMinMax(Food *foods, double &min, double &max) {
+    int begin = 0;
+    if (FoodsNum % 2 == 1) {
+        min = max = foods[0].getFitness();
+        begin = 1;
+    } else {
+        if (foods[0].getFitness() < foods[1].getFitness()) {
+            min = foods[0].getFitness();
+            max = foods[1].getFitness();
+        }
+        else {
+            min = foods[1].getFitness();
+            max = foods[0].getFitness();
+        }
+        begin = 2;
+    }
+
+    for (int i = begin; i < FoodsNum-1; i = i+2) {
+        double preFitness = foods[i].getFitness();
+        double nextFitness = foods[i+1].getFitness();
+        if (preFitness < nextFitness) {
+            if (preFitness < min)
+                min = preFitness;
+            if (nextFitness > max)
+                max = nextFitness;
+        } else {
+            if (nextFitness < min)
+                min = nextFitness;
+            if (preFitness > max)
+                max = preFitness;
+        }
+    }
+
 }
 
 /*!
@@ -61,21 +116,23 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
     int rdFdIndex = rand()%( (FoodsNum - 1) - 0 + 1) + 0; // [0, FoodsNum-1]
     Food randomFood = foods[rdFdIndex]; // 随机选取一个食物源交叉
 
-    for (int k = r; k < r + (GoodsNum/3); ++k) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
+    for (int iter = r; iter < r + (GoodsNum/3); ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
         /**
          *  全部迭代完后的效果就是
          *  从 food2 中选取一段序列
          *  从 food1 中删除掉这些序列中的值
          *  再将这些值拼接到 food1 的末尾
          * */
-        int currentElement = randomFood.getSequence(k);
-        tempFood.removeFromSequence(currentElement); // (n^2) 从自身的序列中删除交叉对象的该元素
+        int currentElement = randomFood.getSequence(iter);
+        tempFood.removeFromSequence(currentElement); // (CODE_LENTH^2) 从自身的序列中删除交叉对象的该元素
         tempFood.addIntoSequence(currentElement); // 再将其置于序列的末尾
     }
-    tempFood.calFitness(); // 交叉完后重新计算适应度值
+//    tempFood.calFitness(); // 交叉完后重新计算适应度值
+    enSimpleCode(tempFood);
     if (tempFood.getFitness() < foods[j].getFitness()) { // 比较前后的适应度值，并选择是否更新
         foods[j] = tempFood;
-        foods[j].calFitness();
+//        foods[j].calFitness();
+        enSimpleCode(foods[j]);
         foods[j].setCounts(0);
 
         if (foods[j].getFitness() < currentBestFood.getFitness()) {
@@ -94,7 +151,10 @@ void abc() {
     int empBeeNum = FoodsNum; // 引领蜂
     int onLookBeeNum = FoodsNum; // 跟随蜂
 
+    CS_swap();//随机货位
+
     Food foods[FoodsNum];
+    enCode(foods);
     fdcpy(foods[0], currentBestFood); // 初始化将第一个食物源设置为 Best
 
     for (int i = 0; i < FoodsNum; ++i) {
@@ -119,17 +179,19 @@ void abc() {
          * 直到所有的食物源都被采集
          * */
         for (int j = 0; j < empBeeNum; ++j) {  // 引领蜂采集阶段
-            hybrid(foods, j);
+            hybrid(foods, j); // 交叉
         }
 
         double *accessProb; // 计算决策概率集
+
+        // todo: optimize the function of calculating probability set
         accessProb = calAccessProb(foods);
 
         /**
          * 跟随蜂阶段，蜜蜂对食物源随机进行访问
          * */
         int currentFood = 0;
-        for (int k = 0; k < onLookBeeNum; ++k) {
+        for (int iter = 0; iter < onLookBeeNum; ++iter) {
             double randProb = (rand()%(30 - 10 + 1) + 10) / 100;
             if (currentFood >= (FoodsNum - 1)) { currentFood = 1; }
             for (int j = currentFood; j < FoodsNum; ++j) {
@@ -139,7 +201,6 @@ void abc() {
                     continue;
                 }
             }
-
         }
 
 
@@ -149,12 +210,13 @@ void abc() {
         for (int s = 0; s < FoodsNum; ++s) {
             if (foods[s].getCounts() > LIMIT) {
                 foods[s].stirSequence();
-                foods[s].calFitness();
+//                foods[s].calFitness();
+                enSimpleCode(foods[s]);
                 foods[s].setCounts(0);
             }
         }
 
-//        std::cout << currentBestFood.getFitness() << std::endl;
+        std::cout << currentBestFood.getFitness() << std::endl;
         if (currentBestFood.getFitness() == 0) break;
     }
 

@@ -7,8 +7,8 @@
 
 #include <ostream>
 #include <vector>
-#define GoodsNum 10
-#define FoodsNum 10
+#define GoodsNum 2000
+#define FoodsNum 100
 
 class Food {
 private:
@@ -16,13 +16,13 @@ private:
     int seqLen;
     double fitness;
     int counts;
-public:
-    friend std::ostream &operator<<(std::ostream &os, const Food &food);
 
 public:
 
 
     Food();
+
+    int *getSequenceAddress() const;
 
     int getSequence(int index) const;
 
@@ -39,6 +39,8 @@ public:
     int getCounts() const;
 
     void setCounts(int updateCounts);
+
+    friend std::ostream &operator<<(std::ostream &os, const Food &food);
 
     //user funcs
     void stirSequence();
