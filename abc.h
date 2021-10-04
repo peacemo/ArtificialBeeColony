@@ -8,9 +8,19 @@
 #include "classes/Food.h"
 #include "headers/head.h"
 #include "headers/init.h"
-#define LIMIT 10
 #define MAXITERTIME 100
+#define LIMIT 20
 Food currentBestFood;
+
+//void getParameters() {
+//    std::cout << "Population: ";
+//    std::cin >> FoodsNum;
+//    std::cout<<std::endl;
+//
+//    std::cout << "Fresh Limitation: ";
+//    std::cin >> LIMIT;
+//    std::cout << std::endl;
+//}
 
 void findMinMax(Food *pFood, double &min, double &max);
 
@@ -38,22 +48,16 @@ void fdcpy(Food &sFood, Food &tFood) {
  */
 double* calAccessProb(Food _foods[FoodsNum]) {
     static double P[FoodsNum] = {0};
-//    double total = 0;
-//    for (int i = 0; i < FoodsNum; ++i) {
-//        total += _foods[i].getFitness();
-//    }
-//    for (int i = 0; i < FoodsNum; ++i) {
-//        P[i] = _foods[i].getFitness() / total;
-//    }
-//    return P;
-
     double min = 0; // 存储当前食物源中的最小 fitness
     double max = 0; // 存储当前食物源中的最大 fitness
     findMinMax(_foods, min, max); // 确定最小值与最大值
+
     for (int i = 0; i < FoodsNum; ++i) {
         // 对所有的适应度值进行归一化，均缩小为 [0, 1] 之间的数
-        P[i] = abs(_foods[i].getFitness() - max) / (max - min);
+        P[i] = (_foods[i].getFitness() - min) / (max - min);
     }
+
+    /**TEST*/
 
     return P;
 
@@ -112,11 +116,12 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
     Food tempFood;
     fdcpy(foods[j], tempFood);
 
-    int r = rand()%( (GoodsNum - GoodsNum / 3) - 0 + 1) + 0; // 随机选取交叉序列的起始位置[0, 7]
+    int r = rand()%( (GoodsNum - GoodsNum / 4) - 0 + 1) + 0; // 随机选取交叉序列的起始位置[0, (GoodsNum - GoodsNum / 5)]
     int rdFdIndex = rand()%( (FoodsNum - 1) - 0 + 1) + 0; // [0, FoodsNum-1]
+//    Food randomFood = currentBestFood; // 随机选取一个食物源交叉
     Food randomFood = foods[rdFdIndex]; // 随机选取一个食物源交叉
 
-    for (int iter = r; iter < r + (GoodsNum/3); ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
+    for (int iter = r; iter < r + (GoodsNum/4); ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
         /**
          *  全部迭代完后的效果就是
          *  从 food2 中选取一段序列
@@ -148,6 +153,9 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
  * ABC算法主体
  */
 void abc() {
+
+//    getParameters();
+
     int empBeeNum = FoodsNum; // 引领蜂
     int onLookBeeNum = FoodsNum; // 跟随蜂
 
@@ -163,6 +171,7 @@ void abc() {
             fdcpy(foods[i], currentBestFood);
         }
     }
+    std::cout << "The best ever: " << currentBestFood << std::endl;
 
     std::cout << "*****************************" << std::endl;
 
@@ -191,17 +200,28 @@ void abc() {
          * 跟随蜂阶段，蜜蜂对食物源随机进行访问
          * */
         int currentFood = 0;
-        for (int iter = 0; iter < onLookBeeNum; ++iter) {
-            double randProb = (rand()%(30 - 10 + 1) + 10) / 100;
-            if (currentFood >= (FoodsNum - 1)) { currentFood = 1; }
-            for (int j = currentFood; j < FoodsNum; ++j) {
-                if (randProb > accessProb[j]) {
-                    hybrid(foods, j);
-                } else {
-                    continue;
-                }
+        int currentBee = 0;
+        while (currentBee < onLookBeeNum) { // 对于所有的跟随蜂，依次去随机访问食物源
+            double randProb = (rand()%100 + 1) / 100.0; // 产生一个[0, 1]的随机概率
+            if (randProb < accessProb[currentFood]) { // 如果随机产生的概率满足此条件，则对此食物源进行采集
+                hybrid(foods, currentFood); //
+                currentBee++; // 采集之后则轮到下一个跟随蜂
             }
+            currentFood++; // 更换下一个食物源
+            if (currentFood >= FoodsNum) { currentFood = 0; } // 防止食物源越界
         }
+
+//        for (int iter = 0; iter < onLookBeeNum; ++iter) {
+//            double randProb = (rand()%100 + 1) / 100.0; // 产生一个[0, 1]的随机概率
+//            if (currentFood >= (FoodsNum - 1)) { currentFood = 1; }
+//            for (int j = currentFood; j < FoodsNum; ++j) {
+//                if (randProb < accessProb[j]) { // 随机概率与该食物源的决策概率进行比较，决定是否采集
+//                    hybrid(foods, j); //
+//                } else {
+//                    continue;
+//                }
+//            }
+//        }
 
 
         /**
@@ -210,18 +230,13 @@ void abc() {
         for (int s = 0; s < FoodsNum; ++s) {
             if (foods[s].getCounts() > LIMIT) {
                 foods[s].stirSequence();
-//                foods[s].calFitness();
                 enSimpleCode(foods[s]);
                 foods[s].setCounts(0);
             }
         }
-
+        std::cout << "Gen " << i+1 << ": ";
         std::cout << currentBestFood.getFitness() << std::endl;
         if (currentBestFood.getFitness() == 0) break;
-    }
-
-    for (int i = 0; i < FoodsNum; ++i) {
-        std::cout << foods[i] << std::endl;
     }
 
     std::cout << "*****************************" << std::endl;
