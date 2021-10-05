@@ -22,11 +22,13 @@ Food currentBestFood;
 //    std::cout << std::endl;
 //}
 
-void findMinMax(Food *pFood, double &min, double &max);
+//void findMinMax(Food *pFood, double &min, double &max);
 void fdcpy(Food &sFood, Food &tFood);
 double* calAccessProb(Food _foods[FoodsNum]);
 void findMinMax(Food *foods, double &min, double &max);
 void hybrid(Food *foods, int j);
+void roulette(double *P, Food _foods[FoodsNum]);
+void normalization(double *P, Food _foods[FoodsNum]);
 
 /*!
  * 复制 Food
@@ -52,15 +54,11 @@ void fdcpy(Food &sFood, Food &tFood) {
  */
 double* calAccessProb(Food _foods[FoodsNum]) {
     static double P[FoodsNum] = {0};
-    double min = 0; // 存储当前食物源中的最小 fitness
-    double max = 0; // 存储当前食物源中的最大 fitness
-    findMinMax(_foods, min, max); // 确定最小值与最大值
-
-    for (int i = 0; i < FoodsNum; ++i) {
-        // 对所有的适应度值进行归一化，均缩小为 [0, 1] 之间的数
-        P[i] = (_foods[i].getFitness() - min) / (max - min);
-    }
+    normalization(P, _foods); // 使用归一化计算概率集
     /**TEST*/
+//    for (int i = 0; i < FoodsNum; ++i) {
+//        std::cout << P[i] << " ";
+//    }
 
     return P;
 }
@@ -149,6 +147,30 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
     } else {
         foods[j].updateCounts();
     }
+}
+
+/*!
+ * 将适应度值归一化
+ * @param P 用于存储计算后的概率值
+ * @param _foods 所有食物源的地址
+ */
+void normalization(double *P, Food _foods[FoodsNum]) {
+    double min = 0; // 存储当前食物源中的最小 fitness
+    double max = 0; // 存储当前食物源中的最大 fitness
+    findMinMax(_foods, min, max); // 确定最小值与最大值
+    for (int i = 0; i < FoodsNum; ++i) {
+        // 对所有的适应度值进行归一化，均缩小为 [0, 1] 之间的数
+        P[i] = (_foods[i].getFitness() - min) / (max - min);
+    }
+}
+
+/*!
+ * 通过轮盘赌计算每一个食物源的概率
+ * @param P 用于存储计算后的概率值
+ * @param _foods 所有食物源的地址
+ */
+void roulette(double *P, Food _foods[FoodsNum]) {
+
 }
 
 /*!
