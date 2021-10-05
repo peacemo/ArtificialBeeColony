@@ -9,18 +9,8 @@
 #include "headers/head.h"
 #include "headers/init.h"
 #define MAXITERTIME 100
-#define LIMIT 3
+#define LIMIT 5
 Food currentBestFood;
-
-//void getParameters() {
-//    std::cout << "Population: ";
-//    std::cin >> FoodsNum;
-//    std::cout<<std::endl;
-//
-//    std::cout << "Fresh Limitation: ";
-//    std::cin >> LIMIT;
-//    std::cout << std::endl;
-//}
 
 //void findMinMax(Food *pFood, double &min, double &max);
 void fdcpy(Food &sFood, Food &tFood);
@@ -227,8 +217,8 @@ void abc() {
         int currentBee = 0;
         while (currentBee < onLookBeeNum) { // 对于所有的跟随蜂，依次去随机访问食物源
             double randProb = (rand()%100 + 1) / 100.0; // 产生一个[0, 1]的随机概率
-            if (randProb > accessProb[currentFood]) { // 如果随机产生的概率满足此条件，则对此食物源进行采集
-                hybrid(foods, currentFood); //
+            if (randProb < accessProb[currentFood]) { // 如果随机产生的概率满足此条件，则对此食物源进行采集
+                hybrid(foods, currentFood); 
                 currentBee++; // 采集之后则轮到下一个跟随蜂
             }
             currentFood++; // 更换下一个食物源
