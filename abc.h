@@ -9,7 +9,7 @@
 #include "headers/head.h"
 #include "headers/init.h"
 #define MAXITERTIME 100
-#define LIMIT 20
+#define LIMIT 3
 Food currentBestFood;
 
 //void getParameters() {
@@ -23,6 +23,10 @@ Food currentBestFood;
 //}
 
 void findMinMax(Food *pFood, double &min, double &max);
+void fdcpy(Food &sFood, Food &tFood);
+double* calAccessProb(Food _foods[FoodsNum]);
+void findMinMax(Food *foods, double &min, double &max);
+void hybrid(Food *foods, int j);
 
 /*!
  * 复制 Food
@@ -56,11 +60,9 @@ double* calAccessProb(Food _foods[FoodsNum]) {
         // 对所有的适应度值进行归一化，均缩小为 [0, 1] 之间的数
         P[i] = (_foods[i].getFitness() - min) / (max - min);
     }
-
     /**TEST*/
 
     return P;
-
 }
 
 /*!
@@ -116,12 +118,12 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
     Food tempFood;
     fdcpy(foods[j], tempFood);
 
-    int r = rand()%( (GoodsNum - GoodsNum / 4) - 0 + 1) + 0; // 随机选取交叉序列的起始位置[0, (GoodsNum - GoodsNum / 5)]
+    int r = rand()%( (GoodsNum - GoodsNum / 3) - 0 + 1) + 0; // 随机选取交叉序列的起始位置[0, (GoodsNum - GoodsNum / 3)]
     int rdFdIndex = rand()%( (FoodsNum - 1) - 0 + 1) + 0; // [0, FoodsNum-1]
 //    Food randomFood = currentBestFood; // 随机选取一个食物源交叉
     Food randomFood = foods[rdFdIndex]; // 随机选取一个食物源交叉
 
-    for (int iter = r; iter < r + (GoodsNum/4); ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
+    for (int iter = r; iter < r + (GoodsNum/3); ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
         /**
          *  全部迭代完后的效果就是
          *  从 food2 中选取一段序列
@@ -203,7 +205,7 @@ void abc() {
         int currentBee = 0;
         while (currentBee < onLookBeeNum) { // 对于所有的跟随蜂，依次去随机访问食物源
             double randProb = (rand()%100 + 1) / 100.0; // 产生一个[0, 1]的随机概率
-            if (randProb < accessProb[currentFood]) { // 如果随机产生的概率满足此条件，则对此食物源进行采集
+            if (randProb > accessProb[currentFood]) { // 如果随机产生的概率满足此条件，则对此食物源进行采集
                 hybrid(foods, currentFood); //
                 currentBee++; // 采集之后则轮到下一个跟随蜂
             }
