@@ -47,7 +47,8 @@ public:
     void calFitness();
     void updateCounts();
     void removeFromSequence(int target);
-    void addIntoSequence(int target);
+    void addToEndOfSequence(int target);
+    void addIntoSequence(int index, int target);
 
 };
 

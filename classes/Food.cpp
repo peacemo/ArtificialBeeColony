@@ -112,10 +112,10 @@ void Food::removeFromSequence(int target) {
  * 向序列的末尾添加一个元素
  * @param target 待添加元素的值
  */
-void Food::addIntoSequence(int target) {
+void Food::addToEndOfSequence(int target) {
     if(seqLen == GoodsNum) return;
-    this->seqLen++;
     this->sequence[GoodsNum - 1] = target;
+    this->seqLen++;
 }
 
 void Food::updateCounts() {
@@ -140,6 +140,16 @@ std::ostream &operator<<(std::ostream &os, const Food &food) {
 
 int *Food::getSequenceAddress() const {
     return sequence;
+}
+
+void Food::addIntoSequence(int index, int target) {
+    if (this->seqLen == GoodsNum) return;
+    for (int i = (this->seqLen -1); i >= index; i--) {
+        this->sequence[i+1] = this->sequence[i];
+    }
+    this->sequence[index] = target;
+    this->seqLen++;
+
 }
 
 

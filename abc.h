@@ -118,7 +118,7 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
 
     int r = rand()%( (GoodsNum - GoodsNum / 3) - 0 + 1) + 0; // 随机选取交叉序列的起始位置[0, (GoodsNum - GoodsNum / 3)]
     int rdFdIndex = rand()%( (FoodsNum - 1) - 0 + 1) + 0; // [0, FoodsNum-1]
-//    Food randomFood = currentBestFood; // 随机选取一个食物源交叉
+//    Food randomFood = currentBestFood; // 选取目前最好的食物源杂交
     Food randomFood = foods[rdFdIndex]; // 随机选取一个食物源交叉
 
     for (int iter = r; iter < r + (GoodsNum/3); ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
@@ -130,14 +130,15 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
          * */
         int currentElement = randomFood.getSequence(iter);
         tempFood.removeFromSequence(currentElement); // (CODE_LENTH^2) 从自身的序列中删除交叉对象的该元素
-        tempFood.addIntoSequence(currentElement); // 再将其置于序列的末尾
+//        tempFood.addToEndOfSequence(currentElement); // 再将其置于序列的末尾
+        tempFood.addIntoSequence(iter, currentElement); // 再将其置于序列的末尾
     }
 //    tempFood.calFitness(); // 交叉完后重新计算适应度值
     enSimpleCode(tempFood);
     if (tempFood.getFitness() < foods[j].getFitness()) { // 比较前后的适应度值，并选择是否更新
         foods[j] = tempFood;
 //        foods[j].calFitness();
-        enSimpleCode(foods[j]);
+//        enSimpleCode(foods[j]);
         foods[j].setCounts(0);
 
         if (foods[j].getFitness() < currentBestFood.getFitness()) {
@@ -217,7 +218,6 @@ void abc() {
 
         double *accessProb; // 计算决策概率集
 
-        // todo: optimize the function of calculating probability set
         accessProb = calAccessProb(foods);
 
         /**
