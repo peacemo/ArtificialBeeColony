@@ -8,7 +8,7 @@
 #include <ostream>
 #include <vector>
 #define GoodsNum 2000
-#define FoodsNum 500
+#define FoodsNum 50
 
 class Food {
 private:
