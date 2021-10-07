@@ -98,7 +98,7 @@ void findMinMax(Food *foods, double &min, double &max) {
 /*!
  * 交叉操作：
  * 对于当前的食物源 f1，随机选取另外一个食物源 f2，从 f2 中选取其序列 s2 的三分之一 g2，
- * 再从 f1 的序列 s1 中剔除掉与 g2 相同的序列，最后将 g2 连接到 s1 的后面
+ * 再从 f1 的序列 s1 中剔除掉与 g2 相同的序列，最后将 g2 连接到 s1 的相应位置
  * @param foods 所有食物源
  * @param j 当前食物源的index
  */
@@ -109,8 +109,8 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
 
     int r = rand()%( (GoodsNum - GoodsNum / 20) - 0 + 1) + 0; // 随机选取交叉序列的起始位置[0, (GoodsNum - GoodsNum / 3)]
     int rdFdIndex = rand()%( (FoodsNum - 1) - 0 + 1) + 0; // [0, FoodsNum-1]
-//    Food randomFood = currentBestFood; // 选取目前最好的食物源杂交
-    Food randomFood = foods[rdFdIndex]; // 随机选取一个食物源交叉
+    Food randomFood = currentBestFood; // 选取目前最好的食物源杂交
+//    Food randomFood = foods[rdFdIndex]; // 随机选取一个食物源交叉
 
     for (int iter = r; iter < r + (GoodsNum/20); ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
         /**
@@ -139,6 +139,8 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
     } else {
         foods[j].updateCounts();
     }
+
+    // todo 杂交时采用遗传算法的思想
 }
 
 /*!
@@ -259,6 +261,9 @@ void abc() {
         }
         std::cout << "Gen " << i + 1 << ": ";
         std::cout << currentBestFood.getFitness() << std::endl;
+//        for (int i = 0; i < FoodsNum; ++i) {
+//            std::cout << foods[i] << std::endl;
+//        }
         if (currentBestFood.getFitness() == 0) break;
     }
 
