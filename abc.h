@@ -8,7 +8,7 @@
 #include "classes/Food.h"
 #include "headers/head.h"
 #include "headers/init.h"
-#define MAXITERTIME 1000
+#define MAXITERTIME 500
 #define LIMIT 5
 Food currentBestFood;
 
@@ -34,7 +34,7 @@ void fdcpy(Food &sFood, Food &tFood) {
     // 其他属性的复制
     tFood.setFitness(sFood.getFitness());
     tFood.setSeqLen(sFood.getSeqLen());
-    tFood.setCounts(sFood.getCounts());
+    tFood.setCounts(0);
 }
 
 /*!

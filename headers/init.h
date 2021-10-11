@@ -1789,8 +1789,6 @@ void opt2(firefly& f) {//ÄæÐò
 	}
 }
 
-
-
 void rand_opt2(firefly& f) { //³¬Í»±ä
 	int maxT = 10;
 	for (int i = 0; i < maxT; i++)
