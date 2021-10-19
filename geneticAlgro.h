@@ -2,7 +2,7 @@
 #define _GENETICALGRO_H_
 
 //#define MAXITERTIME 500
-#define ENDPOINT 80
+#define ENDPOINT 1000
 
 double P[FoodsNum] = {0.0}; // 存储每一个个体选择概率
 Food bestFood;
