@@ -5,10 +5,6 @@
 #ifndef ABC_ABC_H
 #define ABC_ABC_H
 
-#include "classes/Food.h"
-#include "headers/head.h"
-#include "headers/init.h"
-#define MAXITERTIME 1000
 #define LIMIT 5
 Food currentBestFood;
 
