@@ -1,1 +1,0 @@
-/usr/bin/c++ -g CMakeFiles/ABC.dir/source/main.cpp.o CMakeFiles/ABC.dir/source/classes/Food.cpp.o -o ABC 
