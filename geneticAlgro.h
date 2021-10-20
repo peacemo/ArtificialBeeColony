@@ -5,7 +5,7 @@
 #define ENDPOINT 1000
 
 double P[FoodsNum] = {0.0}; // 存储每一个个体选择概率
-Food bestFood;
+Food bestFood; // 所有世代中表现最优的食物源
 
 /*!
  * 根据适应度值计算每一个食物源被选中的比例概率
@@ -37,6 +37,16 @@ int RouletteWheelSelection() {
     return Selection;
 }
 
+/*!
+ * 两个食物源的杂交操作：
+ * 1. 选择一个杂交长度 L，本函数中表现是 GoodsNum / 50
+ * 2. 随机选择一个序列的起始位置 randIndex，则需要杂交的序列片段在食物源中的位置就是 [randeIndex, randIndex + L]
+ * 3. 将第一个食物源与第二个食物源的杂交片段交换（过程中需要去除掉杂交之后的重复值），产生两个新的食物源
+ * @param f1 第一个食物源在所有的食物源中的位置
+ * @param f2 第二个食物源在所有的食物源中的位置
+ * @param foods
+ * @return
+ */
 Food* cross(int f1, int f2, Food *foods) {
     Food tempFood;
 //    Food childrenFoods[2];
@@ -57,12 +67,12 @@ Food* cross(int f1, int f2, Food *foods) {
 //        tempFood.addToEndOfSequence(currentElement); // 再将其置于序列的末尾
         childrenFoods[0].addIntoSequence(iter, currentElement); // 再将其置于序列的相应位置
     }
-    enSimpleCode(childrenFoods[0]);
-    if (childrenFoods[0].getFitness() > foods[f1].getFitness()) {
+    enSimpleCode(childrenFoods[0]); // 计算新食物的适应度值
+    if (childrenFoods[0].getFitness() > foods[f1].getFitness()) { // 只保留适应度好的那一个
         fdcpy(foods[f1], childrenFoods[0]);
     }
 
-    // 再将 temp( f1的值 )的相应序列给到 f2
+    // 再将 temp( f1的值 )的相应序列给到 f2，与上面过程相同
     for (int iter = randIndex; iter < endIndex; ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
         int currentElement = tempFood.getSequence(iter);
         childrenFoods[1].removeFromSequence(currentElement); // (CODE_LENTH^2) 从自身的序列中删除交叉对象的该元素
