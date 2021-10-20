@@ -1687,7 +1687,7 @@ void enCode(firefly fly[flyNum]) {
 void enCode(Food *f) {
     //按照自己的方法对 初始种群 中的每个个体进行解码，计算出目标函数
     //先写对一条编码的解码，再循环调用
-    for(int i=0;i<flyNum;i++){
+    for(int i=0;i<FoodsNum;i++){
         enSimpleCode(f[i]);
         //cout<<fly[0].G[1999];
     }

@@ -136,6 +136,8 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
     }
 
     // todo 杂交时采用遗传算法的思想
+
+
 }
 
 /*!
@@ -183,6 +185,7 @@ void abc() {
     // 初始化阶段
     CS_swap();//随机货位
     Food foods[FoodsNum]; // 生成新的食物源种群
+//    Food *foods = new Food[FoodsNum]; // 生成新的食物源种群
     enCode(foods); // 计算种群中个体的适应度值
     fdcpy(foods[0], currentBestFood); // 将第一个食物源设置为 Best，便于每一轮比较
     for (int i = 0; i < FoodsNum; ++i) {
