@@ -1,10 +1,10 @@
 #include <iostream>
-#include "classes/Constants.h"
+#include "headers/Constants.h"
 #include "classes/Food.h"
 #include "headers/head.h"
 #include "headers/init.h"
-#include "abc.h"
-#include "geneticAlgro.h"
+#include "headers/abc.h"
+#include "headers/geneticAlgro.h"
 
 //void removeFromSequence(int *array, int target) {
 //    for (int i = 0; i < 10; ++i) {

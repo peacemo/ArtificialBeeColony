@@ -8,7 +8,7 @@
 #include <string>
 #include <list>
 #include "Food.h"
-#include "Constants.h"
+#include "../headers/Constants.h"
 
 void randomIndex(int G[],int len) { // 对数组进行洗牌操作
     for(int i = 0; i < len; i++){
