@@ -5,7 +5,6 @@
 #ifndef ABC_ABC_H
 #define ABC_ABC_H
 
-#define LIMIT 5
 Food currentBestFood;
 
 //void findMinMax(Food *pFood, double &min, double &max);
@@ -187,7 +186,7 @@ void abc() {
     enCode(foods); // 计算种群中个体的适应度值
     fdcpy(foods[0], currentBestFood); // 将第一个食物源设置为 Best，便于每一轮比较
     for (int i = 0; i < FoodsNum; ++i) {
-        std::cout << foods[i] << std::endl; //输出初始种群
+//        std::cout << foods[i] << std::endl; //输出初始种群
         if (foods[i].getFitness() < currentBestFood.getFitness()) { // 第一轮迭代，找到当前 Best
             fdcpy(foods[i], currentBestFood);
         }

@@ -66,42 +66,42 @@ include CMakeFiles/ABC.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/ABC.dir/flags.make
 
-CMakeFiles/ABC.dir/main.cpp.o: CMakeFiles/ABC.dir/flags.make
-CMakeFiles/ABC.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/shikamaru/CLionProjects/ABC/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/ABC.dir/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ABC.dir/main.cpp.o -c /home/shikamaru/CLionProjects/ABC/main.cpp
+CMakeFiles/ABC.dir/source/main.cpp.o: CMakeFiles/ABC.dir/flags.make
+CMakeFiles/ABC.dir/source/main.cpp.o: ../source/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/shikamaru/CLionProjects/ABC/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/ABC.dir/source/main.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ABC.dir/source/main.cpp.o -c /home/shikamaru/CLionProjects/ABC/source/main.cpp
 
-CMakeFiles/ABC.dir/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ABC.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/shikamaru/CLionProjects/ABC/main.cpp > CMakeFiles/ABC.dir/main.cpp.i
+CMakeFiles/ABC.dir/source/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ABC.dir/source/main.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/shikamaru/CLionProjects/ABC/source/main.cpp > CMakeFiles/ABC.dir/source/main.cpp.i
 
-CMakeFiles/ABC.dir/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ABC.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/shikamaru/CLionProjects/ABC/main.cpp -o CMakeFiles/ABC.dir/main.cpp.s
+CMakeFiles/ABC.dir/source/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ABC.dir/source/main.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/shikamaru/CLionProjects/ABC/source/main.cpp -o CMakeFiles/ABC.dir/source/main.cpp.s
 
-CMakeFiles/ABC.dir/classes/Food.cpp.o: CMakeFiles/ABC.dir/flags.make
-CMakeFiles/ABC.dir/classes/Food.cpp.o: ../classes/Food.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/shikamaru/CLionProjects/ABC/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/ABC.dir/classes/Food.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ABC.dir/classes/Food.cpp.o -c /home/shikamaru/CLionProjects/ABC/classes/Food.cpp
+CMakeFiles/ABC.dir/source/classes/Food.cpp.o: CMakeFiles/ABC.dir/flags.make
+CMakeFiles/ABC.dir/source/classes/Food.cpp.o: ../source/classes/Food.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/shikamaru/CLionProjects/ABC/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/ABC.dir/source/classes/Food.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ABC.dir/source/classes/Food.cpp.o -c /home/shikamaru/CLionProjects/ABC/source/classes/Food.cpp
 
-CMakeFiles/ABC.dir/classes/Food.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ABC.dir/classes/Food.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/shikamaru/CLionProjects/ABC/classes/Food.cpp > CMakeFiles/ABC.dir/classes/Food.cpp.i
+CMakeFiles/ABC.dir/source/classes/Food.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ABC.dir/source/classes/Food.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/shikamaru/CLionProjects/ABC/source/classes/Food.cpp > CMakeFiles/ABC.dir/source/classes/Food.cpp.i
 
-CMakeFiles/ABC.dir/classes/Food.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ABC.dir/classes/Food.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/shikamaru/CLionProjects/ABC/classes/Food.cpp -o CMakeFiles/ABC.dir/classes/Food.cpp.s
+CMakeFiles/ABC.dir/source/classes/Food.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ABC.dir/source/classes/Food.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/shikamaru/CLionProjects/ABC/source/classes/Food.cpp -o CMakeFiles/ABC.dir/source/classes/Food.cpp.s
 
 # Object files for target ABC
 ABC_OBJECTS = \
-"CMakeFiles/ABC.dir/main.cpp.o" \
-"CMakeFiles/ABC.dir/classes/Food.cpp.o"
+"CMakeFiles/ABC.dir/source/main.cpp.o" \
+"CMakeFiles/ABC.dir/source/classes/Food.cpp.o"
 
 # External object files for target ABC
 ABC_EXTERNAL_OBJECTS =
 
-ABC: CMakeFiles/ABC.dir/main.cpp.o
-ABC: CMakeFiles/ABC.dir/classes/Food.cpp.o
+ABC: CMakeFiles/ABC.dir/source/main.cpp.o
+ABC: CMakeFiles/ABC.dir/source/classes/Food.cpp.o
 ABC: CMakeFiles/ABC.dir/build.make
 ABC: CMakeFiles/ABC.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/shikamaru/CLionProjects/ABC/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable ABC"

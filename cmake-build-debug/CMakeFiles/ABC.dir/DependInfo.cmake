@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/shikamaru/CLionProjects/ABC/classes/Food.cpp" "/home/shikamaru/CLionProjects/ABC/cmake-build-debug/CMakeFiles/ABC.dir/classes/Food.cpp.o"
-  "/home/shikamaru/CLionProjects/ABC/main.cpp" "/home/shikamaru/CLionProjects/ABC/cmake-build-debug/CMakeFiles/ABC.dir/main.cpp.o"
+  "/home/shikamaru/CLionProjects/ABC/source/classes/Food.cpp" "/home/shikamaru/CLionProjects/ABC/cmake-build-debug/CMakeFiles/ABC.dir/source/classes/Food.cpp.o"
+  "/home/shikamaru/CLionProjects/ABC/source/main.cpp" "/home/shikamaru/CLionProjects/ABC/cmake-build-debug/CMakeFiles/ABC.dir/source/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

@@ -1,8 +1,8 @@
 file(REMOVE_RECURSE
   "ABC"
   "ABC.pdb"
-  "CMakeFiles/ABC.dir/classes/Food.cpp.o"
-  "CMakeFiles/ABC.dir/main.cpp.o"
+  "CMakeFiles/ABC.dir/source/classes/Food.cpp.o"
+  "CMakeFiles/ABC.dir/source/main.cpp.o"
 )
 
 # Per-language clean rules from dependency scanning.

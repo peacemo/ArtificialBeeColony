@@ -129,53 +129,53 @@ ABC/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ABC.dir/build.make CMakeFiles/ABC.dir/build
 .PHONY : ABC/fast
 
-classes/Food.o: classes/Food.cpp.o
-.PHONY : classes/Food.o
+source/classes/Food.o: source/classes/Food.cpp.o
+.PHONY : source/classes/Food.o
 
 # target to build an object file
-classes/Food.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ABC.dir/build.make CMakeFiles/ABC.dir/classes/Food.cpp.o
-.PHONY : classes/Food.cpp.o
+source/classes/Food.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ABC.dir/build.make CMakeFiles/ABC.dir/source/classes/Food.cpp.o
+.PHONY : source/classes/Food.cpp.o
 
-classes/Food.i: classes/Food.cpp.i
-.PHONY : classes/Food.i
+source/classes/Food.i: source/classes/Food.cpp.i
+.PHONY : source/classes/Food.i
 
 # target to preprocess a source file
-classes/Food.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ABC.dir/build.make CMakeFiles/ABC.dir/classes/Food.cpp.i
-.PHONY : classes/Food.cpp.i
+source/classes/Food.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ABC.dir/build.make CMakeFiles/ABC.dir/source/classes/Food.cpp.i
+.PHONY : source/classes/Food.cpp.i
 
-classes/Food.s: classes/Food.cpp.s
-.PHONY : classes/Food.s
+source/classes/Food.s: source/classes/Food.cpp.s
+.PHONY : source/classes/Food.s
 
 # target to generate assembly for a file
-classes/Food.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ABC.dir/build.make CMakeFiles/ABC.dir/classes/Food.cpp.s
-.PHONY : classes/Food.cpp.s
+source/classes/Food.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ABC.dir/build.make CMakeFiles/ABC.dir/source/classes/Food.cpp.s
+.PHONY : source/classes/Food.cpp.s
 
-main.o: main.cpp.o
-.PHONY : main.o
+source/main.o: source/main.cpp.o
+.PHONY : source/main.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ABC.dir/build.make CMakeFiles/ABC.dir/main.cpp.o
-.PHONY : main.cpp.o
+source/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ABC.dir/build.make CMakeFiles/ABC.dir/source/main.cpp.o
+.PHONY : source/main.cpp.o
 
-main.i: main.cpp.i
-.PHONY : main.i
+source/main.i: source/main.cpp.i
+.PHONY : source/main.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ABC.dir/build.make CMakeFiles/ABC.dir/main.cpp.i
-.PHONY : main.cpp.i
+source/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ABC.dir/build.make CMakeFiles/ABC.dir/source/main.cpp.i
+.PHONY : source/main.cpp.i
 
-main.s: main.cpp.s
-.PHONY : main.s
+source/main.s: source/main.cpp.s
+.PHONY : source/main.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ABC.dir/build.make CMakeFiles/ABC.dir/main.cpp.s
-.PHONY : main.cpp.s
+source/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ABC.dir/build.make CMakeFiles/ABC.dir/source/main.cpp.s
+.PHONY : source/main.cpp.s
 
 # Help Target
 help:
@@ -186,12 +186,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... ABC"
-	@echo "... classes/Food.o"
-	@echo "... classes/Food.i"
-	@echo "... classes/Food.s"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... source/classes/Food.o"
+	@echo "... source/classes/Food.i"
+	@echo "... source/classes/Food.s"
+	@echo "... source/main.o"
+	@echo "... source/main.i"
+	@echo "... source/main.s"
 .PHONY : help
 
 
