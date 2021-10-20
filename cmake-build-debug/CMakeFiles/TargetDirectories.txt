@@ -1,0 +1,3 @@
+/home/shikamaru/CLionProjects/ABC/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/shikamaru/CLionProjects/ABC/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/shikamaru/CLionProjects/ABC/cmake-build-debug/CMakeFiles/ABC.dir

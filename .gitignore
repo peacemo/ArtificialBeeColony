@@ -1,6 +1,1 @@
-cmake-build-debug/
-.idea/
-
-
-CMakeLists.txt
-probs.txt
+/probs.txt

@@ -181,19 +181,19 @@ void abc() {
     int empBeeNum = FoodsNum; // 引领蜂
     int onLookBeeNum = FoodsNum; // 跟随蜂
 
+    // 初始化阶段
     CS_swap();//随机货位
-
-    Food foods[FoodsNum];
-    enCode(foods);
-    fdcpy(foods[0], currentBestFood); // 初始化将第一个食物源设置为 Best
-
+    Food foods[FoodsNum]; // 生成新的食物源种群
+    enCode(foods); // 计算种群中个体的适应度值
+    fdcpy(foods[0], currentBestFood); // 将第一个食物源设置为 Best，便于每一轮比较
     for (int i = 0; i < FoodsNum; ++i) {
-        std::cout << foods[i] << std::endl;
+        std::cout << foods[i] << std::endl; //输出初始种群
         if (foods[i].getFitness() < currentBestFood.getFitness()) { // 第一轮迭代，找到当前 Best
             fdcpy(foods[i], currentBestFood);
         }
     }
     std::cout << "The best ever: " << currentBestFood << std::endl;
+    // 初始化阶段
 
     std::cout << "*****************************" << std::endl;
 
