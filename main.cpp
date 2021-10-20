@@ -1,8 +1,8 @@
 #include <iostream>
+#include "classes/Constants.h"
 #include "classes/Food.h"
 #include "headers/head.h"
 #include "headers/init.h"
-#include "classes/Constants.h"
 #include "abc.h"
 #include "geneticAlgro.h"
 

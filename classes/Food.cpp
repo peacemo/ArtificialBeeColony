@@ -8,8 +8,7 @@
 #include <string>
 #include <list>
 #include "Food.h"
-//#include "../headers/head.h"
-//#include "../headers/init.h"
+#include "Constants.h"
 
 void randomIndex(int G[],int len) { // 对数组进行洗牌操作
     for(int i = 0; i < len; i++){
@@ -63,6 +62,9 @@ void Food::setCounts(int counts) {
     Food::counts = counts;
 }
 
+/*!
+ * 打乱数组中的元素
+ */
 void Food::stirSequence() {
     // 打乱序列元素
     int temSeq[GoodsNum] = {0};
@@ -138,10 +140,19 @@ std::ostream &operator<<(std::ostream &os, const Food &food) {
     return os;
 }
 
+/*!
+ * 获取序列（数组）的地址
+ * @return 返回数组首个元素的位置，
+ */
 int *Food::getSequenceAddress() const {
     return sequence;
 }
 
+/*!
+ * 将一个数插入数组的对应位置
+ * @param index 插入的位置的下标
+ * @param target 插入的值
+ */
 void Food::addIntoSequence(int index, int target) {
     if (this->seqLen == GoodsNum) return;
     for (int i = (this->seqLen -1); i >= index; i--) {
@@ -149,7 +160,6 @@ void Food::addIntoSequence(int index, int target) {
     }
     this->sequence[index] = target;
     this->seqLen++;
-
 }
 
 
