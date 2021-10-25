@@ -64,7 +64,7 @@ Food* cross(int f1, int f2, Food *foods) {
     for (int iter = randIndex; iter < endIndex; ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
         int currentElement = childrenFoods[1].getSequence(iter);
         childrenFoods[0].removeFromSequence(currentElement); // (CODE_LENTH^2) 从自身的序列中删除交叉对象的该元素
-//        tempFood.addToEndOfSequence(currentElement); // 再将其置于序列的末尾
+//        hybridFood.addToEndOfSequence(currentElement); // 再将其置于序列的末尾
         childrenFoods[0].addIntoSequence(iter, currentElement); // 再将其置于序列的相应位置
     }
     enSimpleCode(childrenFoods[0]); // 计算新食物的适应度值
@@ -76,7 +76,7 @@ Food* cross(int f1, int f2, Food *foods) {
     for (int iter = randIndex; iter < endIndex; ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
         int currentElement = tempFood.getSequence(iter);
         childrenFoods[1].removeFromSequence(currentElement); // (CODE_LENTH^2) 从自身的序列中删除交叉对象的该元素
-//        tempFood.addToEndOfSequence(currentElement); // 再将其置于序列的末尾
+//        hybridFood.addToEndOfSequence(currentElement); // 再将其置于序列的末尾
         childrenFoods[1].addIntoSequence(iter, currentElement); // 再将其置于序列的相应位置
     }
     enSimpleCode(childrenFoods[1]);

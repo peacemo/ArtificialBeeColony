@@ -42,7 +42,7 @@ int g1_s = 0,g2_s = 0,g3_s = 0,g4_s = 0,g5_s = 0,g6_s = 0;//各个堆垛机送检数量
 int g1_h = 0,g2_h = 0,g3_h = 0,g4_h = 0,g5_h = 0,g6_h = 0;//各个堆垛机入库数量
 double T1=0,T2=0,T3=0,T4=0,T5=0,T6=0;	//各个堆垛机的总工作时间
 double TD1=0,TD2=0,TD3=0,TD4=0,TD5=0,TD6=0;
-double t_inspect_a = 1;//不同类型资产的检定时间 单位 h	
+double t_inspect_a = 0.5;//不同类型资产的检定时间 单位 h
 double t_inspect_b = 1;
 double t_inspect_c = 3;
 double t_inspect_d = 3;

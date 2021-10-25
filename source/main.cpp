@@ -12,7 +12,8 @@ int main() {
     clock_t startTime,endTime;
     startTime = clock();//计时开始
     abc();
-//    geneticAgro();
+//    genesticAgro();
+//    std::cout << sizeof (double ) << std::endl;
     endTime = clock();//计时结束
     std::cout << "The run time is: " <<(double)(endTime - startTime) / CLOCKS_PER_SEC << "s" << std::endl;
 

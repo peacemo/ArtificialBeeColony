@@ -20,6 +20,7 @@ void randomIndex(int G[],int len) { // 对数组进行洗牌操作
 }
 
 Food::Food() {
+    // todo leak
     this->sequence = new int[GoodsNum];
     this->seqLen = GoodsNum;
     this->fitness = -1;
@@ -160,6 +161,10 @@ void Food::addIntoSequence(int index, int target) {
     }
     this->sequence[index] = target;
     this->seqLen++;
+}
+
+Food::~Food() {
+//    std::cout << "Dobby's free! " << std::endl;
 }
 
 

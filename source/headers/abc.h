@@ -5,6 +5,7 @@
 #ifndef ABC_ABC_H
 #define ABC_ABC_H
 
+Food hybridFood;
 Food currentBestFood;
 
 //void findMinMax(Food *pFood, double &min, double &max);
@@ -39,8 +40,8 @@ void fdcpy(Food &sFood, Food &tFood) {
  */
 double* calAccessProb(Food _foods[FoodsNum]) {
     static double P[FoodsNum] = {0};
-//    normalization(P, _foods); // 使用归一化计算概率集
-    roulette(P, _foods); // 使用轮盘赌计算概率集
+    normalization(P, _foods); // 使用归一化计算概率集
+//    roulette(P, _foods); // 使用轮盘赌计算概率集
     /**TEST*/
 //    for (int i = 0; i < FoodsNum; ++i) {
 //        std::cout << P[i] << " ";
@@ -98,13 +99,14 @@ void findMinMax(Food *foods, double &min, double &max) {
  * @param j 当前食物源的index
  */
 void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下一代，交叉的个体数量为总数量的三分之一（取整）
-    // copy food[j] to tempFood and avoid using the same address of the time sequence
-    Food tempFood;
-    fdcpy(foods[j], tempFood);
+
+    // copy food[j] to hybridFood and avoid using the same address of the time sequence
+    fdcpy(foods[j], hybridFood);
 
     int r = rand()%( (GoodsNum - GoodsNum / 20) - 0 + 1) + 0; // 随机选取交叉序列的起始位置[0, (GoodsNum - GoodsNum / 3)]
     int rdFdIndex = rand()%( (FoodsNum - 1) - 0 + 1) + 0; // [0, FoodsNum-1]
     Food randomFood = currentBestFood; // 选取目前最好的食物源杂交
+//    fdcpy(currentBestFood, randomFood);
 //    Food randomFood = foods[rdFdIndex]; // 随机选取一个食物源交叉
 
     for (int iter = r; iter < r + (GoodsNum/20); ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
@@ -115,14 +117,15 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
          *  再将这些值拼接到 food1 的末尾
          * */
         int currentElement = randomFood.getSequence(iter);
-        tempFood.removeFromSequence(currentElement); // (CODE_LENTH^2) 从自身的序列中删除交叉对象的该元素
-//        tempFood.addToEndOfSequence(currentElement); // 再将其置于序列的末尾
-        tempFood.addIntoSequence(iter, currentElement); // 再将其置于序列的末尾
+        hybridFood.removeFromSequence(currentElement); // (CODE_LENTH^2) 从自身的序列中删除交叉对象的该元素
+//        hybridFood.addToEndOfSequence(currentElement); // 再将其置于序列的末尾
+        hybridFood.addIntoSequence(iter, currentElement); // 再将其置于序列的末尾
     }
-//    tempFood.calFitness(); // 交叉完后重新计算适应度值
-    enSimpleCode(tempFood);
-    if (tempFood.getFitness() < foods[j].getFitness()) { // 比较前后的适应度值，并选择是否更新
-        foods[j] = tempFood;
+//    hybridFood.calFitness(); // 交叉完后重新计算适应度值
+    enSimpleCode(hybridFood);
+    if (hybridFood.getFitness() < foods[j].getFitness()) { // 比较前后的适应度值，并选择是否更新
+        foods[j] = hybridFood;
+//        fdcpy(hybridFood, foods[j]);
 //        foods[j].calFitness();
 //        enSimpleCode(foods[j]);
         foods[j].setCounts(0);
@@ -183,7 +186,7 @@ void abc() {
     int onLookBeeNum = FoodsNum; // 跟随蜂
 
     // 初始化阶段
-    CS_swap();//随机货位
+//    CS_swap();//随机货位
     Food foods[FoodsNum]; // 生成新的食物源种群
 //    Food *foods = new Food[FoodsNum]; // 生成新的食物源种群
     enCode(foods); // 计算种群中个体的适应度值
