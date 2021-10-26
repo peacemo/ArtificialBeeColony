@@ -210,7 +210,7 @@ void abc() {
          *  . 对于该食物源 food1 ，选择邻域内的另外一个食物源 food2 进行交叉，产生一个新的食物源 food3
          *  . 对比该食物源 food1 与新食物源 food3 的适应度值 fit1 与 fit3
          *  . food1 = fit1 < fit3 ? food1 : food3
-         *  . 若 food1 的值进行了更新，则将采集次数 count 置 0，否则 count + 1
+         *  . 若 food1 的值进行了更新，则将采集次数 tired 置 0，否则 tired + 1
          *      （此部的目的是为了模拟食物源采集之后的消耗，若采集次数增加到一定数目 Limit，则舍弃该食物源，并生成一个新的食物源）
          * 直到所有的食物源都被采集
          * */
@@ -227,11 +227,18 @@ void abc() {
          * */
         int currentFood = 0;
         int currentBee = 0;
+        int tired  = 0; // tired变量————当前的蜜蜂：“心累了，不想再找新的食物源了，直接就采这朵花算了吧。”
         while (currentBee < onLookBeeNum) { // 对于所有的跟随蜂，依次去随机访问食物源
+            if ( currentBee > onLookBeeNum / 2 ) break;
             double randProb = (rand()%1000 + 1) / 1000.0; // 产生一个[0.001, 1]的随机概率
-            if (randProb < accessProb[currentFood]) { // 如果随机产生的概率满足此条件，则对此食物源进行采集
+            if (randProb < accessProb[currentFood] // 决策成功，进行采集
+                || tired > FoodsNum / 2 // 我曾经跨过山河大海，也穿过人山人海。But I'm tired now, this is it, I'm down with it.
+                ) { // 如果随机产生的概率满足决策条件，或者蜜蜂累了，则对此食物源进行采集
                 hybrid(foods, currentFood);
                 currentBee++; // 采集之后则轮到下一个跟随蜂
+                tired = 0; // 采集成功，疲惫指数清空
+            } else {
+                tired++; // 采集失败，疲惫指数增加了...
             }
             currentFood++; // 更换下一个食物源
             if (currentFood >= FoodsNum) { currentFood = 0; } // 防止食物源越界

@@ -6,6 +6,7 @@
 
 double P[FoodsNum] = {0.0}; // 存储每一个个体选择概率
 Food bestFood; // 所有世代中表现最优的食物源
+Food crossFood;
 
 /*!
  * 根据适应度值计算每一个食物源被选中的比例概率
@@ -48,14 +49,13 @@ int RouletteWheelSelection() {
  * @return
  */
 Food* cross(int f1, int f2, Food *foods) {
-    Food tempFood;
 //    Food childrenFoods[2];
     Food* childrenFoods = new Food[2];
 
     fdcpy(foods[f1], childrenFoods[0]); // 将父代的两个食物源先赋值给临时变量，杂交的时候对临时变量进行操作
     fdcpy(foods[f2], childrenFoods[1]);
 
-    fdcpy(foods[f1], tempFood);  // 临时保存 f1，用于变量交换的中间变量
+    fdcpy(foods[f1], crossFood);  // 临时保存 f1，用于变量交换的中间变量
 
     int randIndex = rand() % ((GoodsNum - GoodsNum / 50) - 0 + 1) + 0; // 随机选取交叉序列的起始位置[0, (GoodsNum - GoodsNum / 3)]
     int endIndex = randIndex + (GoodsNum / 50);
@@ -74,7 +74,7 @@ Food* cross(int f1, int f2, Food *foods) {
 
     // 再将 temp( f1的值 )的相应序列给到 f2，与上面过程相同
     for (int iter = randIndex; iter < endIndex; ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
-        int currentElement = tempFood.getSequence(iter);
+        int currentElement = crossFood.getSequence(iter);
         childrenFoods[1].removeFromSequence(currentElement); // (CODE_LENTH^2) 从自身的序列中删除交叉对象的该元素
 //        hybridFood.addToEndOfSequence(currentElement); // 再将其置于序列的末尾
         childrenFoods[1].addIntoSequence(iter, currentElement); // 再将其置于序列的相应位置
@@ -106,7 +106,8 @@ void swap(int indexA, int indexB, Food &food) {
  * @param foods
  */
 void generateNewFoods(Food *foods) {
-    Food newFoods[FoodsNum];
+//    Food newFoods[FoodsNum];
+    Food *newFoods = new Food[FoodsNum];
     int newFoodsLength = 0;
 
     while(newFoodsLength < FoodsNum) {  // 在子代规模达到种群大小之前，不断地产生新的子代，并添加进入子代集
@@ -124,6 +125,8 @@ void generateNewFoods(Food *foods) {
         newFoods[newFoodsLength] = children[1];
         newFoodsLength++;
 
+        delete[] children;
+
     }
 
     // TODO: 变异逻辑 -> 随机选择一些货物进行调换
@@ -138,8 +141,6 @@ void generateNewFoods(Food *foods) {
             }
             enSimpleCode(newFoods[i]);
         }
-
-
     }
 
     // 用子代替换父代
@@ -151,11 +152,13 @@ void generateNewFoods(Food *foods) {
     }
     bestFood.updateCounts();
 
+    delete[] newFoods;
+
 }
 
 void geneticAgro() {
 
-    CS_swap();//随机货位
+//    CS_swap();//随机货位
     Food foods[FoodsNum]; // 生成食物源的初始种群
     enCode(foods); // 计算种群的适应度值
     fdcpy(foods[0], bestFood);
