@@ -273,6 +273,7 @@ void abc() {
 //            std::cout << foods[i] << std::endl;
 //        }
         if (currentBestFood.getFitness() == 0) break;
+
     }
 
     std::cout << "*****************************" << std::endl;
