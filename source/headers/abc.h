@@ -181,6 +181,7 @@ void roulette(double *P, Food _foods[FoodsNum]) {
 void abc() {
 
 //    getParameters();
+    vector<int> fitnessGrid; // 记录最佳解的变化过程
 
     int empBeeNum = FoodsNum; // 引领蜂
     int onLookBeeNum = FoodsNum; // 跟随蜂
@@ -188,11 +189,9 @@ void abc() {
     // 初始化阶段
 //    CS_swap();//随机货位
     Food foods[FoodsNum]; // 生成新的食物源种群
-//    Food *foods = new Food[FoodsNum]; // 生成新的食物源种群
     enCode(foods); // 计算种群中个体的适应度值
     fdcpy(foods[0], currentBestFood); // 将第一个食物源设置为 Best，便于每一轮比较
     for (int i = 0; i < FoodsNum; ++i) {
-//        std::cout << foods[i] << std::endl; //输出初始种群
         if (foods[i].getFitness() < currentBestFood.getFitness()) { // 第一轮迭代，找到当前 Best
             fdcpy(foods[i], currentBestFood);
         }
@@ -232,7 +231,7 @@ void abc() {
             if ( currentBee > onLookBeeNum / 2 ) break;
             double randProb = (rand()%1000 + 1) / 1000.0; // 产生一个[0.001, 1]的随机概率
             if (randProb < accessProb[currentFood] // 决策成功，进行采集
-                || tired > FoodsNum / 2 // 我曾经跨过山河大海，也穿过人山人海。But I'm tired now, this is it, I'm down with it.
+                || tired > FoodsNum / 3 // 我曾经跨过山河大海，也穿过人山人海。But I'm tired now, this is it, I'm down with it.
                 ) { // 如果随机产生的概率满足决策条件，或者蜜蜂累了，则对此食物源进行采集
                 hybrid(foods, currentFood);
                 currentBee++; // 采集之后则轮到下一个跟随蜂
@@ -244,19 +243,6 @@ void abc() {
             if (currentFood >= FoodsNum) { currentFood = 0; } // 防止食物源越界
         }
 
-//        for (int iter = 0; iter < onLookBeeNum; ++iter) {
-//            double randProb = (rand()%100 + 1) / 100.0; // 产生一个[0, 1]的随机概率
-//            if (currentFood >= (FoodsNum - 1)) { currentFood = 1; }
-//            for (int j = currentFood; j < FoodsNum; ++j) {
-//                if (randProb < accessProb[j]) { // 随机概率与该食物源的决策概率进行比较，决定是否采集
-//                    hybrid(foods, j); //
-//                } else {
-//                    continue;
-//                }
-//            }
-//        }
-
-
         /**
          * 侦查蜂阶段，蜜蜂抛弃不新鲜的食物源
          **/
@@ -267,17 +253,23 @@ void abc() {
                 foods[s].setCounts(0);
             }
         }
+
+        fitnessGrid.push_back(currentBestFood.getFitness());
         std::cout << "Gen " << i + 1 << ": ";
         std::cout << currentBestFood.getFitness() << std::endl;
-//        for (int i = 0; i < FoodsNum; ++i) {
-//            std::cout << foods[i] << std::endl;
-//        }
         if (currentBestFood.getFitness() == 0) break;
 
     }
 
     std::cout << "*****************************" << std::endl;
     std::cout << "The best ever: " << currentBestFood << std::endl;
+    std::cout << "Grid: " ;
+    for(int i = 0; i < fitnessGrid.size(); i++)
+    {
+        if (i == 0) { cout << "[" << fitnessGrid[i] << ", "; }
+        else if (i == fitnessGrid.size() - 1) { cout << fitnessGrid[i] << "]"; }
+        else { cout << fitnessGrid[i] << ", "; }
+    }
 
 }
 

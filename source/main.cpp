@@ -4,7 +4,7 @@
 #include "headers/head.h"
 #include "headers/init.h"
 #include "headers/abc.h"
-#include "headers/geneticAlgro.h"
+//#include "headers/geneticAlgro.h"
 
 int main() {
     std::cout << "Hello, World!" << std::endl;

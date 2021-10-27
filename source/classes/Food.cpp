@@ -134,7 +134,13 @@ void Food::updateCounts() {
 std::ostream &operator<<(std::ostream &os, const Food &food) {
     std::string tempSeq = {};
     for (int i = 0; i < GoodsNum; ++i) {
-        tempSeq += std::to_string(food.sequence[i]) + ", ";
+        if (i == 0) {
+            tempSeq += "[" +std::to_string(food.sequence[i]) + ", ";
+        } else if (i == GoodsNum - 1) {
+            tempSeq += std::to_string(food.sequence[i]) + "]";
+        } else {
+            tempSeq += std::to_string(food.sequence[i]) + ", ";
+        }
     }
     os << "seq: " << tempSeq << "\tseqLen: " << food.seqLen << "\tfitness: " << food.fitness << "\tcounts: "
        << food.counts;
@@ -164,7 +170,7 @@ void Food::addIntoSequence(int index, int target) {
 }
 
 Food::~Food() {
-//    std::cout << "Dobby's free! " << std::endl;
+//    std::cout << "Dobby's free! \ *O* /" << std::endl;
 }
 
 
