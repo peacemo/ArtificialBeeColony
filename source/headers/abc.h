@@ -8,7 +8,6 @@
 Food hybridFood;
 Food currentBestFood;
 
-//void findMinMax(Food *pFood, double &min, double &max);
 void fdcpy(Food &sFood, Food &tFood);
 double* calAccessProb(Food _foods[FoodsNum]);
 void findMinMax(Food *foods, double &min, double &max);
@@ -42,11 +41,6 @@ double* calAccessProb(Food _foods[FoodsNum]) {
     static double P[FoodsNum] = {0};
     normalization(P, _foods); // 使用归一化计算概率集
 //    roulette(P, _foods); // 使用轮盘赌计算概率集
-    /**TEST*/
-//    for (int i = 0; i < FoodsNum; ++i) {
-//        std::cout << P[i] << " ";
-//    }
-
     return P;
 }
 
@@ -98,7 +92,7 @@ void findMinMax(Food *foods, double &min, double &max) {
  * @param foods 所有食物源
  * @param j 当前食物源的index
  */
-void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下一代，交叉的个体数量为总数量的三分之一（取整）
+void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下一代，交叉的个体数量为总数量的 某 分之一（取整）
 
     // copy food[j] to hybridFood and avoid using the same address of the time sequence
     fdcpy(foods[j], hybridFood);
@@ -106,8 +100,7 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
     int r = rand()%( (GoodsNum - GoodsNum / 20) - 0 + 1) + 0; // 随机选取交叉序列的起始位置[0, (GoodsNum - GoodsNum / 3)]
     int rdFdIndex = rand()%( (FoodsNum - 1) - 0 + 1) + 0; // [0, FoodsNum-1]
     Food randomFood = currentBestFood; // 选取目前最好的食物源杂交
-//    fdcpy(currentBestFood, randomFood);
-//    Food randomFood = foods[rdFdIndex]; // 随机选取一个食物源交叉
+//    Food randomFood = foods[rdFdIndex]; // 随机选取食物源杂交
 
     for (int iter = r; iter < r + (GoodsNum/20); ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
         /**
@@ -121,25 +114,16 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
 //        hybridFood.addToEndOfSequence(currentElement); // 再将其置于序列的末尾
         hybridFood.addIntoSequence(iter, currentElement); // 再将其置于序列的末尾
     }
-//    hybridFood.calFitness(); // 交叉完后重新计算适应度值
     enSimpleCode(hybridFood);
     if (hybridFood.getFitness() < foods[j].getFitness()) { // 比较前后的适应度值，并选择是否更新
         foods[j] = hybridFood;
-//        fdcpy(hybridFood, foods[j]);
-//        foods[j].calFitness();
-//        enSimpleCode(foods[j]);
         foods[j].setCounts(0);
-
-        if (foods[j].getFitness() < currentBestFood.getFitness()) {
-            // 每次交叉之后如果有更新，则与当前 Best 比较是否更新 Best
+        if (foods[j].getFitness() < currentBestFood.getFitness()) { // 每次交叉之后如果有更新，则与当前 Best 比较是否更新 Best
             fdcpy(foods[j], currentBestFood);
         }
     } else {
         foods[j].updateCounts();
     }
-
-    // todo 杂交时采用遗传算法的思想
-
 
 }
 
@@ -152,8 +136,7 @@ void normalization(double *P, Food _foods[FoodsNum]) {
     double min = 0; // 存储当前食物源中的最小 fitness
     double max = 0; // 存储当前食物源中的最大 fitness
     findMinMax(_foods, min, max); // 确定最小值与最大值
-    for (int i = 0; i < FoodsNum; ++i) {
-        // 对所有的适应度值进行归一化，均缩小为 [0, 1] 之间的数
+    for (int i = 0; i < FoodsNum; ++i) { // 对所有的适应度值进行归一化，均缩小为 [0, 1] 之间的数
         P[i] = (_foods[i].getFitness() - min) / (max - min);
     }
 }
@@ -175,12 +158,22 @@ void roulette(double *P, Food _foods[FoodsNum]) {
     }
 }
 
+void opt2(int *seq, int length) {
+    srand((unsigned)time(NULL));
+    int start, end;
+    start = rand()%( (length - length / 3) - 0 + 1) + 0; // 起始位置[0, (GoodsNum - GoodsNum / 3)]
+    end = start + (length/3);
+    for(int i = start, j = end - 1; i < j; i++, j--) {
+        int t = seq[i];
+        seq[i] = seq[j];
+        seq[j] = t;
+    }
+}
+
 /*!
  * ABC算法主体
  */
 void abc() {
-
-//    getParameters();
     vector<int> fitnessGrid; // 记录最佳解的变化过程
 
     int empBeeNum = FoodsNum; // 引领蜂
@@ -197,8 +190,6 @@ void abc() {
         }
     }
     std::cout << "The best ever: " << currentBestFood << std::endl;
-    // 初始化阶段
-
     std::cout << "*****************************" << std::endl;
 
     for (int i = 0; i < MAXITERTIME; ++i) {  // 总迭代次数
@@ -218,25 +209,26 @@ void abc() {
         }
 
         double *accessProb; // 计算决策概率集
-
         accessProb = calAccessProb(foods);
 
         /**
-         * 跟随蜂阶段，蜜蜂对食物源随机进行访问
+         * 跟随蜂阶段，蜜蜂对食物源随机进行访问，决策是否采集
+         * 采集方式与上面的引领蜂阶段一样
          * */
-        int currentFood = 0;
-        int currentBee = 0;
+        int currentFood = 0; // 当前蜜蜂所访问过的食物源（访问不一定采集）
+        int currentBee = 0; // 当前的蜜蜂
         int tired  = 0; // tired变量————当前的蜜蜂：“心累了，不想再找新的食物源了，直接就采这朵花算了吧。”
         while (currentBee < onLookBeeNum) { // 对于所有的跟随蜂，依次去随机访问食物源
             if ( currentBee > onLookBeeNum / 2 ) break;
             double randProb = (rand()%1000 + 1) / 1000.0; // 产生一个[0.001, 1]的随机概率
-            if (randProb < accessProb[currentFood] // 决策成功，进行采集
-                || tired > FoodsNum / 3 // 我曾经跨过山河大海，也穿过人山人海。But I'm tired now, this is it, I'm down with it.
-                ) { // 如果随机产生的概率满足决策条件，或者蜜蜂累了，则对此食物源进行采集
+            if (
+                    randProb < accessProb[currentFood] // 决策成功，进行采集
+                    || tired > ( FoodsNum / 2 ) // 我曾经跨过山河大海，也穿过人山人海。But I'm tired now, this is it, I'm down with it.
+                    ) { // 如果随机产生的概率满足决策条件，或者蜜蜂累了，则对此食物源进行采集
                 hybrid(foods, currentFood);
                 currentBee++; // 采集之后则轮到下一个跟随蜂
                 tired = 0; // 采集成功，疲惫指数清空
-            } else {
+            } else { // 决策失败
                 tired++; // 采集失败，疲惫指数增加了...
             }
             currentFood++; // 更换下一个食物源
@@ -245,10 +237,13 @@ void abc() {
 
         /**
          * 侦查蜂阶段，蜜蜂抛弃不新鲜的食物源
+         * 并生成新的食物源
+         * 生成方式：随机打乱、2-opt
          **/
         for (int s = 0; s < FoodsNum; ++s) {
             if (foods[s].getCounts() >= LIMIT) {
-                foods[s].stirSequence();
+//                foods[s].stirSequence();
+                opt2(foods[s].getSequenceAddress(), GoodsNum);
                 enSimpleCode(foods[s]);
                 foods[s].setCounts(0);
             }
