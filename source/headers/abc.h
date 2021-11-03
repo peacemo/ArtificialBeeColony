@@ -242,8 +242,8 @@ void abc() {
          **/
         for (int s = 0; s < FoodsNum; ++s) {
             if (foods[s].getCounts() >= LIMIT) {
-//                foods[s].stirSequence();
-                opt2(foods[s].getSequenceAddress(), GoodsNum);
+                foods[s].stirSequence(); // 随机打乱（效果更好）
+//                opt2(foods[s].getSequenceAddress(), GoodsNum); // 2-opt打乱
                 enSimpleCode(foods[s]);
                 foods[s].setCounts(0);
             }
