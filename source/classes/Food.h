@@ -42,6 +42,7 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Food &food);
 
     //user funcs
+    void opt2();
     void stirSequence();
     void calFitness();
     void updateCounts();

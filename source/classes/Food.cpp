@@ -19,6 +19,19 @@ void randomIndex(int G[],int len) { // 对数组进行洗牌操作
     }
 }
 
+void Food::opt2() {
+//    std::cout << "2-opt called" << std::endl;
+    srand((unsigned)time(NULL));
+    int start, end;
+    start = rand()%( (GoodsNum - GoodsNum / 3) - 0 + 1) + 0; // 起始位置[0, (GoodsNum - GoodsNum / 3)]
+    end = start + (GoodsNum/3);
+    for(int i = start, j = end - 1; i < j; i++, j--) {
+        int t = this->getSequenceAddress()[i];
+        this->getSequenceAddress()[i] = this->getSequenceAddress()[j];
+        this->getSequenceAddress()[j] = t;
+    }
+}
+
 Food::Food() {
     // todo leak
     this->sequence = new int[GoodsNum];

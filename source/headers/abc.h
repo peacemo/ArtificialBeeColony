@@ -97,12 +97,12 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
     // copy food[j] to hybridFood and avoid using the same address of the time sequence
     fdcpy(foods[j], hybridFood);
 
-    int r = rand()%( (GoodsNum - GoodsNum / 30) - 0 + 1) + 0; // 随机选取交叉序列的起始位置[0, (GoodsNum - GoodsNum / 3)]
+    int r = rand()%( (GoodsNum - GoodsNum / 20) - 0 + 1) + 0; // 随机选取交叉序列的起始位置[0, (GoodsNum - GoodsNum / 3)]
     int rdFdIndex = rand()%( (FoodsNum - 1) - 0 + 1) + 0; // [0, FoodsNum-1]
     Food randomFood = currentBestFood; // 选取目前最好的食物源杂交
 //    Food randomFood = foods[rdFdIndex]; // 随机选取食物源杂交
 
-    for (int iter = r; iter < r + (GoodsNum / 30); ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
+    for (int iter = r; iter < r + (GoodsNum / 20); ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
         /**
          *  全部迭代完后的效果就是
          *  从 food2 中选取一段序列
@@ -111,7 +111,6 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
          * */
         int currentElement = randomFood.getSequence(iter);
         hybridFood.removeFromSequence(currentElement); // (CODE_LENTH^2) 从自身的序列中删除交叉对象的该元素
-//        hybridFood.addToEndOfSequence(currentElement); // 再将其置于序列的末尾
         hybridFood.addIntoSequence(iter, currentElement); // 再将其置于序列的末尾
     }
     enSimpleCode(hybridFood);
@@ -159,23 +158,12 @@ void roulette(double *P, Food _foods[FoodsNum]) {
     }
 }
 
-void opt2(int *seq, int length) {
-    srand((unsigned)time(NULL));
-    int start, end;
-    start = rand()%( (length - length / 3) - 0 + 1) + 0; // 起始位置[0, (GoodsNum - GoodsNum / 3)]
-    end = start + (length/3);
-    for(int i = start, j = end - 1; i < j; i++, j--) {
-        int t = seq[i];
-        seq[i] = seq[j];
-        seq[j] = t;
-    }
-}
-
 /*!
  * ABC算法主体
  */
 void abc() {
     vector<int> fitnessGrid; // 记录最佳解的变化过程
+    vector<int> scoutIndex; // 记录需要丢弃并更新的食物源的下标
 
     int empBeeNum = FoodsNum; // 引领蜂
     int onLookBeeNum = FoodsNum; // 跟随蜂
@@ -194,6 +182,7 @@ void abc() {
     std::cout << "*****************************" << std::endl;
 
     for (int i = 0; i < MAXITERTIME; ++i) {  // 总迭代次数
+        scoutIndex.clear();
 
         /**
          * 引领蜂对于每一个食物源进行访问（采集）
@@ -207,6 +196,7 @@ void abc() {
          * */
         for (int j = 0; j < empBeeNum; ++j) {  // 引领蜂采集阶段
             hybrid(foods, j); // 交叉
+            if (foods[j].getCounts() > LIMIT) scoutIndex.push_back(j);
         }
 
         double *accessProb; // 计算决策概率集
@@ -241,14 +231,39 @@ void abc() {
          * 并生成新的食物源
          * 生成方式：随机打乱、2-opt
          **/
-        for (int s = 0; s < FoodsNum; ++s) {
-            if (foods[s].getCounts() >= LIMIT) {
-                foods[s].stirSequence(); // 随机打乱（效果更好）
-//                opt2(foods[s].getSequenceAddress(), GoodsNum); // 2-opt打乱
-                enSimpleCode(foods[s]);
-                foods[s].setCounts(0);
+        for (int s = 0; s < scoutIndex.size(); ++s) {
+            int oldFitness = foods[scoutIndex[s]].getFitness();
+            int count = 0;
+            int countMax = 100;
+            while (count < countMax) {
+                count++;
+                foods[scoutIndex[s]].opt2(); // 2-opt打乱
+                // foods[s].stirSequence(); // 随机打乱（效果更好）
+                enSimpleCode(foods[scoutIndex[s]]);
+                if (foods[scoutIndex[s]].getFitness() >= oldFitness) {
+                    continue;
+                } else break;
             }
+            foods[scoutIndex[s]].setCounts(0);
         }
+
+//        for (int s = 0; s < FoodsNum; ++s) {
+//            if (foods[s].getCounts() >= LIMIT) {
+//                int oldFitness = foods[s].getFitness();
+////                foods[s].stirSequence(); // 随机打乱（效果更好）
+//                int count = 0;
+//                int countMax = 100;
+//                while (count < countMax) {
+//                    count++;
+//                    foods[s].opt2(); // 2-opt打乱
+//                    enSimpleCode(foods[s]);
+//                    if (foods[s].getFitness() >= oldFitness) {
+//                        continue;
+//                    } else break;
+//                }
+//                foods[s].setCounts(0);
+//            }
+//        }
 
         fitnessGrid.push_back(currentBestFood.getFitness());
         std::cout << "Gen " << i + 1 << ": ";
