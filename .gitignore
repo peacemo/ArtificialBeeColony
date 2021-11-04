@@ -1,4 +1,7 @@
 /cmake-build-debug/
 .history/
 output/
+.vscode/
+*.exe
+test_arr.cpp
 # chen added something...
