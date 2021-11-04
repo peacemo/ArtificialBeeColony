@@ -68,16 +68,12 @@ void Food::setCounts(int counts) {
  */
 void Food::stirSequence() {
     // 打乱序列元素
-    int temSeq[GoodsNum] = {0};
     srand((double)clock());//设置随机种子
 
-    for(int j = 0; j < GoodsNum; j++){
-        temSeq[j] = j+1;
+    for(int j = 0; j < GoodsNum; j++){ // 初始化货物 1~GoodsNum
+        this->sequence[j] = j+1;
     }
-    randomIndex(temSeq, GoodsNum);
-    for(int m = 0; m < GoodsNum; m++) {//写入到种群
-        this->sequence[m] = temSeq[m];
-    }
+    randomIndex(this->getSequenceAddress(), GoodsNum); // 将货物序列打乱
 
 }
 

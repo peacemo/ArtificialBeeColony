@@ -97,12 +97,12 @@ void hybrid(Food *foods, int j) {// 两个时间序列进行交叉，遗传下�
     // copy food[j] to hybridFood and avoid using the same address of the time sequence
     fdcpy(foods[j], hybridFood);
 
-    int r = rand()%( (GoodsNum - GoodsNum / 20) - 0 + 1) + 0; // 随机选取交叉序列的起始位置[0, (GoodsNum - GoodsNum / 3)]
+    int r = rand()%( (GoodsNum - GoodsNum / 30) - 0 + 1) + 0; // 随机选取交叉序列的起始位置[0, (GoodsNum - GoodsNum / 3)]
     int rdFdIndex = rand()%( (FoodsNum - 1) - 0 + 1) + 0; // [0, FoodsNum-1]
     Food randomFood = currentBestFood; // 选取目前最好的食物源杂交
 //    Food randomFood = foods[rdFdIndex]; // 随机选取食物源杂交
 
-    for (int iter = r; iter < r + (GoodsNum/20); ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
+    for (int iter = r; iter < r + (GoodsNum / 30); ++iter) { // 取出从随机位置开始，向后至“总数的三分之一”个元素
         /**
          *  全部迭代完后的效果就是
          *  从 food2 中选取一段序列
@@ -143,6 +143,7 @@ void normalization(double *P, Food _foods[FoodsNum]) {
 
 /*!
  * 通过轮盘赌计算每一个食物源的概率
+ * 这个算法是错的不要用
  * @param P 用于存储计算后的概率值
  * @param _foods 所有食物源的地址
  */
