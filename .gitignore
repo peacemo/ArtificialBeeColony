@@ -1,4 +1,6 @@
 /cmake-build-debug/
 .history/
 output/
+.vscode/
+*.exe
 # chen added something...

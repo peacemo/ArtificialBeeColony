@@ -51,13 +51,15 @@ int g_number(int ddj){
 		break;
 		return -1;
 	}
+    cout<<"g_number error!"<<endl;
+    return -1;
 }
 //ÅĞ¶Ï¶ÂÈû
 void arr_block(double TI,int ddj){
 	block = 0;
 	int gi_n = g_number(ddj);
 	for(int i=0;i<gi_n;i++){//Ñ­»·±éÀú¶Ñ¶â»úµÄgpÊı×é
-		if(gp[ddj-1][i][1]<=TI){
+		if(gp[ddj-1][i][1]<TI){
 			block++;
 		}
 	}
