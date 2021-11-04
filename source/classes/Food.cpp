@@ -166,7 +166,7 @@ void Food::addIntoSequence(int index, int target) {
 }
 
 Food::~Food() {
-//    std::cout << "Dobby's free! \ *O* /" << std::endl;
+
 }
 
 
