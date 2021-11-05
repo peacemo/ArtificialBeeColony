@@ -272,10 +272,11 @@ void abc() {
 
     }
     ofstream output;
-	output.open("output/best.txt");
+	output.open("output/Best.txt");
     std::cout << "*****************************" << std::endl;
     std::cout << "The best ever: " << currentBestFood << std::endl;
     std::cout << "Grid: " ;
+    output << "The best ever: " << currentBestFood <<endl;
     for(int i = 0; i < fitnessGrid.size(); i++)
     {
         if (i == 0) { 
