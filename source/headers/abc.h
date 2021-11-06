@@ -271,17 +271,28 @@ void abc() {
         if (currentBestFood.getFitness() == 0) break;
 
     }
-
+    ofstream output;
+	output.open("output/Best.txt");
     std::cout << "*****************************" << std::endl;
     std::cout << "The best ever: " << currentBestFood << std::endl;
     std::cout << "Grid: " ;
+    output << "The best ever: " << currentBestFood <<endl;
     for(int i = 0; i < fitnessGrid.size(); i++)
     {
-        if (i == 0) { cout << "[" << fitnessGrid[i] << ", "; }
-        else if (i == fitnessGrid.size() - 1) { cout << fitnessGrid[i] << "]"; }
-        else { cout << fitnessGrid[i] << ", "; }
+        if (i == 0) { 
+            cout << "[" << fitnessGrid[i] << ", "; 
+            output << "[" << fitnessGrid[i] << ", "; 
+        }
+        else if (i == fitnessGrid.size() - 1) { 
+            cout << fitnessGrid[i] << "]"; 
+            output << fitnessGrid[i] << "]"; 
+        }
+        else {
+            cout << fitnessGrid[i] << ", ";
+            output << fitnessGrid[i] << ", ";
+        }
     }
-
+    output.close();
 }
 
 #endif //ABC_ABC_H

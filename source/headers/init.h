@@ -29,22 +29,22 @@ int g_number(int ddj){
 	switch (ddj)
 	{
 	case 1:
-		return g1_n;
+		return g1_r;
 		break;
 	case 2:
-		return g2_n;
+		return g2_r;
 		break;
 	case 3:
-		return g3_n;
+		return g3_r;
 		break;
 	case 4:
-		return g4_n;
+		return g4_r;
 		break;
 	case 5:
-		return g5_n;
+		return g5_r;
 		break;
 	case 6:
-		return g6_n;
+		return g6_r;
 		break;
 	default:
 		cout<<"g_number error!"<<endl;
@@ -65,6 +65,7 @@ void arr_block(double TI,int ddj){
 	}
 	arr_p[gpi][0] = gpi;
 	arr_p[gpi][1] = block;
+    arr_p[gpi][2] =ddj;
 	gpi++;
 }
 
@@ -257,7 +258,9 @@ double getT(int ddj){
 void R_Test(int r[]){
 	int an=0;
 	int ddj;
-	//write.open("Test.txt");//表示你要把内容输出到“text.txt"这个文件里 如果没有这个文件，会自动创建这个文件
+    int p1=0,p2=0,p3=0,p4=0,p5=0,p6=0;
+    ofstream write;
+	write.open("output/R.txt");//表示你要把内容输出到“text.txt"这个文件里 如果没有这个文件，会自动创建这个文件
 	int p_R = 0;//入库编码下标
 	for(int i =1;i<=R_n;i++){
 		if(p_R>R)	//	防止出现数组访问越界
@@ -275,50 +278,62 @@ void R_Test(int r[]){
             //cout<<"The ddj is "<<ddj<<"\tThe num "<<p_R<<"\tstack arrive ddj time is "<<get_t<<endl;
             //write<<"The ddj is "<<ddj<<"\tThe num "<<p_R<<"\tstack arrive ddj time is "<<get_t<<endl;
 				//cout<<1<<endl;
-				a[an] = get_t;//写入数组a中
-				an++;
-                //write<<get_t<<endl;
-                get_t = 0;//将到达时间变量归0
-				continue;//提高程序效率，不再进行下面的判断
+            a[an] = get_t;//写入数组a中
+            an++;
+            gp[0][p1][1] = get_t;//同时写入数组gp中
+            p1++;
+            write<<an<<" "<<get_t<<endl;
+            get_t = 0;//将到达时间变量归0
+            continue;//提高程序效率，不再进行下面的判断
         }
         if(ddj==2){
 			a[an] = get_t;
-				an++;
-               // write<<get_t<<endl;
-                get_t = 0;
-				continue;
+            an++;
+            gp[1][p2][1] = get_t;
+            p2++;
+            write<<an<<" "<<get_t<<endl;
+            get_t = 0;
+            continue;
         }
         if(ddj==3){
 			a[an] = get_t;
-				an++;
-                //write<<get_t<<endl;
-                get_t = 0;
-				continue;
+            an++;
+            gp[2][p3][1] = get_t;
+            p3++;
+            write<<an<<" "<<get_t<<endl;
+            get_t = 0;
+            continue;
         }
         if(ddj==4){
 			a[an] = get_t;
-				an++;
-               // write<<get_t<<endl;
-                get_t = 0;
-				continue;
+			an++;
+            gp[3][p4][1] = get_t;
+			p4++;
+            write<<an<<" "<<get_t<<endl;
+            get_t = 0;
+			continue;
         }
         if(ddj==5){
 			a[an] = get_t;
-				an++;
-               // write<<get_t<<endl;
-                get_t = 0;
-				continue;
+            an++;
+            gp[4][p5][1] = get_t;
+            p5++;
+            write<<an<<" "<<get_t<<endl;
+            get_t = 0;
+            continue;
         }
         if(ddj==6){
 			a[an] = get_t;
-				an++;
-                //write<<get_t<<endl;
-                get_t = 0;
-				continue;
+            an++;
+            gp[5][p6][1] = get_t;
+			p6++;
+            write<<an<<" "<<get_t<<endl;
+            get_t = 0;
+            continue;
         }
     }
 	}
-	//write.close(); // 输出完毕后关闭这个文件
+	write.close(); // 输出完毕后关闭这个文件
 }
 
 void randomArr(int G[],int len){    //随机序列，G为编码数组,len为编码数组长度
@@ -541,7 +556,7 @@ double read(double TI,double TDI,int p,int nextp){
 			gi_n = g_number(ddj);
 			for(int j=0;j<gi_n;j++){
 				if(gp[ddj-1][j][0]==p){
-					gp[ddj-1][j][1] = 9999999;
+					gp[ddj-1][j][1] = 999999;
 					break;
 				}
 			}
@@ -562,14 +577,14 @@ double read(double TI,double TDI,int p,int nextp){
 			arr_block(TI,ddj);
             break;
         case 'H':
-			ddj = stacker(p);//将编码的到达时间设为最大
-			gi_n = g_number(ddj);
-			for(int j=0;j<gi_n;j++){
-				if(gp[ddj-1][j][0]==p){
-					gp[ddj-1][j][1] = 9999999;
-					break;
-				}
-			}
+			// ddj = stacker(p);//将编码的到达时间设为最大
+			// gi_n = g_number(ddj);
+			// for(int j=0;j<gi_n;j++){
+			// 	if(gp[ddj-1][j][0]==p){
+			// 		gp[ddj-1][j][1] = 99999999;
+			// 		break;
+			// 	}
+			// }
             for(i=0;i< H - _k; i++){//在h[]中找到下标
                 if(hi[i][0] == p){
 					flag = true;
@@ -622,49 +637,49 @@ double read(double TI,double TDI,int p,int nextp){
 						inspect(cargo[p-1].type);//根据该送检编码的货物类型，计算出送检时间
 						g1_H2[th1]=h[i];//将该回库编码写入到堆垛机1的回库数组里
 						th1++;//堆垛机1的 回库编码数组 和 回库时间数组 下标自增
-						gp[0][gp1][0] = h[i];//回库编码写入数组gp中
-						gp[0][gp1][1] = TI + t_inspect;//回库时间写入数组gp中
-						gp1++;
+						// gp[0][gp1][0] = h[i];//回库编码写入数组gp中
+						// gp[0][gp1][1] = TI + t_inspect;//回库时间写入数组gp中
+						// gp1++;
 						break;
 					case 2:
 						inspect(cargo[p-1].type);
 						g2_H2[th2]=h[i];
 						th2++;
-						gp[1][gp2][0] = h[i];//回库编码写入数组gp中
-						gp[1][gp2][1] = TI + t_inspect;//回库时间写入数组gp中
-						gp2++;
+						// gp[1][gp2][0] = h[i];//回库编码写入数组gp中
+						// gp[1][gp2][1] = TI + t_inspect;//回库时间写入数组gp中
+						// gp2++;
 						break;
 					case 3:
 						inspect(cargo[p-1].type);
 						g3_H2[th3]=h[i];
 						th3++;
-						gp[2][gp3][0] = h[i];//回库编码写入数组gp中
-						gp[2][gp3][1] = TI + t_inspect;//回库时间写入数组gp中
-						gp3++;
+						// gp[2][gp3][0] = h[i];//回库编码写入数组gp中
+						// gp[2][gp3][1] = TI + t_inspect;//回库时间写入数组gp中
+						// gp3++;
 						break;
 					case 4:
 						inspect(cargo[p-1].type);
 						g4_H2[th4]=h[i];
 						th4++;
-						gp[3][gp4][0] = h[i];//回库编码写入数组gp中
-						gp[3][gp4][1] = TI + t_inspect;//回库时间写入数组gp中
-						gp4++;
+						// gp[3][gp4][0] = h[i];//回库编码写入数组gp中
+						// gp[3][gp4][1] = TI + t_inspect;//回库时间写入数组gp中
+						// gp4++;
 						break;
 					case 5:
 						inspect(cargo[p-1].type);
 						g5_H2[th5]=h[i];
 						th5++;
-						gp[4][gp5][0] = h[i];//回库编码写入数组gp中
-						gp[4][gp5][1] = TI + t_inspect;//回库时间写入数组gp中
-						gp5++;
+						// gp[4][gp5][0] = h[i];//回库编码写入数组gp中
+						// gp[4][gp5][1] = TI + t_inspect;//回库时间写入数组gp中
+						// gp5++;
 						break;
 					case 6:
 						inspect(cargo[p-1].type);
 						g6_H2[th6]=h[i];
 						th6++;
-						gp[5][gp6][0] = h[i];//回库编码写入数组gp中
-						gp[5][gp6][1] = TI + t_inspect;//回库时间写入数组gp中
-						gp6++;
+						// gp[5][gp6][0] = h[i];//回库编码写入数组gp中
+						// gp[5][gp6][1] = TI + t_inspect;//回库时间写入数组gp中
+						// gp6++;
 						break;
 					default:
 						cout<<"read code ddj error!"<<endl;
@@ -693,6 +708,7 @@ void Storing_num(firefly f){//输入种群
 	char g=0;
 	g1_s = 0,g2_s = 0,g3_s = 0,g4_s = 0,g5_s = 0,g6_s = 0;
 	g1_h = 0,g2_h = 0,g3_h = 0,g4_h = 0,g5_h = 0,g6_h = 0;
+    g1_r = 0,g2_r = 0,g3_r = 0,g4_r = 0,g5_r = 0,g6_r = 0;
 	g1_n=0;g2_n=0;g3_n=0;g4_n=0;g5_n=0;g6_n=0;
     for(int i=0; i < CODELENGTH; i++){//遍历所有货位
         p = cargo[f.G[i]-1].x;//货架信息
@@ -705,6 +721,8 @@ void Storing_num(firefly f){//输入种群
 				g1_s++;
 			else if(g=='H')//回库
 				g1_h++;
+            else if(g=='R')//入库
+				g1_r++;
             g1_n++;//堆垛机1编码数量自增
             break;
         case 3:
@@ -713,6 +731,8 @@ void Storing_num(firefly f){//输入种群
 				g2_s++;
 			else if(g=='H')
 				g2_h++;
+            else if(g=='R')
+				g2_r++;
             g2_n++;
             break;
         case 5:
@@ -721,6 +741,8 @@ void Storing_num(firefly f){//输入种群
 				g3_s++;
 			else if(g=='H')
 				g3_h++;
+            else if(g=='R')
+				g3_r++;
             g3_n++;
             break;
         case 7:
@@ -729,6 +751,8 @@ void Storing_num(firefly f){//输入种群
 				g4_s++;
 			else if(g=='H')
 				g4_h++;
+            else if(g=='R')
+				g4_r++;
             g4_n++;
             break;
         case 9:
@@ -737,6 +761,8 @@ void Storing_num(firefly f){//输入种群
 				g5_s++;
 			else if(g=='H')
 				g5_h++;
+            else if(g=='R')
+				g5_r++;
             g5_n++;
             break;
         case 11:
@@ -745,6 +771,8 @@ void Storing_num(firefly f){//输入种群
 				g6_s++;
 			else if(g=='H')
 				g6_h++;
+            else if(g=='R')
+				g6_r++;
             g6_n++;
             break;
         default:
@@ -760,6 +788,7 @@ void Storing_num(Food f){//输入种群
     char g=0;
     g1_s = 0,g2_s = 0,g3_s = 0,g4_s = 0,g5_s = 0,g6_s = 0;
     g1_h = 0,g2_h = 0,g3_h = 0,g4_h = 0,g5_h = 0,g6_h = 0;
+    g1_r = 0,g2_r = 0,g3_r = 0,g4_r = 0,g5_r = 0,g6_r = 0;
     g1_n=0;g2_n=0;g3_n=0;g4_n=0;g5_n=0;g6_n=0;
     for(int i=0; i < CODELENGTH; i++){//遍历所有货位
         p = cargo[f.getSequence(i)-1].x;//货架信息
@@ -772,6 +801,8 @@ void Storing_num(Food f){//输入种群
                     g1_s++;
                 else if(g=='H')//回库
                     g1_h++;
+                else if(g=='R')//入库
+				    g1_r++;
                 g1_n++;//堆垛机1编码数量自增
                 break;
             case 3:
@@ -780,6 +811,8 @@ void Storing_num(Food f){//输入种群
                     g2_s++;
                 else if(g=='H')
                     g2_h++;
+                else if(g=='R')
+				    g2_r++;
                 g2_n++;
                 break;
             case 5:
@@ -788,6 +821,8 @@ void Storing_num(Food f){//输入种群
                     g3_s++;
                 else if(g=='H')
                     g3_h++;
+                else if(g=='R')
+				    g3_r++;
                 g3_n++;
                 break;
             case 7:
@@ -796,6 +831,8 @@ void Storing_num(Food f){//输入种群
                     g4_s++;
                 else if(g=='H')
                     g4_h++;
+                else if(g=='R')
+				    g4_r++;
                 g4_n++;
                 break;
             case 9:
@@ -804,6 +841,8 @@ void Storing_num(Food f){//输入种群
                     g5_s++;
                 else if(g=='H')
                     g5_h++;
+                else if(g=='R')
+				    g5_r++;
                 g5_n++;
                 break;
             case 11:
@@ -812,6 +851,8 @@ void Storing_num(Food f){//输入种群
                     g6_s++;
                 else if(g=='H')
                     g6_h++;
+                else if(g=='R')
+				    g6_r++;
                 g6_n++;
                 break;
             default:
@@ -826,6 +867,7 @@ void Storing(firefly f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
     j_1=0, j_2=0, j_3=0, j_4=0, j_5=0, j_6=0;
 	int g1s=0,g2s=0,g3s=0,g4s=0,g5s=0,g6s=0;
 	int g1h=0,g2h=0,g3h=0,g4h=0,g5h=0,g6h=0;
+    int g1r=0,g2r=0,g3r=0,g4r=0,g5r=0,g6r=0;
     int p=0;
 	char g=0;
     for(int i=0; i < CODELENGTH; i++){//遍历编码数组
@@ -843,6 +885,11 @@ void Storing(firefly f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
 				g1_H[g1h] = f.G[i];//该编码写入堆垛机1的回库数组
 				g1h++;//回库数组下标自增1
 			}
+            else if(g=='R'){//属于入库编码
+				gp[0][g1r][0] = f.G[i];
+				//g1_R[g1r] = f.G[i];//将该编码写入堆垛机1的入库数组
+				g1r++;
+			}
             g1[j_1] = f.G[i];//该编码写入到堆垛机1的 编码数组中
             j_1++;//堆垛机1的编码数组自增1
             break;
@@ -855,6 +902,11 @@ void Storing(firefly f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
 			else if(g=='H'){
 				g2_H[g2h] = f.G[i];
 				g2h++;
+			}
+            else if(g=='R'){//属于入库编码
+				gp[1][g2r][0] = f.G[i];
+				//g2_R[g2r] = f.G[i];//将该编码写入堆垛机2的入库数组
+				g2r++;
 			}
             g2[j_2] = f.G[i];
             j_2++;
@@ -869,6 +921,11 @@ void Storing(firefly f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
 				g3_H[g3h] = f.G[i];
 				g3h++;
 			}
+            else if(g=='R'){//属于入库编码
+				gp[2][g3r][0] = f.G[i];
+				//g3_R[g3r] = f.G[i];//将该编码写入堆垛机3的入库数组
+				g3r++;
+			}
             g3[j_3] = f.G[i];
             j_3++;
             break;
@@ -881,6 +938,11 @@ void Storing(firefly f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
 			else if(g=='H'){
 				g4_H[g4h] = f.G[i];
 				g4h++;
+			}
+            else if(g=='R'){//属于入库编码
+				gp[3][g4r][0] = f.G[i];
+				//g4_R[g4r] = f.G[i];//将该编码写入堆垛机4的入库数组
+				g4r++;
 			}
             g4[j_4] = f.G[i];
             j_4++;
@@ -895,6 +957,11 @@ void Storing(firefly f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
 				g5_H[g5h] = f.G[i];
 				g5h++;
 			}
+            else if(g=='R'){//属于入库编码
+				gp[4][g5r][0] = f.G[i];
+				//g5_R[g5r] = f.G[i];//将该编码写入堆垛机5的入库数组
+				g5r++;
+			}
             g5[j_5] = f.G[i];
             j_5++;
             break;
@@ -907,6 +974,11 @@ void Storing(firefly f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
 			else if(g=='H'){
 				g6_H[g6h] = f.G[i];
 				g6h++;
+			}
+            else if(g=='R'){//属于入库编码
+				gp[5][g6r][0] = f.G[i];
+				//g6_R[g6r] = f.G[i];//将该编码写入堆垛机6的入库数组
+				g6r++;
 			}
             g6[j_6] = f.G[i];
             j_6++;
@@ -923,6 +995,7 @@ void Storing(Food f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int g1
     j_1=0, j_2=0, j_3=0, j_4=0, j_5=0, j_6=0;
     int g1s=0,g2s=0,g3s=0,g4s=0,g5s=0,g6s=0;
     int g1h=0,g2h=0,g3h=0,g4h=0,g5h=0,g6h=0;
+    int g1r=0,g2r=0,g3r=0,g4r=0,g5r=0,g6r=0;
     int p=0;
     char g=0;
     for(int i=0; i < CODELENGTH; i++){//遍历编码数组
@@ -940,6 +1013,11 @@ void Storing(Food f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int g1
                     g1_H[g1h] = f.getSequence(i);//该编码写入堆垛机1的回库数组
                     g1h++;//回库数组下标自增1
                 }
+                else if(g=='R'){//属于入库编码
+				    gp[0][g1r][0] = f.getSequence(i);
+				    //g1_R[g1r] = f.G[i];//将该编码写入堆垛机1的入库数组
+				    g1r++;
+			    }   
                 g1[j_1] = f.getSequence(i);//该编码写入到堆垛机1的 编码数组中
                 j_1++;//堆垛机1的编码数组自增1
                 break;
@@ -953,6 +1031,11 @@ void Storing(Food f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int g1
                     g2_H[g2h] = f.getSequence(i);
                     g2h++;
                 }
+                else if(g=='R'){//属于入库编码
+				    gp[1][g2r][0] = f.getSequence(i);
+				    //g2_R[g2r] = f.G[i];//将该编码写入堆垛机2的入库数组
+				    g2r++;
+			    }
                 g2[j_2] = f.getSequence(i);
                 j_2++;
                 break;
@@ -966,6 +1049,11 @@ void Storing(Food f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int g1
                     g3_H[g3h] = f.getSequence(i);
                     g3h++;
                 }
+                else if(g=='R'){//属于入库编码
+				    gp[2][g3r][0] = f.getSequence(i);
+				    //g3_R[g3r] = f.G[i];//将该编码写入堆垛机3的入库数组
+				    g3r++;
+			    }
                 g3[j_3] = f.getSequence(i);
                 j_3++;
                 break;
@@ -979,6 +1067,11 @@ void Storing(Food f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int g1
                     g4_H[g4h] = f.getSequence(i);
                     g4h++;
                 }
+                else if(g=='R'){//属于入库编码
+				    gp[3][g4r][0] = f.getSequence(i);
+				    //g4_R[g4r] = f.G[i];//将该编码写入堆垛机4的入库数组
+				    g4r++;
+			    }
                 g4[j_4] = f.getSequence(i);
                 j_4++;
                 break;
@@ -992,6 +1085,11 @@ void Storing(Food f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int g1
                     g5_H[g5h] = f.getSequence(i);
                     g5h++;
                 }
+                else if(g=='R'){//属于入库编码
+				    gp[4][g5r][0] = f.getSequence(i);
+				    //g5_R[g5r] = f.G[i];//将该编码写入堆垛机5的入库数组
+				    g5r++;
+			    }
                 g5[j_5] = f.getSequence(i);
                 j_5++;
                 break;
@@ -1005,6 +1103,11 @@ void Storing(Food f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int g1
                     g6_H[g6h] = f.getSequence(i);
                     g6h++;
                 }
+                else if(g=='R'){//属于入库编码
+				    gp[5][g6r][0] = f.getSequence(i);
+				    //g6_R[g6r] = f.G[i];//将该编码写入堆垛机6的入库数组
+				    g6r++;
+			    }
                 g6[j_6] = f.getSequence(i);
                 j_6++;
                 break;
@@ -1040,11 +1143,37 @@ int max2(double T[]){
             T[j]=temp;
             }
         }
+    int temp2=0;
+    int sit = 0;
+    int ddj = 0;
+    for(int i=0;i<6000;i++){
+        for(int j=0;j<6000-i;j++){
+            if(arr_p[j+1][1]>arr_p[j][1]){
+            temp2=arr_p[j+1][1];
+            arr_p[j+1][1]=arr_p[j][1];
+            arr_p[j][1]=temp2;
+
+			sit = arr_p[j+1][0];
+            arr_p[j+1][0] = arr_p[j][0];
+            arr_p[j][0] = sit;
+
+            ddj = arr_p[j+1][2];
+            arr_p[j+1][2] = arr_p[j][2];
+            arr_p[j][2] = ddj;
+            }
+           
+        }
+	}
+    ofstream out;
+    out.open("output/out_block.txt");
+    for(int i=0;i<6001;i++){
+        out<<"arr_p[][]:"<<arr_p[i][0]<<","<<arr_p[i][1]<<","<<arr_p[i][2]<<endl;
+    }
 	//T[0] = T[0]/60.0;
-	G_fintess = T[0]*0.95 + TD[0]*0.05;//适应度值计算，加权重
+	G_fintess = T[0]*0.95 + TD[0]*0.05+arr_p[0][1]*1000;//适应度值计算，加权重
 	//G_fintess = G_fintess/60.0;//除以60 将秒转换为分钟
 	//T[0] = T[0]/60.0;//堆垛机实际工作时间 分钟
-	return T[0];
+	return G_fintess;
     //return G_fintess;
 }
 void read_ddj(int gi_H[],int ddj,int gi[]){
@@ -1650,6 +1779,11 @@ void enSimpleCode(firefly& f) {
 	ai = 0;
 	flag_R = 0;
 	t_R = 0;
+    gp1 = 0,gp2 = 0,gp3 = 0,gp4 = 0,gp5 = 0,gp6 = 0;
+	gpi=0;
+	for(int i=0;i<6;i++)
+		for(int j=0;j<ddj_num;j++)
+			gp[i][j][1] = 9999999;
 	for(int i=0;i<R;i++){
 		r_arry[i] = 0;
 		a[i] = 0;
