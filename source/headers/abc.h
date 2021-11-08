@@ -180,10 +180,11 @@ void abc() {
     }
     std::cout << "The best ever: " << currentBestFood << std::endl;
     std::cout << "*****************************" << std::endl;
-
+    
     for (int i = 0; i < MAXITERTIME; ++i) {  // 总迭代次数
+        clock_t startTime,endTime;
+        startTime = clock();//计时开始
         scoutIndex.clear();
-
         /**
          * 引领蜂对于每一个食物源进行访问（采集）
          * 采集过程为：
@@ -269,7 +270,8 @@ void abc() {
         std::cout << "Gen " << i + 1 << ": ";
         std::cout << currentBestFood.getFitness() << std::endl;
         if (currentBestFood.getFitness() == 0) break;
-
+        endTime = clock();//计时结束
+        std::cout << "The one time is: " <<(double)(endTime - startTime) / CLOCKS_PER_SEC << "s" << std::endl;
     }
     ofstream output;
 	output.open("output/Best.txt");
