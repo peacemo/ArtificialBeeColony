@@ -24,6 +24,45 @@
 #include <list>
 using namespace std;
 
+//根据堵塞队列的长度和超过规定最大容量所出现次数，对适应度值进行一定程度的惩罚
+void punish(){
+	block_long = 0,block_times = 0;
+	int temp2,sit;
+	//遍历数组，找到最大堵塞队列长度，并计算超出次数。
+	for(int i=0;i<CODELENGTH;i++){
+        for(int j=0;j<CODELENGTH-i;j++){
+            if(arr_p[j+1][1]>arr_p[j][1]){//以时间为顺序排列
+            temp2=arr_p[j+1][1];
+            arr_p[j+1][1]=arr_p[j][1];
+            arr_p[j][1]=temp2;
+
+			sit = arr_p[j+1][0];
+            arr_p[j+1][0] = arr_p[j][0];
+            arr_p[j][0] = sit;
+
+            // ddj = arr_p[j+1][2];
+            // arr_p[j+1][2] = arr_p[j][2];
+            // arr_p[j][2] = ddj;
+
+			// TT = arr_p[j+1][3];
+            // arr_p[j+1][3] = arr_p[j][3];
+            // arr_p[j][3] = TT;
+            }
+        }
+	}
+	if(arr_p[0][1]>r_volume){
+		block_long = arr_p[0][1] - r_volume;
+	}
+	else{
+		block_long = 0;
+	}
+	for(int i=0;i<CODELENGTH;i++){
+		if(arr_p[i][1]>r_volume){
+			block_times++;
+		}
+	}
+}
+
 //由堆垛机序号判断堆垛机处理货物数量
 int g_number(int ddj){
 	switch (ddj)
@@ -65,7 +104,8 @@ void arr_block(double TI,int ddj){
 	}
 	arr_p[gpi][0] = gpi;
 	arr_p[gpi][1] = block;
-    arr_p[gpi][2] =ddj;
+    arr_p[gpi][2] = ddj;
+	arr_p[gpi][3] = TI;
 	gpi++;
 }
 
@@ -1149,6 +1189,7 @@ void R_t(double a[]){
 int max2(double T[]){
 	int i,j;
     double temp,G_fintess;
+	double TT;
     for(i=0;i<5;i++)//按照数组元素，从大到小排序
         for(j=0;j<5-i;j++){
             if(T[j+1]>T[j]){
@@ -1160,9 +1201,9 @@ int max2(double T[]){
     int temp2=0;
     int sit = 0;
     int ddj = 0;
-    for(int i=0;i<6000;i++){
-        for(int j=0;j<6000-i;j++){
-            if(arr_p[j+1][1]>arr_p[j][1]){
+    for(int i=0;i<CODELENGTH;i++){
+        for(int j=0;j<CODELENGTH-i;j++){
+            if(arr_p[j+1][3]<arr_p[j][3]){//以时间为顺序排列
             temp2=arr_p[j+1][1];
             arr_p[j+1][1]=arr_p[j][1];
             arr_p[j][1]=temp2;
@@ -1174,19 +1215,25 @@ int max2(double T[]){
             ddj = arr_p[j+1][2];
             arr_p[j+1][2] = arr_p[j][2];
             arr_p[j][2] = ddj;
+
+			TT = arr_p[j+1][3];
+            arr_p[j+1][3] = arr_p[j][3];
+            arr_p[j][3] = TT;
             }
            
         }
 	}
     ofstream out;
     out.open("output/out_block.txt");
-    for(int i=0;i<6001;i++){
-        out<<"arr_p[][]:"<<arr_p[i][0]<<","<<arr_p[i][1]<<","<<arr_p[i][2]<<endl;
+    for(int i=1;i<CODELENGTH+1;i++){
+        out<<"arr_p[][]:"<<arr_p[i][0]<<","<<arr_p[i][1]<<","<<arr_p[i][2]<<","<<arr_p[i][3]<<endl;
     }
+	punish();
 	//T[0] = T[0]/60.0;
-	G_fintess = T[0]*0.95 + TD[0]*0.05+arr_p[0][1]*1000;//适应度值计算，加权重
+	G_fintess = T[0]*0.95 + TD[0]*0.05 + block_long*block_times*100;//适应度值计算，加权重
 	//G_fintess = G_fintess/60.0;//除以60 将秒转换为分钟
 	//T[0] = T[0]/60.0;//堆垛机实际工作时间 分钟
+	out.close();
 	return G_fintess;
     //return G_fintess;
 }

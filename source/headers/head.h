@@ -97,6 +97,10 @@ int gpi=0;//访问数组arr_p
 int block = 0;//堵塞队列长度
 int ddj_num = 1000;//(NUMBER/6)
 //11.3 end
+int r_volume = 10;//入库口的最大不堵塞容量
+int block_long = 0;//最长堵塞长度
+int block_times = 0;//超出最大不堵塞容量的次数
+
 int G[CODELENGTH];
 int h[H - _k];
 int s[H - _k];
@@ -112,7 +116,7 @@ double TD[6];//堆垛机工作的适应度值（不包含等待时间）
 int g1_H2[H],g2_H2[H],g3_H2[H],g4_H2[H],g5_H2[H],g6_H2[H];//根据送检任务将回库任务分配到相应的堆垛机
 //11.3 go
 double gp[6][1000][2];//三维数组，gp[][][0]中存储入库或回库编码，gp[][][1]中存储到达时间
-int arr_p[CODELENGTH+1][3];//arr_p[][0]中放读码顺序，1~2000，arr_p[][1]中放堵塞队列长度arr_p[][2]中放堆垛机序号
+double arr_p[CODELENGTH+1][4];//arr_p[][0]中放读码顺序，1~2000，arr_p[][1]中放堵塞队列长度arr_p[][2]中放堆垛机序号,arr_p[][3]中当前时间
 //11.3 end
 /*
 int xyz[16][4] = {  //货位号对应的坐标 
