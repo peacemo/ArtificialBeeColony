@@ -5,7 +5,7 @@ void getCargo_now(string File_name1,string File_name2){
 	ofstream out_sit;
 	out1.open(File_name1);
 	out_sit.open(File_name2);
-	for(int i=0;i<n;i++){
+	for(int i=0;i<CODELENGTH;i++){
 		out1<<"{"<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<cargo_now[i].s1<<","<<cargo_now[i].s2<<","<<cargo_now[i].num<<","<<"'a'"<<","<<cargo_now[i].model<<","<<cargo_now[i].time<<"}"<<",";
 		out_sit<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<judge_type(i)<<endl;
 		if((i+1)%5==0){
@@ -160,7 +160,7 @@ void selectCargo(int day){//参数为天数
 }
 //更新货位信息
 void updateCargo(){
-    for(int i=0;i<n;i++){
+    for(int i=0;i<CODELENGTH;i++){
         if((cargo_now[i].s1==0) && (cargo_now[i].s2 ==0)){//入库变送检
             cargo[cargo_now[i].num-1].s1 = 0;
             cargo[cargo_now[i].num-1].s2 = 1;
