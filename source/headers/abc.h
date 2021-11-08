@@ -248,24 +248,6 @@ void abc() {
             foods[scoutIndex[s]].setCounts(0);
         }
 
-//        for (int s = 0; s < FoodsNum; ++s) {
-//            if (foods[s].getCounts() >= LIMIT) {
-//                int oldFitness = foods[s].getFitness();
-////                foods[s].stirSequence(); // 随机打乱（效果更好）
-//                int count = 0;
-//                int countMax = 100;
-//                while (count < countMax) {
-//                    count++;
-//                    foods[s].opt2(); // 2-opt打乱
-//                    enSimpleCode(foods[s]);
-//                    if (foods[s].getFitness() >= oldFitness) {
-//                        continue;
-//                    } else break;
-//                }
-//                foods[s].setCounts(0);
-//            }
-//        }
-
         fitnessGrid.push_back(currentBestFood.getFitness());
         std::cout << "Gen " << i + 1 << ": ";
         std::cout << currentBestFood.getFitness() << std::endl;
