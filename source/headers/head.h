@@ -26,6 +26,10 @@ const double betata = 0.08;
 const double rou = 0.3;
 const double rs = 20; //萤火虫个体最大邻域半径，总的最大距离为37.34
 const int n_total = 8112; 
+const int inspect_volume_a = 500;//a资产最大检定容量
+const int inspect_volume_b = 500;//b资产最大检定容量
+const int assets_a = 2001;//a资产的检定和回库垛数
+const int assets_b = 2001;//b资产的检定和回库垛数
 //适应度值参数
 
 #define R 1000
@@ -52,6 +56,8 @@ double t_inspect_f = 3;
 double t_inspect = 0;//初始化检定时间
 int s_h = 3600;//小时与秒的转换
 int v=0,v2=0;//指向未操作的回库编码,写入的编码
+int aa = 0;//a资产的数组指针
+int bb = 0;//b资产的数组指针
 
 //入库
 //ofstream write; //write只是个名字 你可以定义为任何其他的名字
@@ -100,6 +106,9 @@ int ddj_num = NUMBER/6;//(NUMBER/6)
 int r_volume = 10;//入库口的最大不堵塞容量
 int block_long = 0;//最长堵塞长度
 int block_times = 0;//超出最大不堵塞容量的次数
+int inspect_y = 0;//送检口的y坐标
+int inspect_z = 0;//送检口的z坐标
+
 
 int G[CODELENGTH];
 int h[H - _k];
@@ -108,6 +117,8 @@ int r_arry[R];//入库编码数组
 double hi[H - _k][2];//保存所有已送检的回库编码和时间
 int I[H - _k][2];//送检和回库编码的有序数对
 int INum[H - _k][2];//送检编码和回库编码在G中的下标
+int inspect_volume_a_now[assets_a];//a资产当前检定数量
+int inspect_volume_b_now[assets_b];//b资产当前检定数量
 
 double a[R] ;//入库商品到达堆垛机的时间顺序
 double th[H - _k];//回库资产到达时间
