@@ -23,6 +23,298 @@
 #include <functional>
 #include <list>
 using namespace std;
+char judge_type(int p,int a);
+char judge_type(int p);
+
+//输出货位信息到文件
+void getCargo_now(string File_name1,string File_name2){
+    ofstream out1;
+    ofstream out_sit;
+    out1.open(File_name1);
+    out_sit.open(File_name2);
+    for(int i=0;i<CODELENGTH;i++){
+        out1<<"{"<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<cargo_now[i].s1<<","<<cargo_now[i].s2<<","<<cargo_now[i].num<<","<<"'a'"<<","<<cargo_now[i].model<<","<<cargo_now[i].time<<"}"<<",";
+        out_sit<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<judge_type(i)<<endl;
+        if((i+1)%5==0){
+            out1<<endl;
+        }
+    }
+    out1.close();
+    out_sit.close();
+}
+
+void getCargo(string file_name1,string file_name2){
+    ofstream outf,outd;
+    outf.open(file_name1);
+    outd.open(file_name2);
+    for(int i=0;i<n_total;i++){
+        outf<<"{"<<cargo[i].x<<","<<cargo[i].y<<","<<cargo[i].z<<","<<cargo[i].s1<<","<<cargo[i].s2<<","<<cargo[i].num<<","<<"'a'"<<","<<cargo[i].model<<","<<cargo[i].time<<"}"<<",";
+        outd<<cargo[i].x<<","<<cargo[i].y<<","<<cargo[i].z<<","<<judge_type(i,1)<<endl;
+        if((i+1)%5==0){
+            outf<<endl;
+        }
+    }
+    outf.close();
+    outd.close();
+}
+
+/*!
+ * 初始化货位
+ * @param N 货位数量
+ * @param r 入库货位所在的列 pre~r
+ * @param s 送检货位所在的列 pre~s
+ * @param h 回库货位所在的列 pre~h
+ * @param c 出库货位所在的列 pre~c
+ */
+void startCargo(int N,int r,int s,int h,int c){//货位数量,入库、送检、回库、出库
+    for(int i=0;i<N;i++){
+        if((cargo[i].y >= 1) && (r >= cargo[i].y)){ // 对所有货位进行分块
+            cargo[i].s1 = 0;
+            cargo[i].s2 = 0;
+        }
+        else if((cargo[i].y >= r) && (s >= cargo[i].y)){
+            cargo[i].s1 = 0;
+            cargo[i].s2 = 1;
+        }
+        else if((cargo[i].y >= s) && (h >= cargo[i].y)){
+            cargo[i].s1 = 1;
+            cargo[i].s2 = 0;
+        }
+        else if((cargo[i].y >= h) && (c >= cargo[i].y)){
+            cargo[i].s1 = 1;
+            cargo[i].s2 = 1;
+        }
+    }
+}
+
+//候选集
+void candidate(){
+    int r=0,s=0,h=0,c=0;
+    for(int i=0;i<n_total;i++){
+        if(cargo[i].s1 == 0){
+            if(cargo[i].s2 == 0){//00:入库
+                G_r[r++] = cargo[i];
+            }
+            else if(cargo[i].s2 == 1){//01：送检
+                G_s[s++] = cargo[i];
+            }
+        }
+        else if(cargo[i].s1 == 1){
+            if(cargo[i].s2 == 0){//10:入库
+                G_h[h++] = cargo[i];
+            }
+            else if(cargo[i].s2 == 1){//11：送检
+                G_c[c++] = cargo[i];
+            }
+        }
+    }
+}
+
+//输出候选集到文件
+void getCandidate(){
+    ofstream out;
+    out.open("output/candidate.txt");
+    for(int i=0;i<3000;i++){
+        out<<"{"<<G_r[i].x<<","<<G_r[i].y<<","<<G_r[i].z<<","<<G_r[i].s1<<","<<G_r[i].s2<<","<<G_r[i].num<<","<<"'a'"<<","<<G_r[i].model<<","<<G_r[i].time<<"}"<<",";
+        if((i+1)%5==0){
+            out<<endl;
+        }
+    }
+    out<<endl;
+    for(int i=0;i<3000;i++){
+        out<<"{"<<G_s[i].x<<","<<G_s[i].y<<","<<G_s[i].z<<","<<G_s[i].s1<<","<<G_s[i].s2<<","<<G_s[i].num<<","<<"'a'"<<","<<G_s[i].model<<","<<G_s[i].time<<"}"<<",";
+        if((i+1)%5==0){
+            out<<endl;
+        }
+    }
+    out<<endl;
+    for(int i=0;i<3000;i++){
+        out<<"{"<<G_h[i].x<<","<<G_h[i].y<<","<<G_h[i].z<<","<<G_h[i].s1<<","<<G_h[i].s2<<","<<G_h[i].num<<","<<"'a'"<<","<<G_h[i].model<<","<<G_h[i].time<<"}"<<",";
+        if((i+1)%5==0){
+            out<<endl;
+        }
+    }
+    out<<endl;
+    for(int i=0;i<3000;i++){
+        out<<"{"<<G_c[i].x<<","<<G_c[i].y<<","<<G_c[i].z<<","<<G_c[i].s1<<","<<G_c[i].s2<<","<<G_c[i].num<<","<<"'a'"<<","<<G_c[i].model<<","<<G_c[i].time<<"}"<<",";
+        if((i+1)%5==0){
+            out<<endl;
+        }
+    }
+}
+
+// 根据到库时间，对候选集内的资产进行排序
+void selectCargo(int day){//参数为天数
+    bool flag = true;
+    int count = 0;//计数
+    int q = -1;//天数增量
+    int cargo_now_i = 0;
+    for(int i=0;i<R;i++){
+        cargo_now[cargo_now_i++] = G_r[i];
+    }
+
+    while (flag){
+        if(count == S){
+            flag = false;
+            continue;
+        }
+        else{
+            q++;
+            for(int i=0;i<3000 && count<S;i++){
+                if(G_s[i].time == day + q){
+                    count++;
+                    cargo_now[cargo_now_i++] = G_s[i];
+                }
+            }
+        }
+    }
+    for(int i=0;i<H;i++){
+        cargo_now[cargo_now_i++] = G_h[i];
+    }
+    count = 0,q = -1,flag = true;;
+    while (flag){
+        if(count == C){
+            flag = false;
+            continue;
+        }
+        else{
+            q++;
+            for(int i=0;i<3000 && count<C;i++){
+                if(G_c[i].time == day + q){
+                    count++;
+                    cargo_now[cargo_now_i++] = G_c[i];
+                }
+            }
+        }
+    }
+}
+
+//更新货位信息
+void updateCargo(){
+    for(int i=0;i<CODELENGTH;i++){
+        if((cargo_now[i].s1==0) && (cargo_now[i].s2 ==0)){//入库变送检
+            cargo[cargo_now[i].num-1].s1 = 0;
+            cargo[cargo_now[i].num-1].s2 = 1;
+            cargo[cargo_now[i].num-1].time++;
+        }
+        else if((cargo_now[i].s1==0) && (cargo_now[i].s2 ==1)){//送检变回库
+            cargo[cargo_now[i].num-1].s1 = 1;
+            cargo[cargo_now[i].num-1].s2 = 0;
+        }
+        else if((cargo_now[i].s1==1) && (cargo_now[i].s2 ==0)){//回库变出库
+            cargo[cargo_now[i].num-1].s1 = 1;
+            cargo[cargo_now[i].num-1].s2 = 1;
+            cargo[cargo_now[i].num-1].time++;
+        }
+        else if((cargo_now[i].s1==1) && (cargo_now[i].s2 ==1)){//出库变入库
+            cargo[cargo_now[i].num-1].s1 = 0;
+            cargo[cargo_now[i].num-1].s2 = 0;
+        }
+    }
+}
+
+void cargoRule(string first,string second,string third,string fourth){
+    int s11 = 0, s12 = 0,s21 = 0,s22 = 0,s31 = 0,s32 = 0,s41 = 0,s42 = 0;
+    if(first == "R"){
+        s11 = 0;
+        s12 = 0;
+    }
+    else if(first == "S"){
+        s21 = 0;
+        s22 = 1;
+    }
+    else if(first == "H"){
+        s31 = 1;
+        s32 = 0;
+    }
+    else if(first == "C"){
+        s41 = 1;
+        s42 = 1;
+    }
+    if(second=="R"){
+        s11 = 0;
+        s12 = 0;
+    }
+    else if(second == "S"){
+        s21 = 0;
+        s22 = 1;
+    }
+    else if(second == "H"){
+        s31 = 1;
+        s32 = 0;
+    }
+    else if(second == "C"){
+        s41 = 1;
+        s42 = 1;
+    }
+    if(third=="R"){
+        s11 = 0;
+        s12 = 0;
+    }
+    else if(third == "S"){
+        s21 = 0;
+        s22 = 1;
+    }
+    else if(third == "H"){
+        s31 = 1;
+        s32 = 0;
+    }
+    else if(third == "C"){
+        s41 = 1;
+        s42 = 1;
+    }
+    if(fourth=="R"){
+        s11 = 0;
+        s12 = 0;
+    }
+    else if(fourth == "S"){
+        s21 = 0;
+        s22 = 1;
+    }
+    else if(fourth == "H"){
+        s31 = 1;
+        s32 = 0;
+    }
+    else if(fourth == "C"){
+        s41 = 1;
+        s42 = 1;
+    }
+
+    for(int i=0;i<8112;i++){
+        if(cargo[i].z<=4){
+            cargo[i].s1 = s11;
+            cargo[i].s2 = s12;
+        }
+        else if(cargo[i].z<=8 && cargo[i].z>4){
+            cargo[i].s1 = s21;
+            cargo[i].s2 = s22;
+        }
+        else if(cargo[i].z<=12 && cargo[i].z>8){
+            cargo[i].s1 = s31;
+            cargo[i].s2 = s32;
+        }
+        else if(cargo[i].z<=16 && cargo[i].z>12){
+            cargo[i].s1 = s41;
+            cargo[i].s2 = s42;
+        }
+        else if(cargo[i].z == 17 || cargo[i].z == 21 || cargo[i].z == 25){
+            cargo[i].s1 = s11;
+            cargo[i].s2 = s12;
+        }
+        else if(cargo[i].z == 18 || cargo[i].z == 22 || cargo[i].z == 26){
+            cargo[i].s1 = s21;
+            cargo[i].s2 = s22;
+        }
+        else if(cargo[i].z == 19 || cargo[i].z == 23){
+            cargo[i].s1 = s31;
+            cargo[i].s2 = s32;
+        }
+        else if(cargo[i].z == 20 || cargo[i].z == 24){
+            cargo[i].s1 = s41;
+            cargo[i].s2 = s42;
+        }
+    }
+}
 
 //根据堵塞队列的长度和超过规定最大容量所出现次数，对适应度值进行一定程度的惩罚
 void punish(){
@@ -1186,7 +1478,7 @@ void R_t(double a[]){
 }
 
 //获得适应度值，（最大工期*0.8 + 堆垛机实际工作时间*0.2）/60
-int max2(double T[]){
+int max2(double T[], Food &f){
 	int i,j;
     double temp,G_fintess;
 	double TT;
@@ -1231,6 +1523,8 @@ int max2(double T[]){
 	punish();
 	//T[0] = T[0]/60.0;
 	G_fintess = T[0]*0.95 + TD[0]*0.05 + block_long*block_times*100;//适应度值计算，加权重
+//    cout << T[0] << endl;
+    f.setTimeSpan(T[0] / 3600.0);
 	//G_fintess = G_fintess/60.0;//除以60 将秒转换为分钟
 	//T[0] = T[0]/60.0;//堆垛机实际工作时间 分钟
 	out.close();
@@ -1522,148 +1816,148 @@ int min_h(){
 	return hi[v-1][0];//返回最短回库时间的回库编码
 }
 //计算适应度值
-double Fintess(firefly& f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int g1_H[],int g2_H[],int g3_H[],int g4_H[],int g5_H[],int g6_H[],int g1_H2[],int g2_H2[],int g3_H2[],int g4_H2[],int g5_H2[],int g6_H2[],int g1_th[],int g2_th[],int g3_th[],int g4_th[],int g5_th[],int g6_th[]){
-	T1=0,T2=0,T3=0,T4=0,T5=0,T6=0;
-	TD1=0,TD2=0,TD3=0,TD4=0,TD5=0,TD6=0;
-    j_1=0, j_2=0, j_3=0, j_4=0, j_5=0, j_6=0;
-	h1=0,h2=0,h3=0,h4=0,h5=0,h6=0;
-	th1=0,th2=0,th3=0,th4=0,th5=0,th6=0;
-	int ddj=0,p=0;
-	v = 0;v2=0;
-	TD[0]=0;
-		//按照堆垛机顺序，依次读取编码，直到读取到回库编码为止
-		read_ddj(g1_H,1,g1);
-		read_ddj(g2_H,2,g2);
-		read_ddj(g3_H,3,g3);
-		read_ddj(g4_H,4,g4);
-		read_ddj(g5_H,5,g5);
-		read_ddj(g6_H,6,g6);
-		
-		//void decide_swap(firefly& f,int gi_H2[],int gi_th[],int gi_H[],int thi,int p,int gi_h,int hi)
-		for(int i=0;i< H - _k - 6; i++){
-			p = min_h();//最短回库时间的回库编码
-			if(p==9999)
-				break;
-			ddj = stacker(cargo_now[p-1].x);//获取该编码的堆垛机序号
-		switch (ddj)//判断 最短回库时间的回库编码的 堆垛机序号
-		{
-		case 1://如果是1号堆垛机，则先判断是否需要交换回库编码的为止，再读不断读取1号堆垛机的编码，直到读取到回库编码为止
-			decide_swap(f.G,g1,g1_H2,g1_th,g1_H,th1,p,g1_h,h1,g1_n);//交换回库编码位置
-			read_ddj(g1_H,1,g1);//读取编码，直到回库编码
-			break;//跳出，继续获得最短回库时间 
-		case 2:
-			decide_swap(f.G,g2,g2_H2,g2_th,g2_H,th2,p,g2_h,h2,g2_n);
-			read_ddj(g2_H,2,g2);
-			break;
-		case 3:
-			decide_swap(f.G,g3,g3_H2,g3_th,g3_H,th3,p,g3_h,h3,g3_n);
-			read_ddj(g3_H,3,g3);
-			break;
-		case 4:
-			decide_swap(f.G,g4,g4_H2,g4_th,g4_H,th4,p,g4_h,h4,g4_n);
-			read_ddj(g4_H,4,g4);
-			break;
-		case 5:
-			decide_swap(f.G,g5,g5_H2,g5_th,g5_H,th5,p,g5_h,h5,g5_n);
-			read_ddj(g5_H,5,g5);
-			break;
-		case 6:
-			decide_swap(f.G,g6,g6_H2,g6_th,g6_H,th6,p,g6_h,h6,g6_n);
-			read_ddj(g6_H,6,g6);
-			break;
-		default:
-			cout<<"Fintess decide_swap error!"<<endl;
-			break;
-		}
-	}
-	
-//判断6个子序列编码是否全部读取完毕
-	if(j_1 + j_2 + j_3 + j_4 + j_5 + j_6 == CODELENGTH){
-		T[0] = T1;T[1] = T2;T[2] = T3;T[3] = T4;T[4] = T5;T[5] = T6;
-		return max2(T);
-	}
-	if(j_1 < g1_n){
-		while(j_1 != g1_n){
-			if(j_1 == (g1_n - 1)){
-				T1 = read(T1, TD1, g1[j_1], g1[j_1]);
-				j_1++;
-			}
-			else if(j_1 < (g1_n - 1)){
-				T1 = read(T1, TD1, g1[j_1], g1[j_1 + 1] );
-				j_1++;
-			}				
-		}
-	}
-
-	if(j_2 < g2_n){
-		while(j_2 != g2_n){
-			if(j_2 == (g2_n - 1)){
-				T2 = read(T2, TD2, g2[j_2], g2[j_2] );
-				j_2++;
-			}
-			else if(j_2 < (g2_n - 1)){
-				T2 = read(T2, TD2, g2[j_2], g2[j_2 + 1] );
-				j_2++;
-			}				
-		}
-	}
-
-	if(j_3 < g3_n){
-		while(j_3 != g3_n){
-			if(j_3 == (g3_n - 1)){
-				T3 = read(T3, TD3, g3[j_3], g3[j_3] );
-				j_3++;
-			}
-			else if(j_3 < (g3_n - 1)){
-				T3 = read(T3, TD3, g3[j_3], g3[j_3 + 1] );
-				j_3++;
-			}	
-		}	
-	}
-
-	if(j_4 < g4_n){
-		while(j_4 != g4_n){
-			if(j_4 == (g4_n - 1)){
-				T4 = read(T4, TD4, g4[j_4], g4[j_4] );
-				j_4++;
-			}
-			else if(j_4 < (g4_n - 1)){
-				T4 = read(T4, TD4, g4[j_4], g4[j_4 + 1] );
-				j_4++;
-			}	
-		}	
-	}
-
-	if(j_5 < g5_n){
-		while(j_5 != g5_n){
-			if(j_5 == (g5_n - 1)){
-				T5 = read(T5, TD5, g5[j_5], g5[j_5] );
-				j_5++;
-			}
-			else if(j_5 < (g5_n - 1)){
-				T5 = read(T5, TD5, g5[j_5], g5[j_5 + 1] );
-				j_5++;
-			}	
-		}	
-	}
-
-	if(j_6 < g6_n){
-		while(j_6 != g6_n){
-			if(j_6 == (g6_n - 1)){
-				T6 = read(T6, TD6, g6[j_6], g6[j_6] );
-				j_6++;
-			}
-			else if(j_6 < (g6_n - 1)){
-				T6 = read(T6, TD6, g6[j_6], g6[j_6 + 1] );
-				j_6++;
-			}	
-		}	
-	}
-
-
-	T[0] = T1;T[1] = T2;T[2] = T3;T[3] = T4;T[4] = T5;T[5] = T6;
-	return max2(T);
-}
+//double Fintess(firefly& f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int g1_H[],int g2_H[],int g3_H[],int g4_H[],int g5_H[],int g6_H[],int g1_H2[],int g2_H2[],int g3_H2[],int g4_H2[],int g5_H2[],int g6_H2[],int g1_th[],int g2_th[],int g3_th[],int g4_th[],int g5_th[],int g6_th[]){
+//	T1=0,T2=0,T3=0,T4=0,T5=0,T6=0;
+//	TD1=0,TD2=0,TD3=0,TD4=0,TD5=0,TD6=0;
+//    j_1=0, j_2=0, j_3=0, j_4=0, j_5=0, j_6=0;
+//	h1=0,h2=0,h3=0,h4=0,h5=0,h6=0;
+//	th1=0,th2=0,th3=0,th4=0,th5=0,th6=0;
+//	int ddj=0,p=0;
+//	v = 0;v2=0;
+//	TD[0]=0;
+//		//按照堆垛机顺序，依次读取编码，直到读取到回库编码为止
+//		read_ddj(g1_H,1,g1);
+//		read_ddj(g2_H,2,g2);
+//		read_ddj(g3_H,3,g3);
+//		read_ddj(g4_H,4,g4);
+//		read_ddj(g5_H,5,g5);
+//		read_ddj(g6_H,6,g6);
+//
+//		//void decide_swap(firefly& f,int gi_H2[],int gi_th[],int gi_H[],int thi,int p,int gi_h,int hi)
+//		for(int i=0;i< H - _k - 6; i++){
+//			p = min_h();//最短回库时间的回库编码
+//			if(p==9999)
+//				break;
+//			ddj = stacker(cargo_now[p-1].x);//获取该编码的堆垛机序号
+//		switch (ddj)//判断 最短回库时间的回库编码的 堆垛机序号
+//		{
+//		case 1://如果是1号堆垛机，则先判断是否需要交换回库编码的为止，再读不断读取1号堆垛机的编码，直到读取到回库编码为止
+//			decide_swap(f.G,g1,g1_H2,g1_th,g1_H,th1,p,g1_h,h1,g1_n);//交换回库编码位置
+//			read_ddj(g1_H,1,g1);//读取编码，直到回库编码
+//			break;//跳出，继续获得最短回库时间
+//		case 2:
+//			decide_swap(f.G,g2,g2_H2,g2_th,g2_H,th2,p,g2_h,h2,g2_n);
+//			read_ddj(g2_H,2,g2);
+//			break;
+//		case 3:
+//			decide_swap(f.G,g3,g3_H2,g3_th,g3_H,th3,p,g3_h,h3,g3_n);
+//			read_ddj(g3_H,3,g3);
+//			break;
+//		case 4:
+//			decide_swap(f.G,g4,g4_H2,g4_th,g4_H,th4,p,g4_h,h4,g4_n);
+//			read_ddj(g4_H,4,g4);
+//			break;
+//		case 5:
+//			decide_swap(f.G,g5,g5_H2,g5_th,g5_H,th5,p,g5_h,h5,g5_n);
+//			read_ddj(g5_H,5,g5);
+//			break;
+//		case 6:
+//			decide_swap(f.G,g6,g6_H2,g6_th,g6_H,th6,p,g6_h,h6,g6_n);
+//			read_ddj(g6_H,6,g6);
+//			break;
+//		default:
+//			cout<<"Fintess decide_swap error!"<<endl;
+//			break;
+//		}
+//	}
+//
+////判断6个子序列编码是否全部读取完毕
+//	if(j_1 + j_2 + j_3 + j_4 + j_5 + j_6 == CODELENGTH){
+//		T[0] = T1;T[1] = T2;T[2] = T3;T[3] = T4;T[4] = T5;T[5] = T6;
+//		return max2(T);
+//	}
+//	if(j_1 < g1_n){
+//		while(j_1 != g1_n){
+//			if(j_1 == (g1_n - 1)){
+//				T1 = read(T1, TD1, g1[j_1], g1[j_1]);
+//				j_1++;
+//			}
+//			else if(j_1 < (g1_n - 1)){
+//				T1 = read(T1, TD1, g1[j_1], g1[j_1 + 1] );
+//				j_1++;
+//			}
+//		}
+//	}
+//
+//	if(j_2 < g2_n){
+//		while(j_2 != g2_n){
+//			if(j_2 == (g2_n - 1)){
+//				T2 = read(T2, TD2, g2[j_2], g2[j_2] );
+//				j_2++;
+//			}
+//			else if(j_2 < (g2_n - 1)){
+//				T2 = read(T2, TD2, g2[j_2], g2[j_2 + 1] );
+//				j_2++;
+//			}
+//		}
+//	}
+//
+//	if(j_3 < g3_n){
+//		while(j_3 != g3_n){
+//			if(j_3 == (g3_n - 1)){
+//				T3 = read(T3, TD3, g3[j_3], g3[j_3] );
+//				j_3++;
+//			}
+//			else if(j_3 < (g3_n - 1)){
+//				T3 = read(T3, TD3, g3[j_3], g3[j_3 + 1] );
+//				j_3++;
+//			}
+//		}
+//	}
+//
+//	if(j_4 < g4_n){
+//		while(j_4 != g4_n){
+//			if(j_4 == (g4_n - 1)){
+//				T4 = read(T4, TD4, g4[j_4], g4[j_4] );
+//				j_4++;
+//			}
+//			else if(j_4 < (g4_n - 1)){
+//				T4 = read(T4, TD4, g4[j_4], g4[j_4 + 1] );
+//				j_4++;
+//			}
+//		}
+//	}
+//
+//	if(j_5 < g5_n){
+//		while(j_5 != g5_n){
+//			if(j_5 == (g5_n - 1)){
+//				T5 = read(T5, TD5, g5[j_5], g5[j_5] );
+//				j_5++;
+//			}
+//			else if(j_5 < (g5_n - 1)){
+//				T5 = read(T5, TD5, g5[j_5], g5[j_5 + 1] );
+//				j_5++;
+//			}
+//		}
+//	}
+//
+//	if(j_6 < g6_n){
+//		while(j_6 != g6_n){
+//			if(j_6 == (g6_n - 1)){
+//				T6 = read(T6, TD6, g6[j_6], g6[j_6] );
+//				j_6++;
+//			}
+//			else if(j_6 < (g6_n - 1)){
+//				T6 = read(T6, TD6, g6[j_6], g6[j_6 + 1] );
+//				j_6++;
+//			}
+//		}
+//	}
+//
+//
+//	T[0] = T1;T[1] = T2;T[2] = T3;T[3] = T4;T[4] = T5;T[5] = T6;
+//	return max2(T);
+//}
 
 // todo 重载 Fitness()
 double Fintess(Food& f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int g1_H[],int g2_H[],int g3_H[],int g4_H[],int g5_H[],int g6_H[],int g1_H2[],int g2_H2[],int g3_H2[],int g4_H2[],int g5_H2[],int g6_H2[],int g1_th[],int g2_th[],int g3_th[],int g4_th[],int g5_th[],int g6_th[]){
@@ -1724,7 +2018,7 @@ double Fintess(Food& f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
 //判断6个子序列编码是否全部读取完毕
     if(j_1 + j_2 + j_3 + j_4 + j_5 + j_6 == CODELENGTH){
         T[0] = T1;T[1] = T2;T[2] = T3;T[3] = T4;T[4] = T5;T[5] = T6;
-        return max2(T);
+        return max2(T, f);
     }
     if(j_1 < g1_n){
         while(j_1 != g1_n){
@@ -1806,7 +2100,7 @@ double Fintess(Food& f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
 
 
     T[0] = T1;T[1] = T2;T[2] = T3;T[3] = T4;T[4] = T5;T[5] = T6;
-    return max2(T);
+    return max2(T, f);
 }
 //
 //初始化种群
@@ -1834,70 +2128,70 @@ void getPerm(firefly fly[flyNum])//每一行是一个路径  创建好几个G
 	// }
 }
 //单独解码
-void enSimpleCode(firefly& f) {
-	//初始化一些变量
-	int b1 = INT32_MAX;
-	ai = 0;
-	flag_R = 0;
-	t_R = 0;
-    gp1 = 0,gp2 = 0,gp3 = 0,gp4 = 0,gp5 = 0,gp6 = 0;
-	gpi=0;
-	for(int i=0;i<6;i++)
-		for(int j=0;j<ddj_num;j++)
-			gp[i][j][1] = 9999999;
-	for(int i=0;i<R;i++){
-		r_arry[i] = 0;
-		a[i] = 0;
-	}
-	for(int i=0;i<6;i++){
-		T[i] = 0;
-		TD[i] = 0;
-	}
-	for(int i=0;i<H;i++){
-		th[i] = 0;
-		hi[i][0]=9999;
-		hi[i][1]=999999;
-		I[i][0] = 0;
-		I[i][1] = 0;
-		INum[i][0] = 0;
-		INum[i][1] = 0;
-		g1_H2[i] = 0;
-		g2_H2[i] = 0;
-		g3_H2[i] = 0;
-		g4_H2[i] = 0;
-		g5_H2[i] = 0;
-		g6_H2[i] = 0;
-	}
-	S_H(f);//送检前h-k个编码，回库后h-k个编码，形成1-1对应关系。
-	check(f,s,h);
-	get_R(f.G);//分离出入库编码
-	R_Test(r_arry);//计算出入库货物到达堆垛机的时间，从小到大排序
-/*	
-	for(int i=0;i<R;i++){
-		cout<<a[i]<<endl;
-	}
-	cout<<"---------"<<endl;
-*/	
-	//cout<<endl;
-	Storing_num(f);//计算出每台堆垛机的任务量、送检数量、回库数量
-	int g1_S[g1_s],g2_S[g2_s],g3_S[g3_s],g4_S[g4_s],g5_S[g5_s],g6_S[g6_s];//送检任务分拣到6台堆垛机
-	int g1_H[g1_h],g2_H[g2_h],g3_H[g3_h],g4_H[g4_h],g5_H[g5_h],g6_H[g6_h];//回库任务分拣到6台堆垛机
-	int g1_th[g1_h],g2_th[g2_h],g3_th[g3_h],g4_th[g4_h],g5_th[g5_h],g6_th[g6_h];//6台堆垛机的回库任务的时间
-	int g1[g1_n],g2[g2_n],g3[g3_n],g4[g4_n],g5[g5_n],g6[g6_n];//任务分拣到6台堆垛机
-	
-	for(int i=0;i<g1_h;i++){g1_th[i]=999999;g1_H2[i]=0;}
-	for(int i=0;i<g2_h;i++){g2_th[i]=999999;g2_H2[i]=0;}
-	for(int i=0;i<g3_h;i++){g3_th[i]=999999;g3_H2[i]=0;}
-	for(int i=0;i<g4_h;i++){g4_th[i]=999999;g4_H2[i]=0;}
-	for(int i=0;i<g5_h;i++){g5_th[i]=999999;g5_H2[i]=0;}
-	for(int i=0;i<g6_h;i++){g6_th[i]=999999;g6_H2[i]=0;}
-
-	Storing(f,g1,g2,g3,g4,g5,g6,g1_S,g2_S,g3_S,g4_S,g5_S,g6_S,g1_H,g2_H,g3_H,g4_H,g5_H,g6_H);//将每台堆垛机的工作和送检、回库任务分离成不同的数组。共18个数组
-	//f.fitness=Fintess(f,g1,g2,g3,g4,g5,g6,g1_H,g2_H,g3_H,g4_H,g5_H,g6_H );
-	f.fitness = Fintess(f,g1,g2,g3,g4,g5,g6,g1_H,g2_H,g3_H,g4_H,g5_H,g6_H,g1_H2,g2_H2,g3_H2,g4_H2,g5_H2,g6_H2,g1_th,g2_th,g3_th,g4_th,g5_th,g6_th);//计算适应度值
-	f.fluorescein = (1-rou)*f.fluorescein + mgamma / f.fitness;
-
-}
+//void enSimpleCode(firefly& f) {
+//	//初始化一些变量
+//	int b1 = INT32_MAX;
+//	ai = 0;
+//	flag_R = 0;
+//	t_R = 0;
+//    gp1 = 0,gp2 = 0,gp3 = 0,gp4 = 0,gp5 = 0,gp6 = 0;
+//	gpi=0;
+//	for(int i=0;i<6;i++)
+//		for(int j=0;j<ddj_num;j++)
+//			gp[i][j][1] = 9999999;
+//	for(int i=0;i<R;i++){
+//		r_arry[i] = 0;
+//		a[i] = 0;
+//	}
+//	for(int i=0;i<6;i++){
+//		T[i] = 0;
+//		TD[i] = 0;
+//	}
+//	for(int i=0;i<H;i++){
+//		th[i] = 0;
+//		hi[i][0]=9999;
+//		hi[i][1]=999999;
+//		I[i][0] = 0;
+//		I[i][1] = 0;
+//		INum[i][0] = 0;
+//		INum[i][1] = 0;
+//		g1_H2[i] = 0;
+//		g2_H2[i] = 0;
+//		g3_H2[i] = 0;
+//		g4_H2[i] = 0;
+//		g5_H2[i] = 0;
+//		g6_H2[i] = 0;
+//	}
+//	S_H(f);//送检前h-k个编码，回库后h-k个编码，形成1-1对应关系。
+//	check(f,s,h);
+//	get_R(f.G);//分离出入库编码
+//	R_Test(r_arry);//计算出入库货物到达堆垛机的时间，从小到大排序
+///*
+//	for(int i=0;i<R;i++){
+//		cout<<a[i]<<endl;
+//	}
+//	cout<<"---------"<<endl;
+//*/
+//	//cout<<endl;
+//	Storing_num(f);//计算出每台堆垛机的任务量、送检数量、回库数量
+//	int g1_S[g1_s],g2_S[g2_s],g3_S[g3_s],g4_S[g4_s],g5_S[g5_s],g6_S[g6_s];//送检任务分拣到6台堆垛机
+//	int g1_H[g1_h],g2_H[g2_h],g3_H[g3_h],g4_H[g4_h],g5_H[g5_h],g6_H[g6_h];//回库任务分拣到6台堆垛机
+//	int g1_th[g1_h],g2_th[g2_h],g3_th[g3_h],g4_th[g4_h],g5_th[g5_h],g6_th[g6_h];//6台堆垛机的回库任务的时间
+//	int g1[g1_n],g2[g2_n],g3[g3_n],g4[g4_n],g5[g5_n],g6[g6_n];//任务分拣到6台堆垛机
+//
+//	for(int i=0;i<g1_h;i++){g1_th[i]=999999;g1_H2[i]=0;}
+//	for(int i=0;i<g2_h;i++){g2_th[i]=999999;g2_H2[i]=0;}
+//	for(int i=0;i<g3_h;i++){g3_th[i]=999999;g3_H2[i]=0;}
+//	for(int i=0;i<g4_h;i++){g4_th[i]=999999;g4_H2[i]=0;}
+//	for(int i=0;i<g5_h;i++){g5_th[i]=999999;g5_H2[i]=0;}
+//	for(int i=0;i<g6_h;i++){g6_th[i]=999999;g6_H2[i]=0;}
+//
+//	Storing(f,g1,g2,g3,g4,g5,g6,g1_S,g2_S,g3_S,g4_S,g5_S,g6_S,g1_H,g2_H,g3_H,g4_H,g5_H,g6_H);//将每台堆垛机的工作和送检、回库任务分离成不同的数组。共18个数组
+//	//f.fitness=Fintess(f,g1,g2,g3,g4,g5,g6,g1_H,g2_H,g3_H,g4_H,g5_H,g6_H );
+//	f.fitness = Fintess(f,g1,g2,g3,g4,g5,g6,g1_H,g2_H,g3_H,g4_H,g5_H,g6_H,g1_H2,g2_H2,g3_H2,g4_H2,g5_H2,g6_H2,g1_th,g2_th,g3_th,g4_th,g5_th,g6_th);//计算适应度值
+//	f.fluorescein = (1-rou)*f.fluorescein + mgamma / f.fitness;
+//
+//}
 
 // todo 重载 ensimpleCode()
 void enSimpleCode(Food& f) {
@@ -1968,17 +2262,17 @@ void enSimpleCode(Food& f) {
 }
 
 
-void enCode(firefly fly[flyNum]) {
-	//按照自己的方法对 初始种群 中的每个个体进行解码，计算出目标函数
-	//先写对一条编码的解码，再循环调用
-		for(int i=0;i<flyNum;i++){
-			enSimpleCode(fly[i]);
-			//cout<<fly[0].G[1999];
-		}
-		// enSimpleCode(fly[0]);
-		// enSimpleCode(fly[1]);
-		// enSimpleCode(fly[2]);
-}
+//void enCode(firefly fly[flyNum]) {
+//	//按照自己的方法对 初始种群 中的每个个体进行解码，计算出目标函数
+//	//先写对一条编码的解码，再循环调用
+//		for(int i=0;i<flyNum;i++){
+//			enSimpleCode(fly[i]);
+//			//cout<<fly[0].G[1999];
+//		}
+//		// enSimpleCode(fly[0]);
+//		// enSimpleCode(fly[1]);
+//		// enSimpleCode(fly[2]);
+//}
 
 void enCode(Food *f) {
     //按照自己的方法对 初始种群 中的每个个体进行解码，计算出目标函数
@@ -2002,82 +2296,82 @@ int dominate(firefly f1, firefly f2) {
 
 
 //萤火虫fj向萤火虫fi飞行移动
-void flyMove(firefly fi, firefly fj, firefly& temfly) {
-
-	double beta2 = 0;//萤火虫的吸引力
-	int count = NUMBER;//统计编码所有维度变化值不为0的个数
-	double delta[NUMBER] = { 0 };//每一维度之间的变化值
-	double rij2 = 0;//萤火虫之间笛卡尔距离的平方
-	int passCount = 0;//继承较亮萤火虫结点位置数量
-	int movedfly[NUMBER] = { 0 };//移动后的萤火虫,初始化为0
-
-	for (int i = 0; i < NUMBER; i++)
-		rij2 += pow(fi.G[i] - fj.G[i], 2);
-
-	beta2 = 1 * exp(-mgamma * rij2);
-
-	for (int i = 0; i < NUMBER; i++) {//计算变化值delta
-		//delta[i] = beta * nodeDis[fi.G[i]][fj.G[i]]; 
-		//delta[i] = beta2 * fabs(fi.G[i] - fj.G[i]);
-		delta[i] = beta2 * fabs(dis[fi.G[i]] - dis[fj.G[i]]);
-		if (delta[i] == 0) count--;
-	}
-
-	int fjCopy[NUMBER] = { 0 };//复制萤火虫编码，为了不影响原来的萤火虫
-	memcpy(fjCopy, fj.G, NUMBER * sizeof(int));
-
-	//passCount = floor(beta2* count); //向下取整
-	passCount = step;//随机步长，即继承节点数目
-	for (int i = 0; i < passCount; i++) {//继承萤火虫fi中结点
-		int temp = 0;
-		for (int j = 0; j < NUMBER; j++) {
-			if (delta[j] >= delta[temp]) temp = j;
-		}
-		movedfly[temp] = fi.G[temp];
-		delta[temp] = 0;//置为0便于找下一个个最大数
-
-		for (int k2 = 0; k2 < NUMBER; k2++) {	//在萤火虫j的副本中，将已经继承过结的点置0
-			if (fjCopy[k2] == movedfly[temp]) { fjCopy[k2] = 0; break; }
-		}
-	}
-
-	int k2 = 0;
-	int noneZero[NUMBER] = { 0 };//存储萤火虫fj中余下结点
-	for (int i = 0; i < NUMBER; i++) {
-		if (fjCopy[i] != 0) noneZero[k2++] = fjCopy[i];
-	}
-
-	//将萤火虫j中其他结点按照顺序依次填入移动后的编码中
-	int m = 0;
-	for (int i = 0; i < NUMBER; i++)
-		if (movedfly[i] == 0) movedfly[i] = noneZero[m++];
-	firefly movefly;
-	memcpy(movefly.G, movedfly, NUMBER * sizeof(int));
-	S_H(movefly);
-	check(movefly, s, h);
-	enSimpleCode(movefly);
-	memcpy(&temfly, &movefly,sizeof(firefly));
-}
+//void flyMove(firefly fi, firefly fj, firefly& temfly) {
+//
+//	double beta2 = 0;//萤火虫的吸引力
+//	int count = NUMBER;//统计编码所有维度变化值不为0的个数
+//	double delta[NUMBER] = { 0 };//每一维度之间的变化值
+//	double rij2 = 0;//萤火虫之间笛卡尔距离的平方
+//	int passCount = 0;//继承较亮萤火虫结点位置数量
+//	int movedfly[NUMBER] = { 0 };//移动后的萤火虫,初始化为0
+//
+//	for (int i = 0; i < NUMBER; i++)
+//		rij2 += pow(fi.G[i] - fj.G[i], 2);
+//
+//	beta2 = 1 * exp(-mgamma * rij2);
+//
+//	for (int i = 0; i < NUMBER; i++) {//计算变化值delta
+//		//delta[i] = beta * nodeDis[fi.G[i]][fj.G[i]];
+//		//delta[i] = beta2 * fabs(fi.G[i] - fj.G[i]);
+//		delta[i] = beta2 * fabs(dis[fi.G[i]] - dis[fj.G[i]]);
+//		if (delta[i] == 0) count--;
+//	}
+//
+//	int fjCopy[NUMBER] = { 0 };//复制萤火虫编码，为了不影响原来的萤火虫
+//	memcpy(fjCopy, fj.G, NUMBER * sizeof(int));
+//
+//	//passCount = floor(beta2* count); //向下取整
+//	passCount = step;//随机步长，即继承节点数目
+//	for (int i = 0; i < passCount; i++) {//继承萤火虫fi中结点
+//		int temp = 0;
+//		for (int j = 0; j < NUMBER; j++) {
+//			if (delta[j] >= delta[temp]) temp = j;
+//		}
+//		movedfly[temp] = fi.G[temp];
+//		delta[temp] = 0;//置为0便于找下一个个最大数
+//
+//		for (int k2 = 0; k2 < NUMBER; k2++) {	//在萤火虫j的副本中，将已经继承过结的点置0
+//			if (fjCopy[k2] == movedfly[temp]) { fjCopy[k2] = 0; break; }
+//		}
+//	}
+//
+//	int k2 = 0;
+//	int noneZero[NUMBER] = { 0 };//存储萤火虫fj中余下结点
+//	for (int i = 0; i < NUMBER; i++) {
+//		if (fjCopy[i] != 0) noneZero[k2++] = fjCopy[i];
+//	}
+//
+//	//将萤火虫j中其他结点按照顺序依次填入移动后的编码中
+//	int m = 0;
+//	for (int i = 0; i < NUMBER; i++)
+//		if (movedfly[i] == 0) movedfly[i] = noneZero[m++];
+//	firefly movefly;
+//	memcpy(movefly.G, movedfly, NUMBER * sizeof(int));
+//	S_H(movefly);
+//	check(movefly, s, h);
+//	enSimpleCode(movefly);
+//	memcpy(&temfly, &movefly,sizeof(firefly));
+//}
 
 
 
 //萤火虫亮度相等时的随机扰动
-void randWalk2(firefly ff, firefly temfly) {//对象为萤火虫
-	int walkfly[NUMBER] = { 0 };
-	memcpy(walkfly, ff.G, NUMBER * sizeof(int));
-
-	int randNum = 1+rand()%5;
-	for (int i = 0; i < randNum; i++) {
-		int s1 = rand() % NUMBER;
-		int s2 = rand() % NUMBER;
-		while (s2 == s1) {//s1!=s2
-			s2 = rand() % NUMBER;
-		}
-		swap(walkfly[s1], walkfly[s2]);
-	}
-	memcpy(temfly.G, walkfly, NUMBER * sizeof(int));
-	enSimpleCode(temfly);
-}
+//void randWalk2(firefly ff, firefly temfly) {//对象为萤火虫
+//	int walkfly[NUMBER] = { 0 };
+//	memcpy(walkfly, ff.G, NUMBER * sizeof(int));
+//
+//	int randNum = 1+rand()%5;
+//	for (int i = 0; i < randNum; i++) {
+//		int s1 = rand() % NUMBER;
+//		int s2 = rand() % NUMBER;
+//		while (s2 == s1) {//s1!=s2
+//			s2 = rand() % NUMBER;
+//		}
+//		swap(walkfly[s1], walkfly[s2]);
+//	}
+//	memcpy(temfly.G, walkfly, NUMBER * sizeof(int));
+//	enSimpleCode(temfly);
+//}
 
 
 int getBad(firefly f[flyNum+1]) {
@@ -2087,30 +2381,30 @@ int getBad(firefly f[flyNum+1]) {
 	return badNum;
 }
 
-void neibor_opt2(firefly& f) {
-	int maxT = 20;
-	firefly temp_;
-	memcpy(&temp_, &f, sizeof(firefly));
-	for (int i = 0; i < maxT; i++)
-	{
-		srand(unsigned(rand()));
-		int bd = 1+rand() % 5;
-		int r1 = rand() % NUMBER;
-		int r2 = (r1+bd) % NUMBER;
-		if (r1 < r2)
-			reverse(temp_.G + r1, temp_.G + r2+1);
-		else
-			reverse(temp_.G + r2, temp_.G + r1+1);
-
-		enSimpleCode(temp_);
-		if (dominate(temp_, f) == 0) {
-			memcpy(&f, &temp_, sizeof(firefly));
-		}
-		else {
-			memcpy(&temp_, &f, sizeof(firefly));
-		}
-	}
-}
+//void neibor_opt2(firefly& f) {
+//	int maxT = 20;
+//	firefly temp_;
+//	memcpy(&temp_, &f, sizeof(firefly));
+//	for (int i = 0; i < maxT; i++)
+//	{
+//		srand(unsigned(rand()));
+//		int bd = 1+rand() % 5;
+//		int r1 = rand() % NUMBER;
+//		int r2 = (r1+bd) % NUMBER;
+//		if (r1 < r2)
+//			reverse(temp_.G + r1, temp_.G + r2+1);
+//		else
+//			reverse(temp_.G + r2, temp_.G + r1+1);
+//
+//		enSimpleCode(temp_);
+//		if (dominate(temp_, f) == 0) {
+//			memcpy(&f, &temp_, sizeof(firefly));
+//		}
+//		else {
+//			memcpy(&temp_, &f, sizeof(firefly));
+//		}
+//	}
+//}
 
 //void opti_2opt(firefly& f) {
 //	firefly walkfly;
@@ -2162,67 +2456,67 @@ void opt2(firefly& f) {
 	}
 }
 */
-void opt2(firefly& f) {//逆序
-	int maxT = 10;
-	firefly temp;
-	for (int i = 0; i < maxT; i++)
-	{
-		memcpy(&temp, &f, sizeof(firefly));
-		int r1 = rand() % NUMBER;
-		int r2 = rand() % NUMBER;
-		while (r2 == r1) {//s1!=s2
-			r2 = rand() % NUMBER;
-		}
-		if (r1 < r2)
-			reverse(temp.G + r1, temp.G + r2);
-		else
-			reverse(temp.G + r2, temp.G + r1);
-		S_H(temp);
-		check(temp, s, h);//调整
-		enSimpleCode(temp);
-		if (dominate(temp,f)==0) {
-			memcpy(&f, &temp,sizeof(firefly));
-		}
-	}
-}
+//void opt2(firefly& f) {//逆序
+//	int maxT = 10;
+//	firefly temp;
+//	for (int i = 0; i < maxT; i++)
+//	{
+//		memcpy(&temp, &f, sizeof(firefly));
+//		int r1 = rand() % NUMBER;
+//		int r2 = rand() % NUMBER;
+//		while (r2 == r1) {//s1!=s2
+//			r2 = rand() % NUMBER;
+//		}
+//		if (r1 < r2)
+//			reverse(temp.G + r1, temp.G + r2);
+//		else
+//			reverse(temp.G + r2, temp.G + r1);
+//		S_H(temp);
+//		check(temp, s, h);//调整
+//		enSimpleCode(temp);
+//		if (dominate(temp,f)==0) {
+//			memcpy(&f, &temp,sizeof(firefly));
+//		}
+//	}
+//}
 
 
 
-void rand_opt2(firefly& f) { //超突变
-	int maxT = 10;
-	for (int i = 0; i < maxT; i++)
-	{
-		int r1 = rand() % NUMBER;
-		int r2 = rand() % NUMBER;
-		while (r2 == r1) { //s1!=s2
-			r2 = rand() % NUMBER;
-		}
-		if (r1 < r2)
-			reverse(f.G + r1, f.G + r2);
-		else
-			reverse(f.G + r2, f.G + r1);
-		enSimpleCode(f);
-	}
-}
+//void rand_opt2(firefly& f) { //超突变
+//	int maxT = 10;
+//	for (int i = 0; i < maxT; i++)
+//	{
+//		int r1 = rand() % NUMBER;
+//		int r2 = rand() % NUMBER;
+//		while (r2 == r1) { //s1!=s2
+//			r2 = rand() % NUMBER;
+//		}
+//		if (r1 < r2)
+//			reverse(f.G + r1, f.G + r2);
+//		else
+//			reverse(f.G + r2, f.G + r1);
+//		enSimpleCode(f);
+//	}
+//}
 
-void t_t(firefly& f) {
-	firefly temp;
-	memcpy(&temp, &f, sizeof(firefly));
-	bool tag = false;
-
-	do{
-		tag = false;
-		for (int i = 0; i < NUMBER - 1; i++) {
-			swap(temp.G[i], temp.G[i + 1]);
-			enSimpleCode(temp);
-			if (dominate(temp, f) == 0) {
-				memcpy(&f, &temp, sizeof(firefly));
-				tag = true;
-			}
-			else swap(temp.G[i], temp.G[i + 1]);
-		}
-	} while (tag);
-}
+//void t_t(firefly& f) {
+//	firefly temp;
+//	memcpy(&temp, &f, sizeof(firefly));
+//	bool tag = false;
+//
+//	do{
+//		tag = false;
+//		for (int i = 0; i < NUMBER - 1; i++) {
+//			swap(temp.G[i], temp.G[i + 1]);
+//			enSimpleCode(temp);
+//			if (dominate(temp, f) == 0) {
+//				memcpy(&f, &temp, sizeof(firefly));
+//				tag = true;
+//			}
+//			else swap(temp.G[i], temp.G[i + 1]);
+//		}
+//	} while (tag);
+//}
 
 void copyLink(LinkList L,LinkList &copyL) {
 	copyL = new LNode;
@@ -2266,48 +2560,48 @@ void listToLink(firefly f,LinkList &L) { //顺序存储转换成链式存储
 	}
 }
 
-void insertAll_sub(LinkList copyL, int r, int r1, firefly &bestfly) {//r(r>=1)单个节点位置,r1(r1>=0)插入位置
-	//L中提取出单个节点
-	LNode* pr, * pf;
-	pr = copyL;
-	int i = 0;
-	while (i != r - 1) {
-		pr = pr->next;
-		i++;
-	}
-	pf = pr;
-	pr = pr->next;	//提取出的节点
-	pf->next = pr->next;	//L中删去了pr
-	pr->next = NULL;
-
-	//L中插入
-	LNode* p;
-	p = copyL;
-	int j = 0;
-	do {
-		if (j == r1) {
-			pr->next = p->next;
-			p->next = pr;
-			break;
-		}
-		else {
-			p = p->next;
-			j++;
-		}
-	} while (1);
-	firefly newf;
-	//linkToList(copyL, newf.G);//链式-->顺序
-	enSimpleCode(newf);
-	if (dominate(newf, bestfly) == 0) {
-		memcpy(&bestfly, &newf, sizeof(firefly));
-	}
-	else {
-		//复原
-		p->next = pr->next;
-		pr->next = pf->next;
-		pf->next = pr;
-	}
-}
+//void insertAll_sub(LinkList copyL, int r, int r1, firefly &bestfly) {//r(r>=1)单个节点位置,r1(r1>=0)插入位置
+//	//L中提取出单个节点
+//	LNode* pr, * pf;
+//	pr = copyL;
+//	int i = 0;
+//	while (i != r - 1) {
+//		pr = pr->next;
+//		i++;
+//	}
+//	pf = pr;
+//	pr = pr->next;	//提取出的节点
+//	pf->next = pr->next;	//L中删去了pr
+//	pr->next = NULL;
+//
+//	//L中插入
+//	LNode* p;
+//	p = copyL;
+//	int j = 0;
+//	do {
+//		if (j == r1) {
+//			pr->next = p->next;
+//			p->next = pr;
+//			break;
+//		}
+//		else {
+//			p = p->next;
+//			j++;
+//		}
+//	} while (1);
+//	firefly newf;
+//	//linkToList(copyL, newf.G);//链式-->顺序
+//	enSimpleCode(newf);
+//	if (dominate(newf, bestfly) == 0) {
+//		memcpy(&bestfly, &newf, sizeof(firefly));
+//	}
+//	else {
+//		//复原
+//		p->next = pr->next;
+//		pr->next = pf->next;
+//		pf->next = pr;
+//	}
+//}
 
 void releasePoint(LinkList &L) {//释放L内存空间
 	LNode* Lp1, * Lp2;
@@ -2321,45 +2615,45 @@ void releasePoint(LinkList &L) {//释放L内存空间
 	delete L;
 }
 
-void insert(firefly &f) { //取出单个，多次插入
-	LinkList L, copyL;
-	listToLink(f,L);	//顺序-->链式
-
-	firefly bestf;
-	memcpy(&bestf, &f, sizeof(firefly));
-	for (int i = 0; i <= 20; i++) { //[1,100]取出单个
-		srand(unsigned(rand()));
-		int r = 1 + rand() % NUMBER;
-		for (int j = 0; j < NUMBER; j++) { //[0,99]多次插入
-			if (j != i) {
-				insertAll_sub(L, r, j, bestf);
-			}
-		}
-	}
-	memcpy(&f, &bestf, sizeof(firefly));
-	releasePoint(L);
-	//releasePoint(copyL);
-	//LNode* t; //输出:顺序-链式存储
-	//t = copyL->next;
-	//while (t != NULL) { 
-	//	cout << t->data <<"--";
-	//	t = t->next;
-	//}
-	//cout <<endl;
-
-	//int G[NUMBER] = {};//输出:链式-顺序存储
-	//linkToList(L,G);
-	//for (int i = 0; i < NUMBER; i++)
-	//	cout << G[i] << "--";
-	//cout << endl;
-
-	//LNode* p;//测试复制函数
-	//p = copyL->next;
-	//while (p!=NULL) {
-	//	cout << p->data << "--";
-	//	p = p->next;
-	//}
-}
+//void insert(firefly &f) { //取出单个，多次插入
+//	LinkList L, copyL;
+//	listToLink(f,L);	//顺序-->链式
+//
+//	firefly bestf;
+//	memcpy(&bestf, &f, sizeof(firefly));
+//	for (int i = 0; i <= 20; i++) { //[1,100]取出单个
+//		srand(unsigned(rand()));
+//		int r = 1 + rand() % NUMBER;
+//		for (int j = 0; j < NUMBER; j++) { //[0,99]多次插入
+//			if (j != i) {
+//				insertAll_sub(L, r, j, bestf);
+//			}
+//		}
+//	}
+//	memcpy(&f, &bestf, sizeof(firefly));
+//	releasePoint(L);
+//	//releasePoint(copyL);
+//	//LNode* t; //输出:顺序-链式存储
+//	//t = copyL->next;
+//	//while (t != NULL) {
+//	//	cout << t->data <<"--";
+//	//	t = t->next;
+//	//}
+//	//cout <<endl;
+//
+//	//int G[NUMBER] = {};//输出:链式-顺序存储
+//	//linkToList(L,G);
+//	//for (int i = 0; i < NUMBER; i++)
+//	//	cout << G[i] << "--";
+//	//cout << endl;
+//
+//	//LNode* p;//测试复制函数
+//	//p = copyL->next;
+//	//while (p!=NULL) {
+//	//	cout << p->data << "--";
+//	//	p = p->next;
+//	//}
+//}
 
 void insertAll_sub_car(LinkList copyL, int r, int r1, firefly& bestfly) {//r(r>=1)单个节点位置,r1(r1>=0)插入位置
 	//L中提取出单个节点
@@ -2467,122 +2761,123 @@ void releaseRouteHead(LinkList &routeHead) {
 }
 
 
-void two_two(firefly& f) {
-	firefly temp;
-	memcpy(&temp, &f, sizeof(firefly));
-	for (int i = 0; i < NUMBER - 1; i++) {
-		swap(temp.G[i], temp.G[i + 1]);
-		enSimpleCode(temp);
-		if (dominate(temp, f)==0) {
-			memcpy(&f, &temp,sizeof(firefly));
-		}
-	}
-}
-void neibor_swa(firefly& f) {
-	int maxT = 20;
-	firefly temp;
-	memcpy(&temp, &f, sizeof(firefly));
-	for (int i = 0; i < maxT; i++)
-	{
-		int r1 = rand() % NUMBER;
-		swap(temp.G[r1], temp.G[(r1 + 1) % NUMBER]);
+//void two_two(firefly& f) {
+//	firefly temp;
+//	memcpy(&temp, &f, sizeof(firefly));
+//	for (int i = 0; i < NUMBER - 1; i++) {
+//		swap(temp.G[i], temp.G[i + 1]);
+//		enSimpleCode(temp);
+//		if (dominate(temp, f)==0) {
+//			memcpy(&f, &temp,sizeof(firefly));
+//		}
+//	}
+//}
 
-		enSimpleCode(temp);
-		if (dominate(temp, f) == 0) {
-			memcpy(&f, &temp, sizeof(firefly));
-		}
-		else {
-			memcpy(&temp, &f, sizeof(firefly));
-		}
-	}
-}
-
-
-void swa_one(firefly &f) {
-	firefly temp;
-	memcpy(&temp, &f, sizeof(firefly));
-	int randNum = 20;
-	for (int i = 0; i < randNum; i++) {
-		int r1 = rand() % NUMBER;
-		int r2 = rand() % NUMBER;
-		while (r2 == r1) {//s1!=s2
-			r2 = rand() % NUMBER;
-		}
-
-		swap(temp.G[r1], temp.G[r2]);
-		enSimpleCode(temp);
-		if (dominate(temp, f) == 0) {
-			memcpy(&f, &temp, sizeof(firefly));
-		}
-		else {
-			swap(temp.G[r1], temp.G[r2]);
-			enSimpleCode(temp);
-		}
-	}
-}
+//void neibor_swa(firefly& f) {
+//	int maxT = 20;
+//	firefly temp;
+//	memcpy(&temp, &f, sizeof(firefly));
+//	for (int i = 0; i < maxT; i++)
+//	{
+//		int r1 = rand() % NUMBER;
+//		swap(temp.G[r1], temp.G[(r1 + 1) % NUMBER]);
+//
+//		enSimpleCode(temp);
+//		if (dominate(temp, f) == 0) {
+//			memcpy(&f, &temp, sizeof(firefly));
+//		}
+//		else {
+//			memcpy(&temp, &f, sizeof(firefly));
+//		}
+//	}
+//}
 
 
-void swa(firefly& f) {
-	firefly temp;
-	int randNum = 20;
-	for (int i = 0; i < randNum; i++) {
-		srand(unsigned(rand()));
-		memcpy(&temp, &f, sizeof(firefly));
-		int r1 = rand() % NUMBER;
-		int r2 = rand() % NUMBER;
-		int len = 2+rand() % 2;
-		while (r2 == r1) {//s1!=s2
-			r2 = rand() % NUMBER;
-		}
-		for (int j = 0; j < len; j++) {
-			swap(temp.G[(r1 + j) % NUMBER], temp.G[(r2 + j) % NUMBER]);
-		}	
-		S_H(temp);
-		check(temp.G, s, h);//调整
-		enSimpleCode(temp);
-		if (dominate(temp, f) == 0) {
-			memcpy(&f, &temp, sizeof(firefly));
-		}
-	}
-}
+//void swa_one(firefly &f) {
+//	firefly temp;
+//	memcpy(&temp, &f, sizeof(firefly));
+//	int randNum = 20;
+//	for (int i = 0; i < randNum; i++) {
+//		int r1 = rand() % NUMBER;
+//		int r2 = rand() % NUMBER;
+//		while (r2 == r1) {//s1!=s2
+//			r2 = rand() % NUMBER;
+//		}
+//
+//		swap(temp.G[r1], temp.G[r2]);
+//		enSimpleCode(temp);
+//		if (dominate(temp, f) == 0) {
+//			memcpy(&f, &temp, sizeof(firefly));
+//		}
+//		else {
+//			swap(temp.G[r1], temp.G[r2]);
+//			enSimpleCode(temp);
+//		}
+//	}
+//}
 
-void simpleSA(firefly& f) {
-	firefly tempCode;
-	memcpy(&tempCode, &f, sizeof(firefly));
 
-	int outC = 20, inC = 50, oC = 0, iC = 0;
-	double T0 = 0.1, lam = 0.95;
-	double T = T0;
-	for (int i = 0; i < outC; i++) {
-		for (int j = 0; j < inC; j++) {
-			int r1 = rand() % NUMBER;
-			int r2 = rand() % NUMBER;
-			while (r2 == r1) {//s1!=s2
-				r2 = rand() % NUMBER;
-			}
-			swap(tempCode.G[r1], tempCode.G[r2]);
-			/*if (r1 < r2)
-				reverse(tempCode.G + r1, tempCode.G + r2);
-			else
-				reverse(tempCode.G + r2, tempCode.G + r1);*/
+//void swa(firefly& f) {
+//	firefly temp;
+//	int randNum = 20;
+//	for (int i = 0; i < randNum; i++) {
+//		srand(unsigned(rand()));
+//		memcpy(&temp, &f, sizeof(firefly));
+//		int r1 = rand() % NUMBER;
+//		int r2 = rand() % NUMBER;
+//		int len = 2+rand() % 2;
+//		while (r2 == r1) {//s1!=s2
+//			r2 = rand() % NUMBER;
+//		}
+//		for (int j = 0; j < len; j++) {
+//			swap(temp.G[(r1 + j) % NUMBER], temp.G[(r2 + j) % NUMBER]);
+//		}
+//		S_H(temp);
+//		check(temp.G, s, h);//调整
+//		enSimpleCode(temp);
+//		if (dominate(temp, f) == 0) {
+//			memcpy(&f, &temp, sizeof(firefly));
+//		}
+//	}
+//}
 
-			enSimpleCode(tempCode);
-			int deltaf = dominate(tempCode,f);
-
-			if (deltaf == 0) {
-				memcpy(&f, &tempCode,sizeof(firefly));
-			}
-			else {
-				double r = rand() / (double)(RAND_MAX);
-				if (r < exp(-deltaf / T)) {
-					memcpy(&f, &tempCode, sizeof(firefly));
-				}
-				else swap(tempCode.G[r1], tempCode.G[r2]);
-			}
-		}
-		T = lam * T0;
-	}
-}
+//void simpleSA(firefly& f) {
+//	firefly tempCode;
+//	memcpy(&tempCode, &f, sizeof(firefly));
+//
+//	int outC = 20, inC = 50, oC = 0, iC = 0;
+//	double T0 = 0.1, lam = 0.95;
+//	double T = T0;
+//	for (int i = 0; i < outC; i++) {
+//		for (int j = 0; j < inC; j++) {
+//			int r1 = rand() % NUMBER;
+//			int r2 = rand() % NUMBER;
+//			while (r2 == r1) {//s1!=s2
+//				r2 = rand() % NUMBER;
+//			}
+//			swap(tempCode.G[r1], tempCode.G[r2]);
+//			/*if (r1 < r2)
+//				reverse(tempCode.G + r1, tempCode.G + r2);
+//			else
+//				reverse(tempCode.G + r2, tempCode.G + r1);*/
+//
+//			enSimpleCode(tempCode);
+//			int deltaf = dominate(tempCode,f);
+//
+//			if (deltaf == 0) {
+//				memcpy(&f, &tempCode,sizeof(firefly));
+//			}
+//			else {
+//				double r = rand() / (double)(RAND_MAX);
+//				if (r < exp(-deltaf / T)) {
+//					memcpy(&f, &tempCode, sizeof(firefly));
+//				}
+//				else swap(tempCode.G[r1], tempCode.G[r2]);
+//			}
+//		}
+//		T = lam * T0;
+//	}
+//}
 
 int hammer_dis(int h1[NUMBER],int h2[NUMBER]) {
 	int dis = NUMBER;
@@ -2592,194 +2887,194 @@ int hammer_dis(int h1[NUMBER],int h2[NUMBER]) {
 	return dis;
 }
 
-void mut_swap_sub(firefly f, int i, int j, firefly& temp) {
-	swap(f.G[i], f.G[j]);
-	enSimpleCode(f);
-	memcpy(&temp, &f, sizeof(firefly));
-}
+//void mut_swap_sub(firefly f, int i, int j, firefly& temp) {
+//	swap(f.G[i], f.G[j]);
+//	enSimpleCode(f);
+//	memcpy(&temp, &f, sizeof(firefly));
+//}
 
-void mutation(firefly &f) {
+//void mutation(firefly &f) {
+//
+//	firefly bestf;
+//	memcpy(&bestf, &f, sizeof(firefly));
+//	firefly temp;
+//	int tag[101] = {};
+//	for (int i = 0; i < NUMBER; i++) {//第i个结点
+//		for (int j = 0; j < NUMBER; j++) {//对第i个结点进行遍历插入操作，取最佳位置
+//			if (j != i) {
+//				mut_swap_sub(f, i, j, temp);
+//				if (dominate(temp, bestf) == 0) {
+//					memcpy(&bestf, &temp, sizeof(firefly));
+//				}
+//			}
+//		}
+//		memcpy(&f, &bestf, sizeof(firefly));
+//	}
+//}
 
-	firefly bestf;
-	memcpy(&bestf, &f, sizeof(firefly));
-	firefly temp;
-	int tag[101] = {};
-	for (int i = 0; i < NUMBER; i++) {//第i个结点
-		for (int j = 0; j < NUMBER; j++) {//对第i个结点进行遍历插入操作，取最佳位置
-			if (j != i) {
-				mut_swap_sub(f, i, j, temp);
-				if (dominate(temp, bestf) == 0) {
-					memcpy(&bestf, &temp, sizeof(firefly));
-				}
-			}
-		}
-		memcpy(&f, &bestf, sizeof(firefly));
-	}
-}
-
-void mut_swap(firefly& f) { //交换到最合适的位置
-	firefly bestf;
-	memcpy(&bestf, &f, sizeof(firefly));
-	firefly temp;
-	int tag[101] = {};
-	for (int i = 0; i < 10; i++) { //第i个结点
-		srand(unsigned(rand()));
-		int r = rand() % NUMBER;
-		for (int j = 0; j < NUMBER; j++) { //对第i个结点进行遍历交换操作，取最佳位置
-			if (j != i) {
-				mut_swap_sub(f,i,j,temp);
-				if (dominate(temp, bestf) == 0) {
-					//changeCount++;
-					memcpy(&bestf, &temp, sizeof(firefly));
-				}
-			}
-		}
-		memcpy(&f, &bestf, sizeof(firefly));
-	}
-}
+//void mut_swap(firefly& f) { //交换到最合适的位置
+//	firefly bestf;
+//	memcpy(&bestf, &f, sizeof(firefly));
+//	firefly temp;
+//	int tag[101] = {};
+//	for (int i = 0; i < 10; i++) { //第i个结点
+//		srand(unsigned(rand()));
+//		int r = rand() % NUMBER;
+//		for (int j = 0; j < NUMBER; j++) { //对第i个结点进行遍历交换操作，取最佳位置
+//			if (j != i) {
+//				mut_swap_sub(f,i,j,temp);
+//				if (dominate(temp, bestf) == 0) {
+//					//changeCount++;
+//					memcpy(&bestf, &temp, sizeof(firefly));
+//				}
+//			}
+//		}
+//		memcpy(&f, &bestf, sizeof(firefly));
+//	}
+//}
 
 
-void LS(firefly f1, firefly f2, firefly &bestf) {
-	insert(f1);
-	enSimpleCode(f1);
-	insert(f2);
-	enSimpleCode(f2);
-	if (dominate(f1, f2) == 0) {
-		memcpy(&bestf,&f1,sizeof(firefly));
-	}
-	else {
-		memcpy(&bestf, &f2, sizeof(firefly));
-	}
-}
+//void LS(firefly f1, firefly f2, firefly &bestf) {
+//	insert(f1);
+//	enSimpleCode(f1);
+//	insert(f2);
+//	enSimpleCode(f2);
+//	if (dominate(f1, f2) == 0) {
+//		memcpy(&bestf,&f1,sizeof(firefly));
+//	}
+//	else {
+//		memcpy(&bestf, &f2, sizeof(firefly));
+//	}
+//}
 
-void interchange_operator(firefly &f) {
-	firefly temp;
+//void interchange_operator(firefly &f) {
+//	firefly temp;
+//
+//	for (int i = 0; i < 20; i++) {
+//		memcpy(&temp, &f, sizeof(firefly));
+//		int pairs = 1 + rand() % 5;
+//		for (int j = 0; j < pairs; j++) {
+//			int r1 = rand() % NUMBER;
+//			int r2 = rand() % NUMBER;
+//			while (r1 == r2) {
+//				r2 = rand() % NUMBER;
+//			}
+//			swap(temp.G[r1], temp.G[r2]);
+//		}
+//		enSimpleCode(temp);
+//		if(dominate(temp,f)==0) memcpy(&f, &temp, sizeof(firefly));
+//	}
+//}
 
-	for (int i = 0; i < 20; i++) {
-		memcpy(&temp, &f, sizeof(firefly));
-		int pairs = 1 + rand() % 5;
-		for (int j = 0; j < pairs; j++) {
-			int r1 = rand() % NUMBER;
-			int r2 = rand() % NUMBER;
-			while (r1 == r2) {
-				r2 = rand() % NUMBER;
-			}
-			swap(temp.G[r1], temp.G[r2]);
-		}
-		enSimpleCode(temp);
-		if(dominate(temp,f)==0) memcpy(&f, &temp, sizeof(firefly));
-	}
-}
-
-void neibor_solution(firefly f, firefly &temfly) {
-	int p1 = 0.7, p2 = 0.98;
-	double r = rand() / (double)(RAND_MAX);
-
-	if (r < p1) {//interchange_operator
-		int randNum = 1 + rand() % 8;
-		for (int i = 0; i < randNum; i++) {
-			int s1 = rand() % NUMBER;
-			int s2 = rand() % NUMBER;
-			while (s2 == s1) {//s1!=s2
-				s2 = rand() % NUMBER;
-			}
-			swap(f.G[s1], f.G[s2]);
-		}
-		memcpy(temfly.G, f.G, NUMBER * sizeof(int));
-		enSimpleCode(temfly);
-	}
-	else if (r < p2) {
-		int r1 = rand() % NUMBER;
-		int r2 = rand() % NUMBER;
-		int len = 1 + rand() % 5;
-		while (r2 == r1) {//s1!=s2
-			r2 = rand() % NUMBER;
-		}
-		for (int j = 0; j < len; j++) {
-			swap(f.G[(r1 + j) % NUMBER], f.G[(r2 + j) % NUMBER]);
-		}
-		memcpy(temfly.G, f.G, NUMBER * sizeof(int));
-		enSimpleCode(temfly);
-	}
-	else {//inverse_operator
-		int r1 = rand() % NUMBER;
-		int r2 = rand() % NUMBER;
-		while (r2 == r1) {//s1!=s2
-			r2 = rand() % NUMBER;
-		}
-		if (r1 < r2)
-			reverse(f.G + r1, f.G + r2);
-		else
-			reverse(f.G + r2, f.G + r1);
-		memcpy(temfly.G, f.G, NUMBER * sizeof(int));
-		enSimpleCode(temfly);
-	}
-	mut_swap(temfly); 
-	//insertAll(temfly);
-	insert(temfly);
-	//else {//shift_operator
-	//	for (int _k = 0; _k < 5; _k++) {
-	//		LinkList L, copyL;
-	//		listToLink(f, L);//顺序-->链式
-	//		copyLink(L, copyL);
-
-	//		//L中提取出单个节点
-	//		int r = 1 + rand() % NUMBER; //单个节点位置[1,100]
-	//		LNode* pr, * pf;
-	//		pr = copyL;
-	//		int i = 0;
-	//		while (i != r - 1) {
-	//			pr = pr->next;
-	//			i++;
-	//		}
-	//		pf = pr;
-	//		pr = pr->next;//提取出的节点
-	//		pf->next = pr->next; //L中删去了pr
-
-	//		//L中插入
-	//		int r1 = rand() % NUMBER;//插入位置[0,99]
-	//		LNode* p;
-	//		p = copyL;
-	//		int j = 0;
-	//		do {
-	//			if (j == r1) {
-	//				pr->next = p->next;
-	//				p->next = pr;
-	//				break;
-	//			}
-	//			else {
-	//				p = p->next;
-	//				j++;
-	//			}
-	//		} while (1);
-
-	//		linkToList(copyL, temfly.G);//链式-->顺序
-	//		enSimpleCode(temfly);
-
-	//		//释放L内存空间
-	//		LNode* Lp1, * Lp2;
-	//		Lp1 = L->next;
-	//		Lp2 = L->next;
-	//		free(L);
-	//		while (Lp1 != NULL) {
-	//			Lp1 = Lp2->next;
-	//			free(Lp2);
-	//			Lp2 = Lp1;
-	//		}
-
-	//		//释放copyL内存空间
-	//		LNode* copyLp1, * copyLp2;
-	//		copyLp1 = copyL->next;
-	//		copyLp2 = copyL->next;
-	//		free(copyL);
-	//		while (copyLp1 != NULL) {
-	//			copyLp1 = copyLp2->next;
-	//			free(copyLp2);
-	//			copyLp2 = copyLp1;
-	//		}
-	//	}
-	//}
-}
+//void neibor_solution(firefly f, firefly &temfly) {
+//	int p1 = 0.7, p2 = 0.98;
+//	double r = rand() / (double)(RAND_MAX);
+//
+//	if (r < p1) {//interchange_operator
+//		int randNum = 1 + rand() % 8;
+//		for (int i = 0; i < randNum; i++) {
+//			int s1 = rand() % NUMBER;
+//			int s2 = rand() % NUMBER;
+//			while (s2 == s1) {//s1!=s2
+//				s2 = rand() % NUMBER;
+//			}
+//			swap(f.G[s1], f.G[s2]);
+//		}
+//		memcpy(temfly.G, f.G, NUMBER * sizeof(int));
+//		enSimpleCode(temfly);
+//	}
+//	else if (r < p2) {
+//		int r1 = rand() % NUMBER;
+//		int r2 = rand() % NUMBER;
+//		int len = 1 + rand() % 5;
+//		while (r2 == r1) {//s1!=s2
+//			r2 = rand() % NUMBER;
+//		}
+//		for (int j = 0; j < len; j++) {
+//			swap(f.G[(r1 + j) % NUMBER], f.G[(r2 + j) % NUMBER]);
+//		}
+//		memcpy(temfly.G, f.G, NUMBER * sizeof(int));
+//		enSimpleCode(temfly);
+//	}
+//	else {//inverse_operator
+//		int r1 = rand() % NUMBER;
+//		int r2 = rand() % NUMBER;
+//		while (r2 == r1) {//s1!=s2
+//			r2 = rand() % NUMBER;
+//		}
+//		if (r1 < r2)
+//			reverse(f.G + r1, f.G + r2);
+//		else
+//			reverse(f.G + r2, f.G + r1);
+//		memcpy(temfly.G, f.G, NUMBER * sizeof(int));
+//		enSimpleCode(temfly);
+//	}
+//	mut_swap(temfly);
+//	//insertAll(temfly);
+//	insert(temfly);
+//	//else {//shift_operator
+//	//	for (int _k = 0; _k < 5; _k++) {
+//	//		LinkList L, copyL;
+//	//		listToLink(f, L);//顺序-->链式
+//	//		copyLink(L, copyL);
+//
+//	//		//L中提取出单个节点
+//	//		int r = 1 + rand() % NUMBER; //单个节点位置[1,100]
+//	//		LNode* pr, * pf;
+//	//		pr = copyL;
+//	//		int i = 0;
+//	//		while (i != r - 1) {
+//	//			pr = pr->next;
+//	//			i++;
+//	//		}
+//	//		pf = pr;
+//	//		pr = pr->next;//提取出的节点
+//	//		pf->next = pr->next; //L中删去了pr
+//
+//	//		//L中插入
+//	//		int r1 = rand() % NUMBER;//插入位置[0,99]
+//	//		LNode* p;
+//	//		p = copyL;
+//	//		int j = 0;
+//	//		do {
+//	//			if (j == r1) {
+//	//				pr->next = p->next;
+//	//				p->next = pr;
+//	//				break;
+//	//			}
+//	//			else {
+//	//				p = p->next;
+//	//				j++;
+//	//			}
+//	//		} while (1);
+//
+//	//		linkToList(copyL, temfly.G);//链式-->顺序
+//	//		enSimpleCode(temfly);
+//
+//	//		//释放L内存空间
+//	//		LNode* Lp1, * Lp2;
+//	//		Lp1 = L->next;
+//	//		Lp2 = L->next;
+//	//		free(L);
+//	//		while (Lp1 != NULL) {
+//	//			Lp1 = Lp2->next;
+//	//			free(Lp2);
+//	//			Lp2 = Lp1;
+//	//		}
+//
+//	//		//释放copyL内存空间
+//	//		LNode* copyLp1, * copyLp2;
+//	//		copyLp1 = copyL->next;
+//	//		copyLp2 = copyL->next;
+//	//		free(copyL);
+//	//		while (copyLp1 != NULL) {
+//	//			copyLp1 = copyLp2->next;
+//	//			free(copyLp2);
+//	//			copyLp2 = copyLp1;
+//	//		}
+//	//	}
+//	//}
+//}
 
 bool comp(firefly a, firefly b) {
 	return a.fitness < b.fitness;
@@ -2796,11 +3091,11 @@ double discode(int c1[],int c2[]) {//编码之间的平均距离
 	return sum / CODELENGTH;
 }
 
-void LocalSearch(firefly& fi) {
-	if (rand() % 2 == 0)
-		swa(fi);
-	else opt2(fi);
-}
+//void LocalSearch(firefly& fi) {
+//	if (rand() % 2 == 0)
+//		swa(fi);
+//	else opt2(fi);
+//}
 
 int find(int arr[], int value) {
 	int tag = 0;
@@ -2813,77 +3108,77 @@ int find(int arr[], int value) {
 	return tag;
 }
 
-void GSOMove(firefly fi, firefly fj, firefly& newf) {
-	memcpy(&newf, &fi, sizeof(firefly));
-	int st = 0;
-	for (int i = 0; i < step; i++) {
-		st = rand() % CODELENGTH;
-		while (newf.G[st] == fj.G[st]) {
-			st = (st + 1)%2000;
-		}
-		int temp = newf.G[st];
-		newf.G[st] = fj.G[st];
-		newf.G[find(newf.G, temp)] = temp;
-	}
-	S_H(newf);
-	check(newf.G, s, h);//调整
-	enSimpleCode(newf);
-}
+//void GSOMove(firefly fi, firefly fj, firefly& newf) {
+//	memcpy(&newf, &fi, sizeof(firefly));
+//	int st = 0;
+//	for (int i = 0; i < step; i++) {
+//		st = rand() % CODELENGTH;
+//		while (newf.G[st] == fj.G[st]) {
+//			st = (st + 1)%2000;
+//		}
+//		int temp = newf.G[st];
+//		newf.G[st] = fj.G[st];
+//		newf.G[find(newf.G, temp)] = temp;
+//	}
+//	S_H(newf);
+//	check(newf.G, s, h);//调整
+//	enSimpleCode(newf);
+//}
 
-void randCode(firefly& fly) { //随机产生一天编码并解码
-	for (int j = 0; j < CODELENGTH; j++) {
-		G[j] = j + 1;
-	}
-	randomArr(G, CODELENGTH);	//打乱顺序
-	S_H2(G);
-	check(G, s, h);//调整
-	for (int m = 0; m < CODELENGTH; m++)
-		fly.G[m] = G[m];
-	enSimpleCode(fly);
-}
+//void randCode(firefly& fly) { //随机产生一天编码并解码
+//	for (int j = 0; j < CODELENGTH; j++) {
+//		G[j] = j + 1;
+//	}
+//	randomArr(G, CODELENGTH);	//打乱顺序
+//	S_H2(G);
+//	check(G, s, h);//调整
+//	for (int m = 0; m < CODELENGTH; m++)
+//		fly.G[m] = G[m];
+//	enSimpleCode(fly);
+//}
 
-void gsofly(firefly fi, firefly fj, firefly& temfly) {
-	//fj向fi飞行移动
-	int count = NUMBER;//海明码距离
-	double delta[NUMBER] = { 0 };	//每一维度之间的变化值
-	firefly newfly;                 //移动后的萤火虫
-	int fjCode[NUMBER] = { 0 };		//复制fj萤火虫编码，不影响原编码
-	memcpy(fjCode, fj.G, NUMBER * sizeof(int));
-
-	for (int i = 0; i < NUMBER; i++) {//计算每个位置变化值delta
-		delta[i] = fabs(dis[fi.G[i]] - dis[fj.G[i]]);
-		if (delta[i] == 0) {
-			count--;
-			newfly.G[i] = fi.G[i];//相同位置相同节点保留
-			fjCode[i] = 0;
-		}
-	}
-	
-	int reserve = min(step, count);	//随机步长，继承较亮萤火虫结点位置数量
-	for (int i = 0; i < reserve; i++) {//继承萤火虫fi中随机步长个结点
-		int temp = 0;
-		for (int j = 0; j < NUMBER; j++) {//寻找当前delta最大节点位置
-			if (delta[j] >= delta[temp]) temp = j;
-		}
-		newfly.G[temp] = fi.G[temp];
-		delta[temp] = 0;//置为0便于找下一个最大数
-
-		fjCode[find(fjCode, fi.G[temp])] = 0;
-		// for (int k2 = 0; k2 < NUMBER; k2++) {	//在萤火虫j的副本中，将已经继承过结点置0
-			// if (fjCode[k2] == fi.G[temp]) { fjCode[k2] = 0; break; }
-		// }
-	}
-
-	for (int i = 0,c = 0; i < NUMBER; i++){
-		if (newfly.G[i] == 0) {
-			while(fjCode[c]==0){//按顺序依次找到原萤火虫其他节点
-				c++;
-			}
-			newfly.G[i] = fjCode[c++];
-		}
-	}
-	S_H(newfly);
-	check(newfly, s, h);
-	enSimpleCode(newfly);
-	memcpy(&temfly, &newfly,sizeof(firefly));
-}
+//void gsofly(firefly fi, firefly fj, firefly& temfly) {
+//	//fj向fi飞行移动
+//	int count = NUMBER;//海明码距离
+//	double delta[NUMBER] = { 0 };	//每一维度之间的变化值
+//	firefly newfly;                 //移动后的萤火虫
+//	int fjCode[NUMBER] = { 0 };		//复制fj萤火虫编码，不影响原编码
+//	memcpy(fjCode, fj.G, NUMBER * sizeof(int));
+//
+//	for (int i = 0; i < NUMBER; i++) {//计算每个位置变化值delta
+//		delta[i] = fabs(dis[fi.G[i]] - dis[fj.G[i]]);
+//		if (delta[i] == 0) {
+//			count--;
+//			newfly.G[i] = fi.G[i];//相同位置相同节点保留
+//			fjCode[i] = 0;
+//		}
+//	}
+//
+//	int reserve = min(step, count);	//随机步长，继承较亮萤火虫结点位置数量
+//	for (int i = 0; i < reserve; i++) {//继承萤火虫fi中随机步长个结点
+//		int temp = 0;
+//		for (int j = 0; j < NUMBER; j++) {//寻找当前delta最大节点位置
+//			if (delta[j] >= delta[temp]) temp = j;
+//		}
+//		newfly.G[temp] = fi.G[temp];
+//		delta[temp] = 0;//置为0便于找下一个最大数
+//
+//		fjCode[find(fjCode, fi.G[temp])] = 0;
+//		// for (int k2 = 0; k2 < NUMBER; k2++) {	//在萤火虫j的副本中，将已经继承过结点置0
+//			// if (fjCode[k2] == fi.G[temp]) { fjCode[k2] = 0; break; }
+//		// }
+//	}
+//
+//	for (int i = 0,c = 0; i < NUMBER; i++){
+//		if (newfly.G[i] == 0) {
+//			while(fjCode[c]==0){//按顺序依次找到原萤火虫其他节点
+//				c++;
+//			}
+//			newfly.G[i] = fjCode[c++];
+//		}
+//	}
+//	S_H(newfly);
+//	check(newfly, s, h);
+//	enSimpleCode(newfly);
+//	memcpy(&temfly, &newfly,sizeof(firefly));
+//}

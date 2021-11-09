@@ -14,6 +14,7 @@ private:
     int seqLen;
     double fitness;
     int counts;
+    double timeSpan;
 
 public:
 
@@ -38,6 +39,10 @@ public:
     int getCounts() const;
 
     void setCounts(int updateCounts);
+
+    double getTimeSpan() const;
+
+    void setTimeSpan(double timeSpan);
 
     friend std::ostream &operator<<(std::ostream &os, const Food &food);
 

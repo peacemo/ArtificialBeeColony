@@ -29,6 +29,7 @@ void fdcpy(Food &sFood, Food &tFood) {
     // 其他属性的复制
     tFood.setFitness(sFood.getFitness());
     tFood.setSeqLen(sFood.getSeqLen());
+    tFood.setTimeSpan(sFood.getTimeSpan());
     tFood.setCounts(0);
 }
 
@@ -250,7 +251,7 @@ void abc() {
 
         fitnessGrid.push_back(currentBestFood.getFitness());
         std::cout << "Gen " << i + 1 << ": ";
-        std::cout << currentBestFood.getFitness() << std::endl;
+        std::cout << "{Fitness:" << currentBestFood.getFitness() << ",\tTime:" << currentBestFood.getTimeSpan() << "}" << std::endl;
         if (currentBestFood.getFitness() == 0) break;
         endTime = clock();//计时结束
         std::cout << "The one time is: " <<(double)(endTime - startTime) / CLOCKS_PER_SEC << "s" << std::endl;

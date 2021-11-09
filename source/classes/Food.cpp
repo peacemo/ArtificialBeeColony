@@ -38,6 +38,7 @@ Food::Food() {
     this->seqLen = GoodsNum;
     this->fitness = -1;
     this->counts = 0;
+    this->timeSpan = 0;
     this->stirSequence();
     this->calFitness();
 }
@@ -74,6 +75,14 @@ int Food::getCounts() const {
 
 void Food::setCounts(int counts) {
     Food::counts = counts;
+}
+
+double Food::getTimeSpan() const {
+    return timeSpan;
+}
+
+void Food::setTimeSpan(double timeSpan) {
+    Food::timeSpan = timeSpan;
 }
 
 /*!
@@ -152,7 +161,7 @@ std::ostream &operator<<(std::ostream &os, const Food &food) {
         }
     }
     os << "seq: " << tempSeq << "\tseqLen: " << food.seqLen << "\tfitness: " << food.fitness << "\tcounts: "
-       << food.counts;
+       << food.counts << "\ttime: " << food.timeSpan;
     return os;
 }
 
@@ -181,5 +190,7 @@ void Food::addIntoSequence(int index, int target) {
 Food::~Food() {
 
 }
+
+
 
 
