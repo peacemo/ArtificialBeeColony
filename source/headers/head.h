@@ -75,8 +75,8 @@ double r_ji3 = 14;  //入库货物从叠盘机到堆垛机3的距离
 double r_ji4 = 16;  //入库货物从叠盘机到堆垛机4的距离
 double r_ji5 = 18;  //入库货物从叠盘机到堆垛机5的距离
 double r_ji6 = 20;  //入库货物从叠盘机到堆垛机6的距离(现实中该堆垛机不执行入库任务)
-double fre1 = 10;//上货点1的上货频率 每箱需要几秒放置
-double fre2 = 10;//上货点2的上货频率
+double fre1 = 8;//上货点1的上货频率 每箱需要几秒放置
+double fre2 = 8;//上货点2的上货频率
 //int fre = 1.0/fre1 + 1.0/fre2;//1秒的出货数量
 double r_load1 = 20;//上货点1到叠箱机的距离
 double r_load2 = 10;//上货点2到叠箱机的距离 
@@ -108,7 +108,7 @@ int block_long = 0;//最长堵塞长度
 int block_times = 0;//超出最大不堵塞容量的次数
 int inspect_y = 0;//送检口的y坐标
 int inspect_z = 0;//送检口的z坐标
-
+int outbound_i = 0;//出库次序
 
 int G[CODELENGTH];
 int h[H - _k];
@@ -119,6 +119,7 @@ int I[H - _k][2];//送检和回库编码的有序数对
 int INum[H - _k][2];//送检编码和回库编码在G中的下标
 int inspect_volume_a_now[assets_a];//a资产当前检定数量
 int inspect_volume_b_now[assets_b];//b资产当前检定数量
+double outbound[H][2];//出库数组，[][0]保存出库次序或编码，[][1]保存出库时间
 
 double a[R] ;//入库商品到达堆垛机的时间顺序
 double th[H - _k];//回库资产到达时间
