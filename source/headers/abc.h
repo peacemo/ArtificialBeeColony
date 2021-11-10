@@ -166,6 +166,8 @@ void abc() {
     vector<int> fitnessGrid; // 记录最佳解的变化过程
     vector<int> scoutIndex; // 记录需要丢弃并更新的食物源的下标
 
+    clock_t start,end;
+    start = clock();
     int empBeeNum = FoodsNum; // 引领蜂
     int onLookBeeNum = FoodsNum; // 跟随蜂
 
@@ -277,7 +279,11 @@ void abc() {
             output << fitnessGrid[i] << ", ";
         }
     }
+    end = clock();
+    std::cout<< "The one time is: " <<(double)(start - end) / CLOCKS_PER_SEC << "s" << std::endl;
+    output<<<< "The one time is: " <<(double)(start - end) / CLOCKS_PER_SEC << "s" <<endl;
     output.close();
+    
 }
 
 #endif //ABC_ABC_H

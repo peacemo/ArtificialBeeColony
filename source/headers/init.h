@@ -19,6 +19,30 @@ using namespace std;
 char judge_type(int p,int a);
 char judge_type(int p);
 
+//将出库数组输出到文件
+void get_outbound(){
+    double temp2 = 0;
+    int sit = 0;
+    for(int i=0;i<H;i++){
+        for(int j=0;j<H-i;j++){
+            if(outbound[j+1][1]<outbound[j][1]){//以时间为顺序排列
+            temp2=outbound[j+1][1];
+            outbound[j+1][1]=outbound[j][1];
+            outbound[j][1]=temp2;
+
+			sit = outbound[j+1][0];
+            outbound[j+1][0] = outbound[j][0];
+            outbound[j][0] = sit;
+            }
+        }
+    }
+    ofstream output_outbound;
+    output_outbound.open("output/outbound.txt");
+    for(int i=0;i<H;i++){
+        output_outbound<<outbound[i][0]<<":"<<outbound[i][1]<<endl;
+    }
+    output_outbound.close();
+}
 //将送检长度数组输出到文件
 void get_inspect(){
     ofstream out_inspect;
@@ -1008,6 +1032,9 @@ double read(double TI,double TDI,int p,int nextp){
             else    
                 wait_time = hi[i][1] - TI;
             walk_time1 = Walk_time(cargo_now[p-1].y,cargo_now[p-1].z);
+            if(outbound_i>H){std::cout<<"outbound_i error"<<endl;}
+            outbound[outbound_i][0] = outbound_i + 1;
+            outbound[outbound_i++][1] = TI + walk_time1;
             if(next_type=='R'||next_type=='H')
                 walk_time2 = Walk_time(cargo_now[p-1].y,cargo_now[p-1].z);
             else
@@ -1590,7 +1617,7 @@ int max2(double T[], Food &f){
     }
 	punish();
 	//T[0] = T[0]/60.0;
-	G_fintess = T[0]*0.95 + TD[0]*0.05 + block_long*block_times*100;//适应度值计算，加权重
+	G_fintess = T[0]*0.95 + TD[0]*0.05 + block_long*block_times*10;//适应度值计算，加权重
 //    cout << T[0] << endl;
     f.setTimeSpan(T[0] / 3600.0);
 	//G_fintess = G_fintess/60.0;//除以60 将秒转换为分钟
@@ -2035,6 +2062,7 @@ double Fintess(Food& f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
     h1=0,h2=0,h3=0,h4=0,h5=0,h6=0;
     th1=0,th2=0,th3=0,th4=0,th5=0,th6=0;
     aa = 0,bb = 0;
+    outbound_i = 0;
     inspect_volume_a_now[0] = 0;
     inspect_volume_b_now[0] = 0;
     int ddj=0,p=0;
@@ -2329,6 +2357,7 @@ void enSimpleCode(Food& f) {
     //f.fitness=Fintess(f,g1,g2,g3,g4,g5,g6,g1_H,g2_H,g3_H,g4_H,g5_H,g6_H );
     f.setFitness(Fintess(f,g1,g2,g3,g4,g5,g6,g1_H,g2_H,g3_H,g4_H,g5_H,g6_H,g1_H2,g2_H2,g3_H2,g4_H2,g5_H2,g6_H2,g1_th,g2_th,g3_th,g4_th,g5_th,g6_th)); //计算适应度值
     get_inspect();//获取动态检定数量数组
+    get_outbound();//获取出库数组
 //    f.fluorescein = (1-rou)*f.fluorescein + mgamma / f.fitness;
 
 }
