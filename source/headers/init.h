@@ -19,6 +19,38 @@ using namespace std;
 char judge_type(int p,int a);
 char judge_type(int p);
 
+void get_out_block(){
+    ofstream output;
+    output.open("output/out_block.txt");
+    for(int i=0;i<H;i++){
+        output<<i<<":"<<outbound[i][0]<<endl;
+    }
+    output.close();
+}
+//判断出库堵塞
+void out_block(int out_time){//参数为出库的时间间隔，单位 秒
+    int i = 1;
+    int j = 0; 
+    double TI = 0;
+    for(i=0;i<H;i++){
+        outbound[i][0] = 0;
+    }
+    i = 1;
+    while(j!=H){
+        TI += out_time;
+        if(TI>=outbound[j][1]){
+            outbound[j][1] = 9999999;//出库一个
+            for(int a = 0;a<H;a++){
+                if(outbound[a][1]<TI){
+                    outbound[j][0]++;
+                }
+            }
+            j++;
+        }
+
+    }
+}
+
 //将出库数组输出到文件
 void get_outbound(){
     double temp2 = 0;
@@ -1611,13 +1643,13 @@ int max2(double T[], Food &f){
         }
 	}
     ofstream out;
-    out.open("output/out_block.txt");
+    out.open("output/in_block.txt");
     for(int i=1;i<CODELENGTH+1;i++){
         out<<"arr_p[][]:"<<arr_p[i][0]<<","<<arr_p[i][1]<<","<<arr_p[i][2]<<","<<arr_p[i][3]<<endl;
     }
 	punish();
 	//T[0] = T[0]/60.0;
-	G_fintess = T[0]*0.95 + TD[0]*0.05 + block_long*block_times*10;//适应度值计算，加权重
+	G_fintess = T[0]*0.95 + TD[0]*0.05 + block_long*block_times*50;//适应度值计算，加权重
 //    cout << T[0] << endl;
     f.setTimeSpan(T[0] / 3600.0);
 	//G_fintess = G_fintess/60.0;//除以60 将秒转换为分钟
@@ -2358,6 +2390,8 @@ void enSimpleCode(Food& f) {
     f.setFitness(Fintess(f,g1,g2,g3,g4,g5,g6,g1_H,g2_H,g3_H,g4_H,g5_H,g6_H,g1_H2,g2_H2,g3_H2,g4_H2,g5_H2,g6_H2,g1_th,g2_th,g3_th,g4_th,g5_th,g6_th)); //计算适应度值
     get_inspect();//获取动态检定数量数组
     get_outbound();//获取出库数组
+    out_block(10);//10s出库一垛
+    get_out_block();//出库堵塞输出到文件
 //    f.fluorescein = (1-rou)*f.fluorescein + mgamma / f.fitness;
 
 }
