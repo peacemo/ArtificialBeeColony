@@ -41,6 +41,7 @@ void out_block(int out_time){//参数为出库的时间间隔，单位 秒
         if(TI>=outbound[j][1]){
             outbound[j][1] = 9999999;//出库一个
             for(int a = 0;a<H;a++){
+                
                 if(outbound[a][1]<TI){
                     outbound[j][0]++;
                 }
@@ -682,7 +683,7 @@ void getT_load(int i,char type){
 			t_R = fre1*((i+1)/2) + t_load1;
 		}
 		temp_p++;
-		if(type=='A'){//如果属于A类型 3箱成一垛
+		if(type=='A'){//如果属于A类型 3箱成一垛  
 			if(temp_p==a_num){
 				temp_p = 0;
 				flag_R++;//发送一垛
@@ -720,6 +721,7 @@ void R_Test(int r[]){
 	int an=0;
 	int ddj;
     int p1=0,p2=0,p3=0,p4=0,p5=0,p6=0;
+    int nums = 1;
     ofstream write;
 	write.open("output/R.txt");//表示你要把内容输出到“text.txt"这个文件里 如果没有这个文件，会自动创建这个文件
 	int p_R = 0;//入库编码下标
@@ -728,7 +730,20 @@ void R_Test(int r[]){
 			break;
 		if(an>R)	//	防止出现数组访问越界
 			break;
-        getT_load(i,'A');//按照上货箱数的编号，从1~R_n开始上货物，类型A
+
+        // if(nums<num_A+1)
+        // {
+        //     getT_load(i,'A');//按照上货箱数的编号，从1~R_n开始上货物，类型A    
+        //     nums++;
+        // }
+        // else if (nums<num_B+1)
+        // {
+        //     getT_load(I,'B');//类型B
+        //     nums++;
+        // }
+
+        getT_load(i,'A');//按照上货箱数的编号，从1~R_n开始上货物，类型A、
+
         if(flag_R==2 && p_R<R){//集齐两垛 开始计算到达堆垛机入口的时间
 			flag_R = 0;	//将标记归0
             ddj = stacker(r[p_R]);//根据入库编码，计算出堆垛机序号
@@ -1159,6 +1174,15 @@ double read(double TI,double TDI,int p,int nextp){
 						break;
 					}
 					//cout<<"------------"<<h[i]<<"------------"<<endl;
+                    // if(cargo_now[p-1].type=='A')
+                    // {
+
+                    // }
+                    // else if(cargo_now[p-1].type=='B')
+                    // {
+                        
+                    // }
+
 					hi[v2][1] = TI + t_inspect;//回库时间写入到hi[v2][1]中
 					hi[v2][0] = h[i];//回库编码 写入到hi[v2][0]中
 					v2++;//v2自增
