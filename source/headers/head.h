@@ -5410,19 +5410,19 @@ Cargo_Space cargo[n_total]={//p  xxx(cargo[p-1].x)
 
 // };
 
-typedef struct  str{
-	//一个萤火虫对应一条编码，不一定是结构体
-	int G[NUMBER];//G[]
-	double fitness = 999999;
-	double fluorescein = 0;
-}firefly;
+//typedef struct  str{
+//	//一个萤火虫对应一条编码，不一定是结构体
+//	int G[NUMBER];//G[]
+//	double fitness = 999999;
+//	double fluorescein = 0;
+//}firefly;
 
-firefly fly[flyNum];//初始种群，每次迭代的种群
-double dis[CODELENGTH][CODELENGTH]={0};//货位号两两之间的距离
-firefly combinedPouplation[2*flyNum];
+//firefly fly[flyNum];//初始种群，每次迭代的种群
+//double dis[CODELENGTH][CODELENGTH]={0};//货位号两两之间的距离
+//firefly combinedPouplation[2*flyNum];
 
-typedef struct LNode {
-	int data;
-	struct LNode* next;
-	struct LNode* head;
-}LNode, * LinkList;
+//typedef struct LNode {
+//	int data;
+//	struct LNode* next;
+//	struct LNode* head;
+//}LNode, * LinkList;
