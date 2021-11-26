@@ -109,6 +109,9 @@ int block_times = 0;//超出最大不堵塞容量的次数
 int inspect_y = 0;//送检口的y坐标
 int inspect_z = 0;//送检口的z坐标
 int outbound_i = 0;//出库次序
+int num_A = 1500;//类型A的入库箱数 垛：500
+int num_B = 2500;//类型B的入库箱数 垛：500
+
 
 int G[CODELENGTH];
 int h[H - _k];
