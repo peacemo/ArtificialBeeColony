@@ -854,10 +854,10 @@ void inspect(char type_inspect){//输入货物类型
 }
 //行走时间
 double Walk_time(int y,int z){//输入 y、z坐标
-    float v1 = 2;//堆垛机垂直移动速度
-    float v2 = 4;//堆垛机水平移动速度
-    float l = 0.5;//垛 长度
-    float h = 0.65;//货架的一个高
+    float v1 = 0.5;//堆垛机垂直移动速度
+    float v2 = 10;//堆垛机水平移动速度
+    float l = 2;//垛 长度
+    float h = 1.5;//货架的一个高
     float d = 0.2;//货位间的距离
     int Yn = y;//y坐标
     int Zn = z;//z坐标
