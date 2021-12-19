@@ -1,4 +1,4 @@
-//配置文件
+//配置文件 测试 yoga
 //#define INPUTFILE "E:\\???\\Data sets\\Solomon\\solomon_100\\RC101.txt"
 //300:R:80 S:75 H:75 C: 70  R:1-80 S:81-155 H:156-230 C:231-300
 //萤火虫参数
