@@ -19,6 +19,34 @@ using namespace std;
 char judge_type(int p,int a);
 char judge_type(int p);
 
+/*
+//根据资产类型判断送检口
+void inspect_xyz(char type){
+    if(type=='a'){
+        inspect_y = 0;
+        inspect_z = 2;
+    }
+    else if(type=='b'){
+        inspect_y = 0;
+        inspect_z = 3;
+    }
+    else if(type=='c'){
+        inspect_y = 0;
+        inspect_z = 4;
+    }
+    else if(type=='d'){
+        inspect_y = 0;
+        inspect_z = 5;
+    }
+    else if(type=='e'){
+        inspect_y = 0;
+        inspect_z = 6;
+    }
+    else
+        cout<<"inspect_xyz error!"<<endl;
+}
+*/
+
 void get_out_block(){
     ofstream output;
     output.open("output/out_block.txt");
@@ -879,7 +907,7 @@ double Walk_time(int y,int z){//输入 y、z坐标
     time_in_long = Long_In / v2;//计算水平移动的时间
     time_in_run = max(time_in_high,time_in_long);//堆垛机垂直运动的时间与堆垛机水平移动的时间 两者最长的时间即为堆垛机的移动时间
     time = time_in_run;//赋值给time
-    return time;//返回堆垛机运动的时间
+    return time_in_run;//返回堆垛机运动的时间
 }
 
 //插入，目前没有用到
@@ -1043,6 +1071,8 @@ double read(double TI,double TDI,int p,int nextp){
 			// 		break;
 			// 	}
 			// }
+
+            //计算送检口送检长度
             inspection_NUM('H',cargo_now[p-1].type);
             for(i=0;i< H - _k; i++){//在h[]中找到下标
                 if(hi[i][0] == p){
@@ -1081,6 +1111,8 @@ double read(double TI,double TDI,int p,int nextp){
 			arr_block(TI,ddj);
             break;
         case 'S':
+            //获取检定口位置
+            inspect_xyz(cargo_now[p-1].type);
             inspection_NUM('S',cargo_now[p-1].type);
             inspect(cargo_now[p-1].type);
             walk_time1 = Walk_time(cargo_now[p-1].y,abs(cargo_now[p-1].z-inspect_z)); //堆垛机从当前位置移动到送检口，此处送检口与资产type相关
