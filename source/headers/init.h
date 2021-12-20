@@ -493,6 +493,12 @@ int g_number(int ddj){
 	case 6:
 		return g6_r;
 		break;
+    case 7:
+		return g7_r;
+		break; 
+    case 8:
+		return g8_r;
+		break;   
 	default:
 		cout<<"g_number error!"<<endl;
 		break;
