@@ -19,6 +19,34 @@ using namespace std;
 char judge_type(int p,int a);
 char judge_type(int p);
 
+/*
+//根据资产类型判断送检口
+void inspect_xyz(char type){
+    if(type=='a'){
+        inspect_y = 0;
+        inspect_z = 2;
+    }
+    else if(type=='b'){
+        inspect_y = 0;
+        inspect_z = 3;
+    }
+    else if(type=='c'){
+        inspect_y = 0;
+        inspect_z = 4;
+    }
+    else if(type=='d'){
+        inspect_y = 0;
+        inspect_z = 5;
+    }
+    else if(type=='e'){
+        inspect_y = 0;
+        inspect_z = 6;
+    }
+    else
+        cout<<"inspect_xyz error!"<<endl;
+}
+*/
+
 void get_out_block(){
     ofstream output;
     output.open("output/out_block.txt");
@@ -879,7 +907,7 @@ double Walk_time(int y,int z){//输入 y、z坐标
     time_in_long = Long_In / v2;//计算水平移动的时间
     time_in_run = max(time_in_high,time_in_long);//堆垛机垂直运动的时间与堆垛机水平移动的时间 两者最长的时间即为堆垛机的移动时间
     time = time_in_run;//赋值给time
-    return time;//返回堆垛机运动的时间
+    return time_in_run;//返回堆垛机运动的时间
 }
 
 //插入，目前没有用到
@@ -1043,6 +1071,8 @@ double read(double TI,double TDI,int p,int nextp){
 			// 		break;
 			// 	}
 			// }
+
+            //计算送检口送检长度
             inspection_NUM('H',cargo_now[p-1].type);
             for(i=0;i< H - _k; i++){//在h[]中找到下标
                 if(hi[i][0] == p){
@@ -1081,6 +1111,8 @@ double read(double TI,double TDI,int p,int nextp){
 			arr_block(TI,ddj);
             break;
         case 'S':
+            //获取检定口位置
+            inspect_xyz(cargo_now[p-1].type);
             inspection_NUM('S',cargo_now[p-1].type);
             inspect(cargo_now[p-1].type);
             walk_time1 = Walk_time(cargo_now[p-1].y,abs(cargo_now[p-1].z-inspect_z)); //堆垛机从当前位置移动到送检口，此处送检口与资产type相关
@@ -1150,18 +1182,18 @@ double read(double TI,double TDI,int p,int nextp){
 						break;
 					}
 					//cout<<"------------"<<h[i]<<"------------"<<endl;
-                    // if(cargo_now[p-1].type=='A')
+                    // if(cargo_now[p-1].type=='a')
                     // {
 
                     // }
-                    // else if(cargo_now[p-1].type=='B')
+                    // else if(cargo_now[p-1].type=='b')
                     // {
                         
                     // }
 
-					hi[v2][1] = TI + t_inspect;//回库时间写入到hi[v2][1]中
-					hi[v2][0] = h[i];//回库编码 写入到hi[v2][0]中
-					v2++;//v2自增
+					hi[m2][1] = TI + t_inspect;//回库时间写入到hi[m2][1]中
+					hi[m2][0] = h[i];//回库编码 写入到hi[m2][0]中
+					m2++;//m2自增
 					th[i] = TI + t_inspect;//回库时间统一写入到一个数组中
 					break;
 				}
@@ -1567,7 +1599,7 @@ void decide_swap(int g[], int gi[], int gi_H2[], int gi_th[], int gi_H[], int th
     int u1 = 0, u2 = 0, temp = 0;//u1，u2表示需要交换编码的下标
     int p1 = 0;
     bool flag_u1 = false, flag_u2 = false;
-    p1 = hi[v - 1][0];//时间最短的回库编码
+    p1 = hi[m1 - 1][0];//时间最短的回库编码
     int ddj = stacker(p1);//判断最短时间回库编码的堆垛机序号
     int p2 = 0;//要交换的编码
     for (int i = hj - 1; i < thi; i++) {//从读取到当前回库编码数量 开始 到所有已与送检编码匹配的回库编码数量为止
@@ -1641,7 +1673,7 @@ void decide_swap(Food &food, int gi[], int gi_H2[], int gi_th[], int gi_H[], int
     int u1 = 0, u2 = 0, temp = 0;//u1，u2表示需要交换编码的下标
     int p1 = 0;
     bool flag_u1 = false, flag_u2 = false;
-    p1 = hi[v - 1][0];//时间最短的回库编码
+    p1 = hi[m1 - 1][0];//时间最短的回库编码
     int ddj = stacker(p1);//判断最短时间回库编码的堆垛机序号
     int p2 = 0;//要交换的编码
     for (int i = hj - 1; i < thi; i++) {//从读取到当前回库编码数量 开始 到所有已与送检编码匹配的回库编码数量为止
@@ -1711,13 +1743,13 @@ void decide_swap(Food &food, int gi[], int gi_H2[], int gi_th[], int gi_H[], int
 
 //找到时间最短的回库编码
 int min_h(){
-	int Th = th1+th2+th3+th4+th5+th6-v;//所有已读取送检编码的数量
+	int Th = th1+th2+th3+th4+th5+th6-m1;//所有已读取送检编码的数量
     int i,j,p=0,sit=0;
     double temp;
 	//冒泡排序
-	for( i=v;i<Th-1;i++){//开始v是0，从0开始循环，到所有已读取的送检数量为止。表示遍历 所有已读取送检编码数量 的 回库编码 和 回库时间
-	//主要是两两对比，将hi[][]数组根据回库时间进行排序，并且在排序时，其对应的回库编码也随着回库时间进行排序，保证hi[v][0]始终为 本次所有回库编码的最短时间
-        for(j=v;j<Th-1-i;j++){
+	for( i=m1;i<Th-1;i++){//开始v是0，从0开始循环，到所有已读取的送检数量为止。表示遍历 所有已读取送检编码数量 的 回库编码 和 回库时间
+	//主要是两两对比，将hi[][]数组根据回库时间进行排序，并且在排序时，其对应的回库编码也随着回库时间进行排序，保证hi[m1][0]始终为 本次所有回库编码的最短时间
+        for(j=m1;j<Th-1-i;j++){
             if(hi[j+1][1]<hi[j][1]){
             temp=hi[j+1][1];
             hi[j+1][1]=hi[j][1];
@@ -1731,11 +1763,11 @@ int min_h(){
 	}
 	
 	//快速排序
-	//quickSortHelp(hi, v, Th-1);
-	v++;//本次读取的最短回库编码的回库时间已找到，移动到下一位，此后，位于v之前的回库编码不再参与比较
-	if(hi[v-1][0]==9999)
-		v--;
-	return hi[v-1][0];//返回最短回库时间的回库编码
+	//quickSortHelp(hi, m1, Th-1);
+	m1++;//本次读取的最短回库编码的回库时间已找到，移动到下一位，此后，位于v之前的回库编码不再参与比较
+	if(hi[m1-1][0]==9999)
+		m1--;
+	return hi[m1-1][0];//返回最短回库时间的回库编码
 }
 
 // todo 重载 Fitness()
@@ -1750,7 +1782,7 @@ double Fintess(Food& f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
     inspect_volume_a_now[0] = 0;
     inspect_volume_b_now[0] = 0;
     int ddj=0,p=0;
-    v = 0;v2=0;
+    m1 = 0;m2=0;
     TD[0]=0;
     //按照堆垛机顺序，依次读取编码，直到读取到回库编码为止
     read_ddj(g1_H,1,g1);
