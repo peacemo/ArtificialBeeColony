@@ -39,14 +39,15 @@ const int assets_b = 2001;//b资产的检定和回库垛数
 #define _k 0
 int len = CODELENGTH;
 int j_1=0,j_2=0,j_3=0,j_4=0,j_5=0,j_6=0;//每台堆垛机已读取的编码数量， 0~gi_n
-int h1=0,h2=0,h3=0,h4=0,h5=0,h6=0;//每台堆垛机读取到当前的回库编码数量
-int th1=0,th2=0,th3=0,th4=0,th5=0,th6=0;//每台堆垛机，已被相应送检编码匹配的回库编码数量
-int g1_n = 0,g2_n = 0,g3_n = 0,g4_n = 0,g5_n = 0,g6_n = 0; //各个堆垛机子序列编码长度
-int g1_s = 0,g2_s = 0,g3_s = 0,g4_s = 0,g5_s = 0,g6_s = 0;//各个堆垛机送检数量
-int g1_h = 0,g2_h = 0,g3_h = 0,g4_h = 0,g5_h = 0,g6_h = 0;//各个堆垛机回库数量
-int g1_r = 0,g2_r = 0,g3_r = 0,g4_r = 0,g5_r = 0,g6_r = 0;//各个堆垛机的入库数量
-double T1=0,T2=0,T3=0,T4=0,T5=0,T6=0;	//各个堆垛机的总工作时间
-double TD1=0,TD2=0,TD3=0,TD4=0,TD5=0,TD6=0;
+int h1=0,h2=0,h3=0,h4=0,h5=0,h6=0,h7=0,h8=0;//每台堆垛机读取到当前的回库编码数量
+int th1=0,th2=0,th3=0,th4=0,th5=0,th6=0,th7=0,th8=0;//每台堆垛机，已被相应送检编码匹配的回库编码数量
+int g1_n = 0,g2_n = 0,g3_n = 0,g4_n = 0,g5_n = 0,g6_n = 0,g7_n = 0,g8_n = 0; //各个堆垛机子序列编码长度
+int g1_s = 0,g2_s = 0,g3_s = 0,g4_s = 0,g5_s = 0,g6_s = 0,g7_s = 0,g8_s = 0;//各个堆垛机送检数量
+int g1_h = 0,g2_h = 0,g3_h = 0,g4_h = 0,g5_h = 0,g6_h = 0,g8_h = 0,g8_h = 0;//各个堆垛机回库数量
+int g1_r = 0,g2_r = 0,g3_r = 0,g4_r = 0,g5_r = 0,g6_r = 0,g7_r = 0,g8_r = 0;//各个堆垛机的入库数量
+int inspect_x = 0,inspect_y = 0,inspect_z = 0;//堆垛机送检的坐标
+double T1=0,T2=0,T3=0,T4=0,T5=0,T6=0,T7=0,T8=0;	//各个堆垛机的总工作时间
+double TD1=0,TD2=0,TD3=0,TD4=0,TD5=0,TD6=0,TD7=0,TD8=0;
 double t_inspect_a = 0.5;//不同类型资产的检定时间 单位 h
 double t_inspect_b = 1;
 double t_inspect_c = 3;
