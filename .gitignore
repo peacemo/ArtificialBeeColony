@@ -4,5 +4,6 @@ output/
 .vscode/
 *.exe
 source/test_arr.cpp
+source/test.cpp
 会议内容/
 # chen added something...
