@@ -8,13 +8,13 @@
 
 void loadCargo() {
     cout << "startCargo..." << endl;
-    startCargo(8000,7,13,19,26);
-    //getCargo("mCargo1_first.txt","mCargo2_first.txt");
+    startCargo(16224,7,13,19,26);
+    getCargo("output/mCargo1_first.txt","output/mCargo2_first.txt");
     cout << "candidate..." << endl;
     candidate();
     getCandidate();
     cout << "selectCargo..." << endl;
-    selectCargo(1);
+    selectCargo(20211220);
     cargoRule("R","S","H","C");
     //updateCargo();
     getCargo("output/mCargo1.txt","output/mCargo2.txt");
@@ -27,7 +27,7 @@ int main() {
     mainout.open("output/best.txt");
     clock_t startTime,endTime;
     startTime = clock();//计时开始
-//    loadCargo();
+    //loadCargo();
     abc();
 //    geneticAgro();
 //    std::cout << sizeof (double ) << std::endl;

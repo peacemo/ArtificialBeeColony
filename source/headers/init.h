@@ -69,14 +69,12 @@ void out_block(int out_time){//参数为出库的时间间隔，单位 秒
         if(TI>=outbound[j][1]){
             outbound[j][1] = 9999999;//出库一个
             for(int a = 0;a<H;a++){
-                
                 if(outbound[a][1]<TI){
                     outbound[j][0]++;
                 }
             }
             j++;
         }
-
     }
 }
 
@@ -211,6 +209,28 @@ void getCargo(string file_name1,string file_name2){
  * @param c 出库货位所在的列 pre~c
  */
 void startCargo(int N,int r,int s,int h,int c){//货位数量,入库、送检、回库、出库
+    int point_x = 1,point_y = 1,point_z = 1;
+    for(int i=0;i<N;i++){
+        cargo[i].x = point_x;
+        cargo[i].y = point_y;
+        cargo[i].z = point_z;
+        cargo[i].time = 20211220;
+        cargo[i].type = 'a';
+        cargo[i].model = 1;
+        cargo[i].num = i + 1;
+        point_z++;
+        if(point_x>12){
+            point_x = point_x % 12;
+        }
+        if(point_y>52){
+            point_y = point_y % 52;
+            point_x++;
+        }
+        if(point_z>26){
+            point_z = point_z %26;
+            point_y++;
+        }
+    }
     for(int i=0;i<N;i++){
         if((cargo[i].y >= 1) && (r >= cargo[i].y)){ // 对所有货位进行分块
             cargo[i].s1 = 0;
@@ -258,28 +278,28 @@ void candidate(){
 void getCandidate(){
     ofstream out;
     out.open("output/candidate.txt");
-    for(int i=0;i<3000;i++){
+    for(int i=0;i<candidate_num;i++){
         out<<"{"<<G_r[i].x<<","<<G_r[i].y<<","<<G_r[i].z<<","<<G_r[i].s1<<","<<G_r[i].s2<<","<<G_r[i].num<<","<<"'a'"<<","<<G_r[i].model<<","<<G_r[i].time<<"}"<<",";
         if((i+1)%5==0){
             out<<endl;
         }
     }
     out<<endl;
-    for(int i=0;i<3000;i++){
+    for(int i=0;i<candidate_num;i++){
         out<<"{"<<G_s[i].x<<","<<G_s[i].y<<","<<G_s[i].z<<","<<G_s[i].s1<<","<<G_s[i].s2<<","<<G_s[i].num<<","<<"'a'"<<","<<G_s[i].model<<","<<G_s[i].time<<"}"<<",";
         if((i+1)%5==0){
             out<<endl;
         }
     }
     out<<endl;
-    for(int i=0;i<3000;i++){
+    for(int i=0;i<candidate_num;i++){
         out<<"{"<<G_h[i].x<<","<<G_h[i].y<<","<<G_h[i].z<<","<<G_h[i].s1<<","<<G_h[i].s2<<","<<G_h[i].num<<","<<"'a'"<<","<<G_h[i].model<<","<<G_h[i].time<<"}"<<",";
         if((i+1)%5==0){
             out<<endl;
         }
     }
     out<<endl;
-    for(int i=0;i<3000;i++){
+    for(int i=0;i<candidate_num;i++){
         out<<"{"<<G_c[i].x<<","<<G_c[i].y<<","<<G_c[i].z<<","<<G_c[i].s1<<","<<G_c[i].s2<<","<<G_c[i].num<<","<<"'a'"<<","<<G_c[i].model<<","<<G_c[i].time<<"}"<<",";
         if((i+1)%5==0){
             out<<endl;
@@ -304,7 +324,7 @@ void selectCargo(int day){//参数为天数
         }
         else{
             q++;
-            for(int i=0;i<3000 && count<S;i++){
+            for(int i=0;i<candidate_num && count<S;i++){
                 if(G_s[i].time == day + q){
                     count++;
                     cargo_now[cargo_now_i++] = G_s[i];
@@ -323,7 +343,7 @@ void selectCargo(int day){//参数为天数
         }
         else{
             q++;
-            for(int i=0;i<3000 && count<C;i++){
+            for(int i=0;i<candidate_num && count<C;i++){
                 if(G_c[i].time == day + q){
                     count++;
                     cargo_now[cargo_now_i++] = G_c[i];
@@ -424,7 +444,7 @@ void cargoRule(string first,string second,string third,string fourth){
         s42 = 1;
     }
 
-    for(int i=0;i<8112;i++){
+    for(int i=0;i<n_total;i++){
         if(cargo[i].z<=4){
             cargo[i].s1 = s11;
             cargo[i].s2 = s12;
@@ -711,7 +731,7 @@ void getT_load(int i,char type){
 		//5: fre1*3 + t_load1
 		//6: fre2*3 + t_load2
 		if(i%2==0){
-			t_R = fre2*(i/2) + t_load2;  
+			t_R = fre2*(i/2) + t_load2 + 3;  
 		}
 		else{
 			t_R = fre1*((i+1)/2) + t_load1;
@@ -755,10 +775,12 @@ void R_Test(int r[]){
 	int an=0;
 	int ddj;
     int p1=0,p2=0,p3=0,p4=0,p5=0,p6=0;
-    int nums = 1;
-    ofstream write;
-	write.open("output/R.txt");//表示你要把内容输出到“text.txt"这个文件里 如果没有这个文件，会自动创建这个文件
+    int nums = 1,send_num = 1;
+    ofstream write_send,write_get;
+	write_get.open("output/r_get.txt");//表示你要把内容输出到“text.txt"这个文件里 如果没有这个文件，会自动创建这个文件
+    write_send.open("output/r_send.txt");
 	int p_R = 0;//入库编码下标
+    flag_R = 0;//是否成功发送一垛
 	for(int i =1;i<=R_n;i++){
 		if(p_R>R)	//	防止出现数组访问越界
 			break;
@@ -775,77 +797,82 @@ void R_Test(int r[]){
         //     getT_load(I,'B');//类型B
         //     nums++;
         // }
-
         getT_load(i,'A');//按照上货箱数的编号，从1~R_n开始上货物，类型A、
-
-        if(flag_R==2 && p_R<R){//集齐两垛 开始计算到达堆垛机入口的时间
+       
+        if(flag_R==1 && p_R<R){//集齐两垛 开始计算到达堆垛机入口的时间
 			flag_R = 0;	//将标记归0
             ddj = stacker(r[p_R]);//根据入库编码，计算出堆垛机序号
 			p_R++;
             get_t = send_t + getT(ddj);//计算到达时间 = 发送时间+到达堆垛机的时间
 			//cout<<"get_t:"<<get_t<<endl;
-        if(ddj==1){//判断是否属于堆垛机1
-            //cout<<"The ddj is "<<ddj<<"\tThe num "<<p_R<<"\tstack arrive ddj time is "<<get_t<<endl;
-            //write<<"The ddj is "<<ddj<<"\tThe num "<<p_R<<"\tstack arrive ddj time is "<<get_t<<endl;
-				//cout<<1<<endl;
-            a[an] = get_t;//写入数组a中
-            an++;
-            gp[0][p1][1] = get_t;//同时写入数组gp中
-            p1++;
-            write<<an<<" "<<get_t<<endl;
-            get_t = 0;//将到达时间变量归0
-            continue;//提高程序效率，不再进行下面的判断
-        }
-        if(ddj==2){
-			a[an] = get_t;
-            an++;
-            gp[1][p2][1] = get_t;
-            p2++;
-            write<<an<<" "<<get_t<<endl;
-            get_t = 0;
-            continue;
-        }
-        if(ddj==3){
-			a[an] = get_t;
-            an++;
-            gp[2][p3][1] = get_t;
-            p3++;
-            write<<an<<" "<<get_t<<endl;
-            get_t = 0;
-            continue;
-        }
-        if(ddj==4){
-			a[an] = get_t;
-			an++;
-            gp[3][p4][1] = get_t;
-			p4++;
-            write<<an<<" "<<get_t<<endl;
-            get_t = 0;
-			continue;
-        }
-        if(ddj==5){
-			a[an] = get_t;
-            an++;
-            gp[4][p5][1] = get_t;
-            p5++;
-            write<<an<<" "<<get_t<<endl;
-            get_t = 0;
-            continue;
-        }
-        if(ddj==6){
-			a[an] = get_t;
-            an++;
-            gp[5][p6][1] = get_t;
-			p6++;
-            write<<an<<" "<<get_t<<endl;
-            get_t = 0;
-            continue;
+            if(ddj==1){//判断是否属于堆垛机1
+                //cout<<"The ddj is "<<ddj<<"\tThe num "<<p_R<<"\tstack arrive ddj time is "<<get_t<<endl;
+                //write<<"The ddj is "<<ddj<<"\tThe num "<<p_R<<"\tstack arrive ddj time is "<<get_t<<endl;
+                    //cout<<1<<endl;
+                a[an] = get_t;//写入数组a中
+                an++;
+                gp[0][p1][1] = get_t;//同时写入数组gp中
+                p1++;
+                write_send<<send_num<<" from dxj, send duo ,to ddj: "<<ddj<<" send time "<<send_t<<endl;//将发送一垛的时间记录在文件中
+                write_get<<an<<" "<<get_t<<endl;
+                get_t = 0;//将到达时间变量归0
+                continue;//提高程序效率，不再进行下面的判断
+            }
+            if(ddj==2){
+                a[an] = get_t;
+                an++;
+                gp[1][p2][1] = get_t;
+                p2++;
+                write_send<<send_num<<" from dxj, send duo ,to ddj: "<<ddj<<" send time "<<send_t<<endl;//将发送一垛的时间记录在文件中
+                write_get<<an<<" "<<get_t<<endl;
+                get_t = 0;
+                continue;
+            }
+            if(ddj==3){
+                a[an] = get_t;
+                an++;
+                gp[2][p3][1] = get_t;
+                p3++;
+                write_send<<send_num<<" from dxj, send duo ,to ddj: "<<ddj<<" send time "<<send_t<<endl;//将发送一垛的时间记录在文件中
+                write_get<<an<<" "<<get_t<<endl;
+                get_t = 0;
+                continue;
+            }
+            if(ddj==4){
+                a[an] = get_t;
+                an++;
+                gp[3][p4][1] = get_t;
+                p4++;
+                write_send<<send_num<<" from dxj, send duo ,to ddj: "<<ddj<<" send time "<<send_t<<endl;//将发送一垛的时间记录在文件中
+                write_get<<an<<" "<<get_t<<endl;
+                get_t = 0;
+                continue;
+            }
+            if(ddj==5){
+                a[an] = get_t;
+                an++;
+                gp[4][p5][1] = get_t;
+                p5++;
+                write_send<<send_num<<" from dxj, send duo ,to ddj: "<<ddj<<" send time "<<send_t<<endl;//将发送一垛的时间记录在文件中
+                write_get<<an<<" "<<get_t<<endl;
+                get_t = 0;
+                continue;
+            }
+            if(ddj==6){
+                a[an] = get_t;
+                an++;
+                gp[5][p6][1] = get_t;
+                p6++;
+                write_send<<send_num<<" from dxj, send duo ,to ddj: "<<ddj<<" send time "<<send_t<<endl;//将发送一垛的时间记录在文件中
+                write_get<<an<<" "<<get_t<<endl;
+                get_t = 0;
+                continue;
+            }
         }
     }
-	}
-	write.close(); // 输出完毕后关闭这个文件
+	write_get.close(); // 输出完毕后关闭这个文件
+    write_send.close();
 }
-
 void randomArr(int G[],int len){    //随机序列，G为编码数组,len为编码数组长度
     for(int i=0;i<len;i++){
         int sit = rand()%(len-1) +1;//随机位置
@@ -1111,9 +1138,9 @@ double read(double TI,double TDI,int p,int nextp){
 			arr_block(TI,ddj);
             break;
         case 'S':
-            //获取检定口位置
-            inspect_xyz(cargo_now[p-1].type);
+            
             inspection_NUM('S',cargo_now[p-1].type);
+            //获取检定口位置,以及检定资产的检定时间
             inspect(cargo_now[p-1].type);
             walk_time1 = Walk_time(cargo_now[p-1].y,abs(cargo_now[p-1].z-inspect_z)); //堆垛机从当前位置移动到送检口，此处送检口与资产type相关
 			if(next_type=='R'||next_type=='H')//如果下一个编码属于入库或回库编码
@@ -1747,7 +1774,7 @@ int min_h(){
     int i,j,p=0,sit=0;
     double temp;
 	//冒泡排序
-	for( i=m1;i<Th-1;i++){//开始v是0，从0开始循环，到所有已读取的送检数量为止。表示遍历 所有已读取送检编码数量 的 回库编码 和 回库时间
+	for( i=m1;i<Th-1;i++){//开始m1是0，从0开始循环，到所有已读取的送检数量为止。表示遍历 所有已读取送检编码数量 的 回库编码 和 回库时间
 	//主要是两两对比，将hi[][]数组根据回库时间进行排序，并且在排序时，其对应的回库编码也随着回库时间进行排序，保证hi[m1][0]始终为 本次所有回库编码的最短时间
         for(j=m1;j<Th-1-i;j++){
             if(hi[j+1][1]<hi[j][1]){
@@ -1982,10 +2009,10 @@ void enSimpleCode(Food& f) {
     Storing(f,g1,g2,g3,g4,g5,g6,g1_S,g2_S,g3_S,g4_S,g5_S,g6_S,g1_H,g2_H,g3_H,g4_H,g5_H,g6_H);//将每台堆垛机的工作和送检、回库任务分离成不同的数组。共18个数组
     //f.fitness=Fintess(f,g1,g2,g3,g4,g5,g6,g1_H,g2_H,g3_H,g4_H,g5_H,g6_H );
     f.setFitness(Fintess(f,g1,g2,g3,g4,g5,g6,g1_H,g2_H,g3_H,g4_H,g5_H,g6_H,g1_H2,g2_H2,g3_H2,g4_H2,g5_H2,g6_H2,g1_th,g2_th,g3_th,g4_th,g5_th,g6_th)); //计算适应度值
-    get_inspect();//获取动态检定数量数组
-    get_outbound();//获取出库数组
-    out_block(10);//10s出库一垛
-    get_out_block();//出库堵塞输出到文件
+    // get_inspect();//获取动态检定数量数组
+    // get_outbound();//获取出库数组
+    // out_block(10);//10s出库一垛
+    // get_out_block();//出库堵塞输出到文件
 //    f.fluorescein = (1-rou)*f.fluorescein + mgamma / f.fitness;
 
 }
