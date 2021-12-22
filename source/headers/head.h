@@ -107,12 +107,24 @@ int ddj_num = NUMBER/6;//(NUMBER/6)
 int r_volume = 10;//入库口的最大不堵塞容量
 int block_long = 0;//最长堵塞长度
 int block_times = 0;//超出最大不堵塞容量的次数
+
+int inspect_x = 0;//送检口的x坐标
 int inspect_y = 0;//送检口的y坐标
 int inspect_z = 0;//送检口的z坐标
+
+int return_x = 0;//回库口的x坐标
+int return_y = 0;//回库口的y坐标
+int return_z = 0;//回库口的z坐标
+
+int out_x = 0;//出库口的x坐标
+int out_y = 0;//出库口的y坐标
+int out_z = 0;//出库口的z坐标
+
 int outbound_i = 0;//出库次序
 int num_A = 1500;//类型A的入库箱数 垛：500
 int num_B = 2500;//类型B的入库箱数 垛：500
 
+int third_x = 0,third_y = 0,third_z = 0;//堆垛机第三次动作的目标位置坐标 （通常为最后一次）
 
 int G[CODELENGTH];
 int h[H - _k];
@@ -139,7 +151,7 @@ typedef struct CS{
 	int z;	//货架中纵坐标S 1~26
 	int s1;
 	int s2;
-	//00入库 01送检 10回库 11出库
+	//00入库 01送检 10回库 11出库    //00:空   01：送检  11： 出库
 	int num;//货位的唯一编号
 	//char state;//货位状态R、S、H、C
 	char type;//货物类型 a,b,c,d,e,f,
