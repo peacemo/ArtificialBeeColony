@@ -18,7 +18,63 @@
 using namespace std;
 char judge_type(int p,int a);
 char judge_type(int p);
-
+//当two_falg == true 时调用此函数，使得该堆垛机编码数组的下标连续增加两个单位
+void add_ddjCode(int ddj){
+    if(ddj == 1){
+        j_1++;
+    }
+    else if(ddj == 2){
+        j_2++;
+    }
+    else if(ddj == 3){
+        j_3++;
+    }
+    else if(ddj == 4){
+        j_4++;
+    }
+    else if(ddj == 5){
+        j_5++;
+    }
+    else if(ddj == 6){
+        j_6++;
+    }
+    else{
+        cout<<"add_ddjCode error!"<<endl;
+    }
+}
+//重载该函数，two == true and type == 'H' 时调用
+void add_ddjCode(int ddj，char type){
+    if(type != 'H'){
+        cout<<"add_ddjCode type error!"<<endl; 
+    }
+    if(ddj == 1){
+        h1++;
+        j_1++;
+    }
+    else if(ddj == 2){
+        h2++;
+        j_2++;
+    }
+    else if(ddj == 3){
+        h3++;
+        j_3++;
+    }
+    else if(ddj == 4){
+        h4++;
+        j_4++;
+    }
+    else if(ddj == 5){
+        h5++;
+        j_5++;
+    }
+    else if(ddj == 6){
+        h6++;
+        j_6++;
+    }
+    else{
+        cout<<"add_ddjCode 'H' error!"<<endl;
+    }
+}
 //根据第三个编码的类型确定堆垛机最后一个动作要去的位置
 void ddj_last(char type,int p){
     if(type == 'R'){
@@ -45,17 +101,35 @@ void enter_xyz(int p){
 
     }
 }
-//根据编码判断出库口
-void out_xyz(int p){
-    int ddj = stacker(p);
-    if(ddj == 1){
-        out_x = 0;
-        out_y = 0;
-        out_z = 0;
+//根据编码判断送检口
+void inspect_xyz(int p){
+    if(cargo_now[p-1].model==0){
+        inspect_x = 0
+        inspect_y = 0;
+        inspect_z = 2;
     }
-    else if(ddj == 2){
-
+    else if(cargo_now[p-1].model==1){
+        inspect_x = 0;
+        inspect_y = 0;
+        inspect_z = 3;
     }
+    else if(cargo_now[p-1].model==2){
+        inspect_x = 0;
+        inspect_y = 0;
+        inspect_z = 4;
+    }
+    else if(cargo_now[p-1].model==3){
+        inspect_x = 0;
+        inspect_y = 0;
+        inspect_z = 5;
+    }
+    else if(cargo_now[p-1].model==4){
+        inspect_x = 0;
+        inspect_y = 0;
+        inspect_z = 6;
+    }
+    else
+        cout<<"inspect_xyz error!"<<endl;
 }
 //根据编码判断回库口
 void return_xyz(int p){
@@ -69,33 +143,19 @@ void return_xyz(int p){
 
     }
 }
+//根据编码判断出库口
+void out_xyz(int p){
+    int ddj = stacker(p);
+    if(ddj == 1){
+        out_x = 0;
+        out_y = 0;
+        out_z = 0;
+    }
+    else if(ddj == 2){
 
-//根据编码判断送检口
-void inspect_xyz(int p){
-    if(cargo_now[p-1].type=='a'){
-        inspect_y = 0;
-        inspect_z = 2;
     }
-    else if(cargo_now[p-1].type=='b'){
-        inspect_y = 0;
-        inspect_z = 3;
-    }
-    else if(cargo_now[p-1].type=='c'){
-        inspect_y = 0;
-        inspect_z = 4;
-    }
-    else if(cargo_now[p-1].type=='d'){
-        inspect_y = 0;
-        inspect_z = 5;
-    }
-    else if(cargo_now[p-1].type=='e'){
-        inspect_y = 0;
-        inspect_z = 6;
-    }
-    else
-        cout<<"inspect_xyz error!"<<endl;
 }
-
+//将出库堵塞队列长度输出到文件
 void get_out_block(){
     ofstream output;
     output.open("output/out_block.txt");
@@ -166,17 +226,16 @@ void get_inspect(){
     }
     out_inspect.close();
 }
-
 //计算送检口送检长度
-void inspection_NUM(char type,char inspect_type){
+void inspection_NUM(char type,int inspect_model){
     if(aa > assets_a || bb > assets_b){
         cout<<"aa || bb out"<<endl;
-        type = 'e';
+        type = 4;
     }
     if(type=='S'){
-        switch (inspect_type)
+        switch (inspect_model)
         {
-        case 'a':
+        case 0:
             if(aa!=0){
                 inspect_volume_a_now[aa++] = inspect_volume_a_now[aa-1] + 1;
             }
@@ -184,7 +243,7 @@ void inspection_NUM(char type,char inspect_type){
                 inspect_volume_a_now[aa++] = +1;
             }
             break;
-        case 'b':
+        case 1:
             if(bb!=0){
                 inspect_volume_b_now[bb++] = inspect_volume_b_now[bb-1] + 1;
             }
@@ -198,12 +257,12 @@ void inspection_NUM(char type,char inspect_type){
         }
     }
     else if(type=='H'){
-         switch (inspect_type)
+         switch (inspect_model)
         {
-        case 'a':
+        case 0:
                 inspect_volume_a_now[aa++] = inspect_volume_a_now[aa-1] - 1;
             break;
-        case 'b':
+        case 1:
             inspect_volume_b_now[bb++] = inspect_volume_b_now[bb-1] - 1;
             break;
         default:
@@ -215,8 +274,6 @@ void inspection_NUM(char type,char inspect_type){
         cout<<"inspection_NUM error"<<endl;
     }
 }
-
-
 //输出货位信息到文件
 void getCargo_now(string File_name1,string File_name2){
     ofstream out1;
@@ -224,7 +281,7 @@ void getCargo_now(string File_name1,string File_name2){
     out1.open(File_name1);
     out_sit.open(File_name2);
     for(int i=0;i<CODELENGTH;i++){
-        out1<<"{"<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<cargo_now[i].s1<<","<<cargo_now[i].s2<<","<<cargo_now[i].num<<","<<"'a'"<<","<<cargo_now[i].model<<","<<cargo_now[i].time<<"}"<<",";
+        out1<<"{"<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<cargo_now[i].s1<<","<<cargo_now[i].s2<<","<<cargo_now[i].num<<","<<"0"<<","<<cargo_now[i].model<<","<<cargo_now[i].time<<"}"<<",";
         out_sit<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<judge_type(i)<<endl;
         if((i+1)%5==0){
             out1<<endl;
@@ -233,13 +290,13 @@ void getCargo_now(string File_name1,string File_name2){
     out1.close();
     out_sit.close();
 }
-
+//将cargo货位输出到文件
 void getCargo(string file_name1,string file_name2){
     ofstream outf,outd;
     outf.open(file_name1);
     outd.open(file_name2);
     for(int i=0;i<n_total;i++){
-        outf<<"{"<<cargo[i].x<<","<<cargo[i].y<<","<<cargo[i].z<<","<<cargo[i].s1<<","<<cargo[i].s2<<","<<cargo[i].num<<","<<"'a'"<<","<<cargo[i].model<<","<<cargo[i].time<<"}"<<",";
+        outf<<"{"<<cargo[i].x<<","<<cargo[i].y<<","<<cargo[i].z<<","<<cargo[i].s1<<","<<cargo[i].s2<<","<<cargo[i].num<<","<<"0"<<","<<cargo[i].model<<","<<cargo[i].time<<"}"<<",";
         outd<<cargo[i].x<<","<<cargo[i].y<<","<<cargo[i].z<<","<<judge_type(i,1)<<endl;
         if((i+1)%5==0){
             outf<<endl;
@@ -264,8 +321,8 @@ void startCargo(int N,int r,int s,int h,int c){//货位数量,入库、送检、回库、出库
         cargo[i].y = point_y;
         cargo[i].z = point_z;
         cargo[i].time = 20211220;
-        cargo[i].type = 'a';
-        cargo[i].model = 1;
+        cargo[i].model = 0;
+        //cargo[i].model = 1;
         cargo[i].num = i + 1;
         point_z++;
         if(point_x>12){
@@ -328,28 +385,28 @@ void getCandidate(){
     ofstream out;
     out.open("output/candidate.txt");
     for(int i=0;i<candidate_num;i++){
-        out<<"{"<<G_r[i].x<<","<<G_r[i].y<<","<<G_r[i].z<<","<<G_r[i].s1<<","<<G_r[i].s2<<","<<G_r[i].num<<","<<"'a'"<<","<<G_r[i].model<<","<<G_r[i].time<<"}"<<",";
+        out<<"{"<<G_r[i].x<<","<<G_r[i].y<<","<<G_r[i].z<<","<<G_r[i].s1<<","<<G_r[i].s2<<","<<G_r[i].num<<","<<"0"<<","<<G_r[i].model<<","<<G_r[i].time<<"}"<<",";
         if((i+1)%5==0){
             out<<endl;
         }
     }
     out<<endl;
     for(int i=0;i<candidate_num;i++){
-        out<<"{"<<G_s[i].x<<","<<G_s[i].y<<","<<G_s[i].z<<","<<G_s[i].s1<<","<<G_s[i].s2<<","<<G_s[i].num<<","<<"'a'"<<","<<G_s[i].model<<","<<G_s[i].time<<"}"<<",";
+        out<<"{"<<G_s[i].x<<","<<G_s[i].y<<","<<G_s[i].z<<","<<G_s[i].s1<<","<<G_s[i].s2<<","<<G_s[i].num<<","<<"0"<<","<<G_s[i].model<<","<<G_s[i].time<<"}"<<",";
         if((i+1)%5==0){
             out<<endl;
         }
     }
     out<<endl;
     for(int i=0;i<candidate_num;i++){
-        out<<"{"<<G_h[i].x<<","<<G_h[i].y<<","<<G_h[i].z<<","<<G_h[i].s1<<","<<G_h[i].s2<<","<<G_h[i].num<<","<<"'a'"<<","<<G_h[i].model<<","<<G_h[i].time<<"}"<<",";
+        out<<"{"<<G_h[i].x<<","<<G_h[i].y<<","<<G_h[i].z<<","<<G_h[i].s1<<","<<G_h[i].s2<<","<<G_h[i].num<<","<<"0"<<","<<G_h[i].model<<","<<G_h[i].time<<"}"<<",";
         if((i+1)%5==0){
             out<<endl;
         }
     }
     out<<endl;
     for(int i=0;i<candidate_num;i++){
-        out<<"{"<<G_c[i].x<<","<<G_c[i].y<<","<<G_c[i].z<<","<<G_c[i].s1<<","<<G_c[i].s2<<","<<G_c[i].num<<","<<"'a'"<<","<<G_c[i].model<<","<<G_c[i].time<<"}"<<",";
+        out<<"{"<<G_c[i].x<<","<<G_c[i].y<<","<<G_c[i].z<<","<<G_c[i].s1<<","<<G_c[i].s2<<","<<G_c[i].num<<","<<"0"<<","<<G_c[i].model<<","<<G_c[i].time<<"}"<<",";
         if((i+1)%5==0){
             out<<endl;
         }
@@ -425,7 +482,7 @@ void updateCargo(){
         }
     }
 }
-
+//货架分配规则
 void cargoRule(string first,string second,string third,string fourth){
     int s11 = 0, s12 = 0,s21 = 0,s22 = 0,s31 = 0,s32 = 0,s41 = 0,s42 = 0;
     if(first == "R"){
@@ -653,7 +710,7 @@ int partition(double array[][2], int low, int high)
     }
     return low;
 }
-
+//快速排序
 void quickSortHelp(double array[][2], int low, int high)
 {
     if (low < high)
@@ -665,11 +722,18 @@ void quickSortHelp(double array[][2], int low, int high)
         quickSortHelp(array, location + 1, high);
     }
 }
-
+//快速排序
 void quickSort(double array[][2], int sort_n)
 {
     //以第一个数组元素为基准（轴）
     quickSortHelp(array, 0, sort_n - 1);
+}
+//根据编码判断资产型号
+int judge_model(int p){
+    if(cargo_now[p - 1].model>4){
+         cout<<"judge_model error!"<<endl;
+    }
+    return cargo_now[p-1].model;
 }
 //判断货物类型
 char judge_type(int p){
@@ -723,7 +787,7 @@ void CS_swap(){
 	out1.open("rand_2000_1.txt");
 	out_sit.open("rand_2000_1_sit.txt");
 	for(int i=0; i < CODELENGTH; i++){
-		out1<<"{"<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<cargo_now[i].s1<<","<<cargo_now[i].s2<<","<<cargo_now[i].num<<","<<"'a'"<<","<<cargo_now[i].model<<","<<cargo_now[i].time<<"}"<<",";
+		out1<<"{"<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<cargo_now[i].s1<<","<<cargo_now[i].s2<<","<<cargo_now[i].num<<","<<"0"<<","<<cargo_now[i].model<<","<<cargo_now[i].time<<"}"<<",";
 		out_sit<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<judge_type(i)<<endl;
 		if((i+1)%5==0){
 			out1<<endl;	
@@ -733,10 +797,7 @@ void CS_swap(){
 	out_sit.close();
 }
 
-
-
 //入库仿真
-
 //获得入库编码
 void get_R(int g[]){
 	int j=0;
@@ -800,8 +861,7 @@ void getT_load(int i,char type){
 				send_t = t_R;
 			}
 		}
-}
-        
+}       
 //传入堆垛机的序号，返回到该堆垛机的时间
 double getT(int ddj){
 	switch(ddj){		//根据到不同堆垛机的距离，计算出到达堆垛机的时间
@@ -923,7 +983,9 @@ void R_Test(int r[]){
 	write_get.close(); // 输出完毕后关闭这个文件
     write_send.close();
 }
-void randomArr(int G[],int len){    //随机序列，G为编码数组,len为编码数组长度
+
+//随机序列，G为编码数组,len为编码数组长度
+void randomArr(int G[],int len){    
     for(int i=0;i<len;i++){
         int sit = rand()%(len-1) +1;//随机位置
         int temp =G[i];		//交换当前位置的编码和随机位置的编码
@@ -935,23 +997,23 @@ void randomArr(int G[],int len){    //随机序列，G为编码数组,len为编码数组长度
 //检定时间
 void inspect(char type_inspect){//输入货物类型
             switch(type_inspect){//根据不同货物类型，计算不同的检定时间
-                case 'a':
+                case 0:
                     t_inspect = t_inspect_a * s_h;  //将a的检定时间（小时）换算成秒 赋值给 检定时间
                     inspect_z = 2;
                     break;
-                case 'b':
+                case 1:
                     t_inspect = t_inspect_b * s_h;
                     inspect_z = 3;
                     break;
-                case 'c':
+                case 2:
                     t_inspect = t_inspect_c * s_h;
                     inspect_z = 4;
                     break;
-                case 'd':
+                case 3:
                     t_inspect = t_inspect_d * s_h;
                     inspect_z = 5;
                     break;
-                case 'e': 
+                case 4: 
                     t_inspect = t_inspect_e * s_h;
                     inspect_z = 6;
                     break;
@@ -964,29 +1026,28 @@ void inspect(char type_inspect){//输入货物类型
             }
 }
 //行走时间
-double Walk_time(int y,int z){//输入 y、z坐标
+double Walk_time(int x,int y){//输入 x、y坐标
     float v1 = 0.5;//堆垛机垂直移动速度
     float v2 = 10;//堆垛机水平移动速度
     float l = 2;//垛 长度
     float h = 1.5;//货架的一个高
     float d = 0.2;//货位间的距离
+    int Xn = x;//x坐标
     int Yn = y;//y坐标
-    int Zn = z;//z坐标
     float High_In = 0;//垂直移动的距离
     float Long_In = 0;//水平移动的距离
     float time_in_high = 0;//垂直移动的时间
     float time_in_long = 0;//水平移动的时间
     float time_in_run = 0;//堆垛机移动的时间
     float time = 0;//堆垛机移动的时间（多设置一个变量，用于后续测试）
-    High_In = Zn * h;//计算垂直移动的距离
-    Long_In = Yn  * (l + d);//计算水平移动的距离
+    High_In = Yn * h;//计算垂直移动的距离
+    Long_In = Xn * (l + d);//计算水平移动的距离
     time_in_high = High_In / v1;//计算垂直移动的时间
     time_in_long = Long_In / v2;//计算水平移动的时间
     time_in_run = max(time_in_high,time_in_long);//堆垛机垂直运动的时间与堆垛机水平移动的时间 两者最长的时间即为堆垛机的移动时间
     time = time_in_run;//赋值给time
     return time_in_run;//返回堆垛机运动的时间
 }
-
 //插入，目前没有用到
 void insert_G(int G[],int sit,int value){  //插入 ，在某个数组中插入一个元素，输入数组，插入的元素，和插入的位置。目前此函数没有用到
     len++;
@@ -1000,7 +1061,6 @@ void insert_G(int G[],int sit,int value){  //插入 ，在某个数组中插入一个元素，输
         G[i] = a_n[i];
     delete []a_n;
 }
-
 //送检前h-k个编码，回库后h-k个编码，形成1-1对应关系。
 void S_H2(int G[]){//输入编码数组
     int j = 0,p=0;
@@ -1021,7 +1081,6 @@ void S_H2(int G[]){//输入编码数组
 		I[i][1] = h[i];
 	}		
 }
-
 // todo 重载 S_H()
 void S_H(Food f){//该函数与S_H2的功能一致，但输入的是一个种群
     int j = 0,p=0;
@@ -1043,7 +1102,6 @@ void S_H(Food f){//该函数与S_H2的功能一致，但输入的是一个种群
         I[i][1] = h[i];
     }
 }
-
 //判断S编码与对应的回库编码在G[CODELENGTH]的前后关系，如果 H编码位于对应的送检编码之前，交换两者位置，保证S编码始终位于与其相对应的H编码之前。
 // void check(int G[],int s[],int h[]){
 //     int temp = 0;
@@ -1083,7 +1141,8 @@ void check(int G[],int s[],int h[]){
 double read(double TI,double TDI,int p,int second_p,int third_p){
     char type,second_type,third_type;//当前编码的货物类型，下一个编码的货物类型
 	int ddj=0;//堆垛机序号
-	int i=0;
+    int ddj_1  = 0,ddj_2 = 0;
+	int fisrst_i = 0,second_i = 0;
     double wait_time = 0;//等待时间
     double grab_time = 20;//取货时间
     double walk_time1 = 0;//行走时间1
@@ -1260,14 +1319,6 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 
     switch (type){
         case 'R'://该编码为入库编码
-			ddj = stacker(p);//将编码的到达-时间设为最大
-			gi_n = g_number(ddj);
-			for(int j=0;j<gi_n;j++){
-				if(gp[ddj-1][j][0]==p){
-					gp[ddj-1][j][1] = 999999;
-					break;
-				}
-			}
             if(a[ai]<=TI)//判断等待时间 数组a[ai]中存放的入库时间是依次从小到大的
                 wait_time = 0;
             else
@@ -1276,20 +1327,46 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 
             enter_xyz(p);
             if(two_flag == true){
+                ddj_1 = stacker(p);
+                ddj_2 = stracker(second_p);
+			    gi_n = g_number(ddj_1);
+			    for(int j=0;j<gi_n;j++){
+				    if(gp[ddj-1][j][0]==p){
+					    gp[ddj-1][j][1] = 99999999;
+					    break;
+				    }
+			    }
+                gi_n = g_number(ddj_2);
+			    for(int j=0;j<gi_n;j++){
+				    if(gp[ddj-1][j][0]==second_p){
+					    gp[ddj-1][j][1] = 99999999;
+					    break;
+				    }
+			    }
+
+                add_ddjCode(ddj);
                 //当前位置（入库口）-取2垛货 -> 货位1-放1垛货
-                walk_time1 = Walk_time(abs(enter_y - first_y),abs(enter_z - first_z));
+                walk_time1 = Walk_time(abs(enter_x - first_x),abs(enter_y - first_y));
                 //货位1-放1垛货 -> 货位2-放1垛货
-                walk_time2 = Walk_time(abs(first_y - second_y),abs(first_z - second_z));
+                walk_time2 = Walk_time(abs(first_x - second_x),abs(first_y - second_y));
                 //货位2-放1垛货 -> 下一个编码起始位置
-                walk_time3 = Walk_time(abs(second_y - third_y),abs(second_z - third_z));
+                walk_time3 = Walk_time(abs(second_x - third_x),abs(second_y - third_y));
                 TI += ;
                 TD =  + TD[0];
             }
             else{
+                ddj = stacker(p);//将编码的到达-时间设为最大
+			    gi_n = g_number(ddj);
+			    for(int j=0;j<gi_n;j++){
+				    if(gp[ddj-1][j][0]==p){
+					    gp[ddj-1][j][1] = 999999;
+					    break;
+				    }
+			    }
                 //当前位置（入库口）-取1垛货 -> 货位1-放1垛货
-                walk_time1 = Walk_time(abs(enter_y - first_y),abs(enter_z - first_z));
+                walk_time1 = Walk_time(abs(enter_x - first_x),abs(enter_y - first_y));
                 //货位1-放1垛货 -> 下一个编码起始位置
-                walk_time2 = Walk_time(abs(first_y - third_y),abs(first_z - third_z));
+                walk_time2 = Walk_time(abs(first_x - third_x),abs(first_y - second_y));
                 TI += ;
                 TD =  + TD[0];
             }
@@ -1307,27 +1384,19 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 			arr_block(TI,ddj);
             break;
         case 'H':
-			// ddj = stacker(p);//将编码的到达时间设为最大
-			// gi_n = g_number(ddj);
-			// for(int j=0;j<gi_n;j++){
-			// 	if(gp[ddj-1][j][0]==p){
-			// 		gp[ddj-1][j][1] = 99999999;
-			// 		break;
-			// 	}
-			// }
-
             //计算送检口送检长度
-            inspection_NUM('H',cargo_now[p-1].type);
+            inspection_NUM('H',cargo_now[p-1].model);
+            p_model = judge_model(p);
             for(i=0;i< H - _k; i++){//在h[]中找到下标
-                if(hi[i][0] == p){
+                if(hi[p_model][i][0] == p){
 					flag = true;
 					break;
 				}
             }
-            if(hi[i][1]<=TI || flag==false)
+            if(hi[p_model][i][1]<=TI || flag==false)
                 wait_time = 0;
             else    
-                wait_time = hi[i][1] - TI;
+                wait_time = hi[p_model][i][1] - TI;
             // walk_time1 = Walk_time(cargo_now[p-1].y,cargo_now[p-1].z);
             // if(second_type=='R'||second_type=='H')
             //     walk_time2 = Walk_time(cargo_now[p-1].y,cargo_now[p-1].z);
@@ -1337,31 +1406,58 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 			// TDI = grab_time + walk_time1 + walk_time2 + place_time + TD[0];
 			
             if(two_flag == true){
+                //将编码的到达时间设为最大
+                ddj_1 = stacker(p);
+                ddj_2 = stracker(second_p);
+			    gi_n = g_number(ddj_1);
+			    for(int j=0;j<gi_n;j++){
+				    if(gp[ddj-1][j][0]==p){
+					    gp[ddj-1][j][1] = 99999999;
+					    break;
+				    }
+			    }
+                gi_n = g_number(ddj_2);
+			    for(int j=0;j<gi_n;j++){
+				    if(gp[ddj-1][j][0]==second_p){
+					    gp[ddj-1][j][1] = 99999999;
+					    break;
+				    }
+			    }
+
+                add_ddjCode(ddj,'H');
                 //堆垛机一次可以取两垛
                 if(same_flag == true){
                     //回库口相同，当前位置（回库口）-取货 -> 货位1-放货 -> 货位2-放货 -> 下个编码起始位置
                     return_xyz(p);
                     //当前位置（回库口）-取2垛货 -> 货位1-放1垛货
-                    walk_time1 = Walk_time(abs(return_y - first_y),abs(return_z - first_z));
+                    walk_time1 = Walk_time(abs(return_x - first_x),abs(return_y - first_y));
                     //货位1-放1垛货 -> 货位2-放1垛货
-                    walk_time2 = Wale_time(abs(first_y - second_y),abs(first_z - second_z));
+                    walk_time2 = Wale_time(abs(first_x - second_x),abs(first_y - second_y));
                     //货位2-放1垛货 -> 下个编码起始位置
-                    walk_time3 = Walke_time(abs(second_y - third_y),abs(second_z - third_z));
+                    walk_time3 = Walke_time(abs(second_x - third_x),abs(second_y - third_y));
 
                     TI += ;
                     TD =  + TD[0];
                 }
                 else{
+                    ddj = stracker(p);
+			        gi_n = g_number(ddj);
+			        for(int j=0;j<gi_n;j++){
+				        if(gp[ddj-1][j][0]==p){
+					        gp[ddj-1][j][1] = 99999999;
+					        break;
+				        }
+			        }
                     //回库口不同，当前位置（回库口1）-取货 -> 回库口2-取货 -> 货位1-放货 -> 货位2-放货 -> 下个编码起始位置
                     return_xyz(p);
                     //当前位置（回库口1）-取1垛货 -> 回库口2-取1垛货 
-                    walk_time1 = Walk_time(abs(return_y - first_y),abs(return_z - first_z));
+                    walk_time1 = Walk_time(abs(return_x - first_x),abs(return_y - first_y));
                     //回库口2-取1垛货 -> 货位1-放1垛货
-                    walk_time2 = Walk_time(abs(first_y - second_y),abs(first_z - second_z));
+                    walk_time2 = Walk_time(abs(first_x - second_x),abs(first_y - second_y));
                     //货位1-放1垛货 -> 货位2-放1垛货
-                    walk_time3 = Walk_time(abs(second_y - third_y),abs(second_z - third_z));
+                    walk_time3 = Walk_time(abs(second_x - third_x),abs(second_y - third_y));
                     //货位2-放1垛货 -> 下个编码起始位置
-                    walk_time4 = Walk_tike(abs(third_y - fourth_y),abs(third_z - fourth_z));
+                    walk_time4 = Walk_tike(abs(third_x - fourth_x),abs(third_y - fourth_y));
 
                     TI += ;
                     TD =  + TD[0];
@@ -1371,9 +1467,9 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 //堆垛机一次只能取一垛
                 return_xyz(p);
                 //当前位置（回库口）取1垛货 -> 货位1-放1垛货 -> 下个编码起始位置
-                walk_time1 = Walk_time(abs(return_y - first_y),abs(retrn_z - first_z)); 
+                walk_time1 = Walk_time(abs(return_x - first_x),abs(retrn_y - first_y)); 
                 //货位1-放1垛货 -> 下个编码起始位置
-                walk_time2 = Walk_time(abs(first_y - third_y),abs(first_z - third_z));
+                walk_time2 = Walk_time(abs(first_x - third_x),abs(first_y - second_y));
 
                 TI += ;
                 TD =  + TD[0];
@@ -1398,22 +1494,23 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 			// TD[0] = TDI;
             out_xyz(p);
             if(two_flag == true){
+                add_ddjCode(ddj);
                 //当前位置（货位1）-取1垛货 -> 货位2-取1垛货 —> 出库口-放2垛货 —> 下个编码起始位置
 
                 //当前位置（货位1）-取1垛货 -> 货位2-取货
-                walk_time1 = Walk_time(abs(first_y - out_y),abs(first_z - out_z));
+                walk_time1 = Walk_time(abs(first_x - out_x),abs(first_y - out_y));
                 //货位2-取1垛货 —> 出库口-放2垛货
-                walk_time2 = Walk_time(abs(first_y - second_y),abs(first_z - second_z));
+                walk_time2 = Walk_time(abs(first_x - second_x),abs(first_y - second_y));
                 //出库口-放2垛货 —> 下个编码起始位置
-                walk_time3 = Walk_time(abs(second_y - third_y),abs(second_z - third_z));
+                walk_time3 = Walk_time(abs(second_x - third_x),abs(second_y - third_y));
                 TI += ;
                 TD =  + TD[0];
             }
             else{
                 //当前位置（货位1）-取1垛货 —> 出库口-放1垛货 —> 下个编码起始位置
-                walk_time1 = Walk_time(abs(out_y - first_y),abs(out_z - first_z));
+                walk_time1 = Walk_time(abs(out_x - first_x),abs(out_y - first_y));
                 //货位1-放1垛货 -> 下一个编码起始位置
-                walk_time2 = Walk_time(abs(first_y - third_y),abs(first_z - third_z));
+                walk_time2 = Walk_time(abs(first_x - third_x),abs(first_y - third_y));
                 TI += ;
                 TD =  + TD[0];
             }
@@ -1422,35 +1519,35 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 			arr_block(TI,ddj);
             break;
         case 'S':
-            
-            inspection_NUM('S',cargo_now[p-1].type);
+            inspection_NUM('S',cargo_now[p-1].model);
             //获取检定口位置,以及检定资产的检定时间
-            inspect(cargo_now[p-1].type);
+            inspect(cargo_now[p-1].model);
             inspect_xyz(p);
             if(two_flag == true){
+                add_ddjCode(ddj);
                 //堆垛机一次可以取两垛
                 if(same_flag == true){
-                    //送检口相同，当前位置（货位1）-取货 -> 货位2-取货 -> 送检口-放货 -> 下一个编码起始位置
+                    //送检口相同，当前位置（货位1）-取1垛货 -> 货位2-取1垛货 -> 送检口-放2垛货 -> 下一个编码起始位置
                     //当前位置（货位1）-取1垛货 -> 货位2-取1垛货
-                    walk_time1 = Walk_time(abs(inspect_y - first_y),abs(inspect_z - first_z));
+                    walk_time1 = Walk_time(abs(inspect_x - first_x),abs(inspect_y - first_y));
                     //货位2-取1垛货 -> 送检口-放2垛货
-                    walk_time2 = Wale_time(abs(first_y - second_y),abs(first_z - second_z));
+                    walk_time2 = Wale_time(abs(first_x - second_x),abs(first_y - second_y));
                     //送检口-放2垛货 -> 下一个编码起始位置
-                    walk_time3 = Walke_time(abs(second_y - third_y),abs(second_z - third_z));
+                    walk_time3 = Walke_time(abs(second_x - third_x),abs(second_y - third_y));
 
                     TI += ;
                     TD =  + TD[0];
                 }
                 else{
-                    //送检口不同，当前位置（货位1）-取货 -> 货位2-取货 -> 送检口1-放货 -> 送检口2-放货 -> 下一个编码起始位置
+                    //送检口不同，当前位置（货位1）-取1垛货 -> 货位2-取1垛货 -> 送检口1-放1垛货 -> 送检口2-放1垛货 -> 下一个编码起始位置
                     //当前位置（货位1）-取1垛货 -> 货位2-取1垛货
-                    walk_time1 = Walk_time(abs(return_y - first_y),abs(return_z - first_z));
+                    walk_time1 = Walk_time(abs(return_x - first_x),abs(return_y - first_y));
                     //货位2-取1垛货 -> 送检口1-放1垛货
-                    walk_time2 = Walk_time(abs(first_y - second_y),abs(first_z - second_z));
+                    walk_time2 = Walk_time(abs(first_x - second_x),abs(first_y - second_y));
                     //送检口1-放1垛货 -> 送检口2-放1垛货
-                    walk_time3 = Walk_time(abs(second_y - third_y),abs(second_z - third_z));
+                    walk_time3 = Walk_time(abs(second_x - third_x),abs(second_y - third_y));
                     //送检口2-放1垛货 -> 下一个编码起始位置
-                    walk_time4 = Walk_tike(abs(third_y - fourth_y),abs(third_z - fourth_z));
+                    walk_time4 = Walk_tike(abs(third_x - fourth_x),abs(third_y - fourth_y));
 
                     TI += ;
                     TD =  + TD[0];
@@ -1460,9 +1557,9 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 //堆垛机一次只能取一垛
                 //当前位置（货位1）取1垛货 -> 送检口-放1垛货 -> 下个编码起始位置
                 //当前位置（货位1）取1垛货 -> 送检口-放1垛货
-                walk_time1 = Walk_time(abs(inspect_y - first_y),abs(inspect_z - first_z)); 
+                walk_time1 = Walk_time(abs(inspect_x - first_x),abs(inspect_y - first_y)); 
                 //送检口-放1垛货 -> 下个编码起始位置
-                walk_time2 = Walk_time(abs(first_y - third_y),abs(first_z - third_z));
+                walk_time2 = Walk_time(abs(first_x - third_x),abs(first_y - second_y));
 
                 TI += ;
                 TD =  + TD[0];
@@ -1478,80 +1575,240 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 			TD[0] = TDI;//将实际工作时间写入到实际工作数组中，如果后期有需要，则该数组可以保留每一台堆垛机的实际工作时间。此时将每台堆垛机的实际工作时间叠加到TD[0]中
 			
             //开始计算 送检编码 所对应的 回库编码 的 回库时间
-			for( i=0;i< H - _k; i++){
+            if(two_flag == true){
+                //当p and second_p 均在数组s[i]中被找到时，以下两个flag的值变为true
+                bool flag_i = false,flag_second_i = false;
+                for(int i=0;i< H - _k; i++){
+                    if(s[i] == p){//找到p
+                        flag_i = true;
+                        first_i = i;
+                    }
+                    if(s[i] == second_p){
+                        flag_second_i = true;
+                        second_i = i;
+                    }
+                    if(flag_i == true && flag_second_i == true){//根据当前编码，找到在 送检编码数组 中的下标 i，此下标可对应在 回库数组 中的回库编码的位置
+                        
+                        ddj_1 = stacker(h[first_i]);//判断该回库编码属于哪台堆垛机来服务
+                        ddj_2 = stacker(h[second_i]);
+                        switch (ddj_1)
+                        {
+                        case 1://如果是第一台堆垛机服务
+                            g1_H2[th1]=h[i];//将该回库编码写入到堆垛机1的回库数组里
+                            th1++;//堆垛机1的 回库编码数组 和 回库时间数组 下标自增
+                            break;
+                        case 2:
+                            g2_H2[th2]=h[i];
+                            th2++;
+                            break;
+                        case 3:
+                            g3_H2[th3]=h[i];
+                            th3++;
+                            break;
+                        case 4:
+                            g4_H2[th4]=h[i];
+                            th4++;
+                            break;
+                        case 5:
+                            g5_H2[th5]=h[i];
+                            th5++;
+                            break;
+                        case 6:
+                            g6_H2[th6]=h[i];
+                            th6++;
+                            break;
+                        default:
+                            cout<<"read code ddj error!"<<endl;
+                            break;
+                        }
+                        switch (ddj_2)
+                        {
+                        case 1://如果是第一台堆垛机服务
+                            g1_H2[th1]=h[i];//将该回库编码写入到堆垛机1的回库数组里
+                            th1++;//堆垛机1的 回库编码数组 和 回库时间数组 下标自增
+                            break;
+                        case 2:
+                            g2_H2[th2]=h[i];
+                            th2++;
+                            break;
+                        case 3:
+                            g3_H2[th3]=h[i];
+                            th3++;
+                            break;
+                        case 4:
+                            g4_H2[th4]=h[i];
+                            th4++;
+                            break;
+                        case 5:
+                            g5_H2[th5]=h[i];
+                            th5++;
+                            break;
+                        case 6:
+                            g6_H2[th6]=h[i];
+                            th6++;
+                            break;
+                        default:
+                            cout<<"read code ddj error!"<<endl;
+                            break;
+                        }
+                        //cout<<"------------"<<h[i]<<"------------"<<endl;
+                        //p 回库编码的处理
+                        p_model = judge_model(p);
+                        if(cargo_now[p-1].model==0)
+                        {
+                            hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                            hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                            m2++;//m2自增
+                        }
+                        else if(cargo_now[p-1].model==1)
+                        {
+                            hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                            hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                            m2++;//m2自增
+                        }
+                        else if(cargo_now[p-1].model==2)
+                        {
+                            hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                            hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                            m2++;//m2自增
+                        }
+                        else if(cargo_now[p-1].model==3)
+                        {
+                            hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                            hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                            m2++;//m2自增
+                        }
+                        else if(cargo_now[p-1].model==4)
+                        {
+                            hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                            hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                            m2++;//m2自增
+                        }
+                        else{
+                            cout<<"read-S-cargo_now[p-1].model error!"<<endl;
+                        }
+                        
+                        //second_p 回库编码的处理
+                        p_model = judge_model(second_p);
+                        if(cargo_now[second_p-1].model==0)
+                        {
+                            hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                            hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                            m2++;//m2自增
+                        }
+                        else if(cargo_now[second_p-1].model==1)
+                        {
+                            hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                            hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                            m2++;//m2自增
+                        }
+                        else if(cargo_now[second_p-1].model==2)
+                        {
+                            hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                            hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                            m2++;//m2自增
+                        }
+                        else if(cargo_now[second_p-1].model==3)
+                        {
+                            hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                            hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                            m2++;//m2自增
+                        }
+                        else if(cargo_now[second_p-1].model==4)
+                        {
+                            hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                            hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                            m2++;//m2自增
+                        }
+                        else{
+                            cout<<"read-S-cargo_now[second_p-1].model error!"<<endl;
+                        }
+                        break;
+                        // hi[m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                        // hi[m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                        // m2++;//m2自增
+                        // break;
+				    }
+			    }
+            }
+            else{
+                for( i=0;i< H - _k; i++){
 				if(s[i]==p){//根据当前编码，找到在 送检编码数组 中的下标 i，此下标可对应在 回库数组 中的回库编码的位置
 					ddj = stacker(h[i]);//判断该回库编码属于哪台堆垛机来服务
 					switch (ddj)
 					{
 					case 1://如果是第一台堆垛机服务
-						//inspect(cargo_now[p-1].type);//根据该送检编码的货物类型，计算出送检时间
 						g1_H2[th1]=h[i];//将该回库编码写入到堆垛机1的回库数组里
 						th1++;//堆垛机1的 回库编码数组 和 回库时间数组 下标自增
-						// gp[0][gp1][0] = h[i];//回库编码写入数组gp中
-						// gp[0][gp1][1] = TI + t_inspect;//回库时间写入数组gp中
-						// gp1++;
 						break;
 					case 2:
-						//inspect(cargo_now[p-1].type);
 						g2_H2[th2]=h[i];
 						th2++;
-						// gp[1][gp2][0] = h[i];//回库编码写入数组gp中
-						// gp[1][gp2][1] = TI + t_inspect;//回库时间写入数组gp中
-						// gp2++;
 						break;
 					case 3:
-						//inspect(cargo_now[p-1].type);
 						g3_H2[th3]=h[i];
 						th3++;
-						// gp[2][gp3][0] = h[i];//回库编码写入数组gp中
-						// gp[2][gp3][1] = TI + t_inspect;//回库时间写入数组gp中
-						// gp3++;
 						break;
 					case 4:
-						//inspect(cargo_now[p-1].type);
 						g4_H2[th4]=h[i];
 						th4++;
-						// gp[3][gp4][0] = h[i];//回库编码写入数组gp中
-						// gp[3][gp4][1] = TI + t_inspect;//回库时间写入数组gp中
-						// gp4++;
 						break;
 					case 5:
-						//inspect(cargo_now[p-1].type);
 						g5_H2[th5]=h[i];
 						th5++;
-						// gp[4][gp5][0] = h[i];//回库编码写入数组gp中
-						// gp[4][gp5][1] = TI + t_inspect;//回库时间写入数组gp中
-						// gp5++;
 						break;
 					case 6:
-						//inspect(cargo_now[p-1].type);
 						g6_H2[th6]=h[i];
 						th6++;
-						// gp[5][gp6][0] = h[i];//回库编码写入数组gp中
-						// gp[5][gp6][1] = TI + t_inspect;//回库时间写入数组gp中
-						// gp6++;
 						break;
 					default:
 						cout<<"read code ddj error!"<<endl;
 						break;
 					}
-					//cout<<"------------"<<h[i]<<"------------"<<endl;
-                    // if(cargo_now[p-1].type=='a')
-                    // {
 
-                    // }
-                    // else if(cargo_now[p-1].type=='b')
-                    // {
-                        
-                    // }
-
-					hi[m2][1] = TI + t_inspect;//回库时间写入到hi[m2][1]中
-					hi[m2][0] = h[i];//回库编码 写入到hi[m2][0]中
-					m2++;//m2自增
-					th[i] = TI + t_inspect;//回库时间统一写入到一个数组中
-					break;
+					p_model = judge_model(p);
+                    if(cargo_now[p-1].model==0)
+                    {
+                        hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                        hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                        m2++;//m2自增
+                    }
+                    else if(cargo_now[p-1].model==1)
+                    {
+                        hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                        hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                        m2++;//m2自增
+                    }
+                    else if(cargo_now[p-1].model==2)
+                    {
+                        hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                        hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                        m2++;//m2自增
+                    }
+                    else if(cargo_now[p-1].model==3)
+                    {
+                        hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                        hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                        m2++;//m2自增
+                    }
+                    else if(cargo_now[p-1].model==4)
+                    {
+                        hi[p_model][m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+                        hi[p_model][m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+                        m2++;//m2自增
+                    }
+                    else{
+                        cout<<"read-S-cargo_now[p-1].model error!"<<endl;
+                    }
+                    break;
+					// hi[m2][1] = TI + t_inspect;//回库时间写入到hi[p_model][m2][1]中
+					// hi[m2][0] = h[i];//回库编码 写入到hi[p_model][m2][0]中
+					// m2++;//m2自增
+					//break;
 				}
 			}
+        }
+			
 		ddj = stacker(p);
 		arr_block(TI,ddj);
 		break;
@@ -1640,7 +1897,6 @@ void Storing_num(Food f){//输入种群
         }
     }
 }
-
 // todo 重载 Storing()
 void Storing(Food f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int g1_S[],int g2_S[],int g3_S[],int g4_S[],int g5_S[],int g6_S[],int g1_H[],int g2_H[],int g3_H[],int g4_H[],int g5_H[],int g6_H[]){
     j_1=0, j_2=0, j_3=0, j_4=0, j_5=0, j_6=0;
@@ -1768,7 +2024,6 @@ void Storing(Food f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int g1
         }
     }
 }
-
 //入库组 目前没有用到
 void R_t(double a[]){
     int cnt = 0;
@@ -1781,7 +2036,6 @@ void R_t(double a[]){
     }
     fclose(fp);
 }
-
 //获得适应度值，（最大工期*0.8 + 堆垛机实际工作时间*0.2）/60
 int max2(double T[], Food &f){
 	int i,j;
@@ -1843,17 +2097,20 @@ void read_ddj(int gi_H[],int ddj,int gi[]){
 	case 1:
 		while(gi_H[h1]!=gi[j_1]){//不断读取，直到读取到g1中第一条H编码为止
 
-			if(j_1 < (g1_n - 1)){//不属于最后一位编码
-				T1 = read(T1, TD1, gi[j_1], gi[j_1 + 1]);//读取编码
+			if(j_1 < (g1_n - 2)){//不属于最后一位编码
+				T1 = read(T1, TD1, gi[j_1], gi[j_1 + 1],gi[j_1 + 2]);//读取编码
 				j_1++;//堆垛机数组编码自增1
 			}
-			else if(j_1 == (g1_n - 1)){//如果读取到该堆垛机的最后一位编码，则下一条编码与当前编码相同
-				T1 = read(T1, TD1, gi[j_1], gi[j_1]);
+			else if(j_1 == (g1_n - 2)){//如果读取到该堆垛机的最后一位编码，则下一条编码与当前编码相同
+				T1 = read(T1, TD1, gi[j_1], gi[j_1+1],gi[j_1+1]);
 				j_1++;
 			}
+            else if(j_1 == (g1_n - 1)){
+                T1 = read(T1, TD1, gi[j_1], gi[j_1],gi[j_1]);
+				j_1++;
+            }
 			if(j_1 > g1_n - 1)//如果该堆垛机的编码全部读取完毕
 				break;//跳出循环
-
 		}
 		h1++;
 		break;
@@ -1861,14 +2118,18 @@ void read_ddj(int gi_H[],int ddj,int gi[]){
 	case 2:
 		while(gi_H[h2]!=gi[j_2]){ //不断读取，直到读取到g2中第一条H编码为止
 
-			if(j_2 < (g2_n - 1)){
-				T2 = read(T2, TD2, gi[j_2], gi[j_2 + 1]);
+			if(j_2 < (g2_n - 2)){
+				T2 = read(T2, TD2, gi[j_2], gi[j_2 + 1],gi[j_2 + 2]);
 				j_2++;
 			}
-			else if(j_2 == (g2_n - 1)){
-				T2 = read(T2, TD2, gi[j_2], gi[j_2]);
+			else if(j_2 == (g2_n - 2)){
+				T2 = read(T2, TD2, gi[j_2], gi[j_2+1],gi[j_2+1]);
 				j_2++;
 			}	
+            else if(j_2 == (g2_n -1)){
+                T2 = read(T2, TD2, gi[j_2], gi[j_2],gi[j_2]);
+				j_2++;
+            }
 			if(j_2 > g2_n - 1)
 				break;
 
@@ -1878,12 +2139,16 @@ void read_ddj(int gi_H[],int ddj,int gi[]){
 
 	case 3:
 		while(gi_H[h3]!=gi[j_3]){ //不断读取，直到读取到g3中第一条H编码为止
-			if(j_3 < (g3_n - 1)){
-				T3 = read(T3, TD3, gi[j_3], gi[j_3 + 1]);
+			if(j_3 < (g3_n - 2)){
+				T3 = read(T3, TD3, gi[j_3], gi[j_3 + 1],gi[j_3 + 2]);
 				j_3++;
 			}
-			else if(j_3 == (g3_n - 1)){
-				T3 = read(T3, TD3, gi[j_3], gi[j_3]);
+			else if(j_3 == (g3_n - 2)){
+				T3 = read(T3, TD3, gi[j_3], gi[j_3 + 1], gi[j_3 + 1]);
+				j_3++;
+			}	
+            else if(j_3 == (g3_n - 1)){
+				T3 = read(T3, TD3, gi[j_3], gi[j_3], gi[j_3]);
 				j_3++;
 			}	
 			if(j_3 > g3_n - 1)
@@ -1894,12 +2159,16 @@ void read_ddj(int gi_H[],int ddj,int gi[]){
 
 	case 4:
 		while(gi_H[h4]!=gi[j_4]){ //不断读取，直到读取到g4中第一条H编码为止
-			if(j_4 < (g4_n - 1)){
-				T4 = read(T4, TD4, gi[j_4], gi[j_4 + 1]);
+			if(j_4 < (g4_n - 2)){
+				T4 = read(T4, TD4, gi[j_4], gi[j_4 + 1], gi[j_4 + 2]);
+				j_4++;
+			}
+            else if(j_4 == (g4_n - 2)){
+				T4 = read(T4, TD4, gi[j_4], gi[j_4 + 1], gi[j_4 + 1]);
 				j_4++;
 			}
 			else if(j_4 == (g4_n - 1)){
-				T4 = read(T4, TD4, gi[j_4], gi[j_4]);
+				T4 = read(T4, TD4, gi[j_4], gi[j_4],gi[j_4]);
 				j_4++;
 			}	
 			if(j_4 > g4_n - 1)
@@ -1910,12 +2179,16 @@ void read_ddj(int gi_H[],int ddj,int gi[]){
 
 	case 5:
 		while(gi_H[h5]!=gi[j_5]){ //不断读取，直到读取到g5中第一条S编码为止
-			if(j_5 < (g5_n - 1)){
-				T5 = read(T5, TD5, gi[j_5], gi[j_5 + 1]);
+			if(j_5 < (g5_n - 2)){
+				T5 = read(T5, TD5, gi[j_5], gi[j_5 + 1], gi[j_5 + 2]);
 				j_5++;
 			}
-			else if(j_5 == (g5_n - 1)){
-				T5 = read(T5, TD5, gi[j_5], gi[j_5]);
+			else if(j_5 == (g5_n - 2)){
+				T5 = read(T5, TD5, gi[j_5], gi[j_5 + 1], gi[j_5 + 1]);
+				j_5++;
+			}
+            else if(j_5 == (g5_n - 1)){
+				T5 = read(T5, TD5, gi[j_5], gi[j_5], gi[j_5]);
 				j_5++;
 			}	
 			if(j_5 > g5_n - 1)
@@ -1926,14 +2199,18 @@ void read_ddj(int gi_H[],int ddj,int gi[]){
 
 	case 6:
 		while(gi_H[h6]!=gi[j_6]){ //不断读取，直到读取到g6中第一条S编码为止
-			if(j_6 < (g6_n - 1)){
-				T6 = read(T6, TD6, gi[j_6], gi[j_6 + 1]);
+			if(j_6 < (g6_n - 2)){
+				T6 = read(T6, TD6, gi[j_6], gi[j_6 + 1], gi[j_6 + 2]);
 				j_6++;
 			}
-			else if(j_6 == (g6_n - 1)){
-				T6 = read(T6, TD6, gi[j_6], gi[j_6]);
+			else if(j_6 == (g6_n - 2)){
+				T6 = read(T6, TD6, gi[j_6], gi[j_6 + 1], gi[j_6 + 1]);
 				j_6++;
-			}	
+			}
+            else if(j_6 == (g6_n - 1)){
+				T6 = read(T6, TD6, gi[j_6], gi[j_6], gi[j_6]);
+				j_6++;
+			}		
 			if(j_6 > g6_n - 1)
 				break;
 		}	
@@ -1945,14 +2222,14 @@ void read_ddj(int gi_H[],int ddj,int gi[]){
 		break;
 	}
 }
-
 //判断是否产生交换
 void decide_swap(int g[], int gi[], int gi_H2[], int gi_th[], int gi_H[], int thi, int p, int gi_h, int hj,
                  int gi_n) {//hj表示堆垛机读取的当前回库编码数量
     int u1 = 0, u2 = 0, temp = 0;//u1，u2表示需要交换编码的下标
     int p1 = 0;
     bool flag_u1 = false, flag_u2 = false;
-    p1 = hi[m1 - 1][0];//时间最短的回库编码
+    p_model = judge_model(p);
+    p1 = hi[p_model][m1 - 1][0];//时间最短的回库编码
     int ddj = stacker(p1);//判断最短时间回库编码的堆垛机序号
     int p2 = 0;//要交换的编码
     for (int i = hj - 1; i < thi; i++) {//从读取到当前回库编码数量 开始 到所有已与送检编码匹配的回库编码数量为止
@@ -2019,14 +2296,14 @@ void decide_swap(int g[], int gi[], int gi_H2[], int gi_th[], int gi_H[], int th
         }
     }
 }
-
 // todo 重载 decide_swap()
 void decide_swap(Food &food, int gi[], int gi_H2[], int gi_th[], int gi_H[], int thi, int p, int gi_h, int hj, int gi_n) {//hj表示堆垛机读取的当前回库编码数量
     int *g = food.getSequenceAddress();
     int u1 = 0, u2 = 0, temp = 0;//u1，u2表示需要交换编码的下标
     int p1 = 0;
     bool flag_u1 = false, flag_u2 = false;
-    p1 = hi[m1 - 1][0];//时间最短的回库编码
+    p_model = judge_model(p);
+    p1 = hi[p_model][m1 - 1][0];//时间最短的回库编码
     int ddj = stacker(p1);//判断最短时间回库编码的堆垛机序号
     int p2 = 0;//要交换的编码
     for (int i = hj - 1; i < thi; i++) {//从读取到当前回库编码数量 开始 到所有已与送检编码匹配的回库编码数量为止
@@ -2093,7 +2370,6 @@ void decide_swap(Food &food, int gi[], int gi_H2[], int gi_th[], int gi_H[], int
         }
     }
 }
-
 //找到时间最短的回库编码
 int min_h(){
 	int Th = th1+th2+th3+th4+th5+th6-m1;//所有已读取送检编码的数量
@@ -2122,7 +2398,6 @@ int min_h(){
 		m1--;
 	return hi[m1-1][0];//返回最短回库时间的回库编码
 }
-
 // todo 重载 Fitness()
 double Fintess(Food& f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int g1_H[],int g2_H[],int g3_H[],int g4_H[],int g5_H[],int g6_H[],int g1_H2[],int g2_H2[],int g3_H2[],int g4_H2[],int g5_H2[],int g6_H2[],int g1_th[],int g2_th[],int g3_th[],int g4_th[],int g5_th[],int g6_th[]){
     T1=0,T2=0,T3=0,T4=0,T5=0,T6=0;
@@ -2270,7 +2545,6 @@ double Fintess(Food& f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
     T[0] = T1;T[1] = T2;T[2] = T3;T[3] = T4;T[4] = T5;T[5] = T6;
     return max2(T, f);
 }
-
 // todo 重载 ensimpleCode()
 void enSimpleCode(Food& f) {
     //初始化一些变量
@@ -2294,7 +2568,6 @@ void enSimpleCode(Food& f) {
         TD[i] = 0;
     }
     for(int i=0;i<H;i++){
-        th[i] = 0;
         hi[i][0]=9999;
         hi[i][1]=999999;
         I[i][0] = 0;
@@ -2342,7 +2615,7 @@ void enSimpleCode(Food& f) {
 //    f.fluorescein = (1-rou)*f.fluorescein + mgamma / f.fitness;
 
 }
-
+//对种群进行解码
 void enCode(Food *f) {
     //按照自己的方法对 初始种群 中的每个个体进行解码，计算出目标函数
     //先写对一条编码的解码，再循环调用
