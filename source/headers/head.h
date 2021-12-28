@@ -9,7 +9,7 @@
 #define temFlyNum (flyNum * (flyNum - 1)) / 2 //中间种群，中间产生新解组成的种群
 
 //移动公式的参数
-#define dimensionU 6000 //解维度上限取值，编码里每一个元素的数值上限，一般是统一
+#define dimensionU 2000 //解维度上限取值，编码里每一个元素的数值上限，一般是统一
 #define dimensionL 1 //解维度下限取值
 //double beta0 = 1;	//参数β0
 //double mgamma = 0.1 / pow(dimensionU - dimensionL, 2);	//光吸收系数γ
@@ -153,6 +153,7 @@ double TD[6];//堆垛机工作的适应度值（不包含等待时间）
 int g1_H2[H],g2_H2[H],g3_H2[H],g4_H2[H],g5_H2[H],g6_H2[H];//根据送检任务将回库任务分配到相应的堆垛机
 double gp[6][1000][2];//三维数组，gp[][][0]中存储入库或回库编码，gp[][][1]中存储到达时间
 double arr_p[CODELENGTH+1][4];//arr_p[][0]中放读码顺序，1~2000，arr_p[][1]中放堵塞队列长度arr_p[][2]中放堆垛机序号,arr_p[][3]中当前时间
+double min_times[5]={0};
 
 typedef struct CS{
 	float x; //货架坐标1 ~12
