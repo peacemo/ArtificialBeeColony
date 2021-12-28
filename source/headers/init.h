@@ -274,15 +274,42 @@ void inspection_NUM(char type,int inspect_model){
         cout<<"inspection_NUM error"<<endl;
     }
 }
-//输出货位信息到文件
+//得到本周期货位，并输出货位信息到文件
 void getCargo_now(string File_name1,string File_name2){
+    //R:500 S:500 H:500 C:500
+    //选取规则：从下往上，选取每排的堆垛机
+    int j = 0,r = 0,s = 0,h = 0,c = 0;
+    for(int i=0;i<n_total;i++){
+        if(cargo[i].s1 == 0 && cargo[i].s2 == 0 && r<R){
+            cargo_now[j] = cargo[i];
+            j++,r++;
+        }
+        else if(cargo[i].s1 == 0 && cargo[i].s2 == 1 && s<S){
+            cargo_now[j] = cargo[i];
+            j++,s++;
+        }
+        else if(cargo[i].s1 == 0 && cargo[i].s2 == 0 && r>R && h<H){
+            cargo_now[j] = cargo[i];
+            cargo_now[j].s1 = 1;
+            j++,h++;
+        }
+        else if(cargo[i].s1 == 1 && cargo[i].s2 == 1 && c<C){
+            cargo_now[j] = cargo[i];
+            j++,c++;
+        }
+        else if(j>2000){
+            cout<<"2000 over!"<<endl;
+            break;
+        }
+    }
     ofstream out1;
     ofstream out_sit;
     out1.open(File_name1);
     out_sit.open(File_name2);
     for(int i=0;i<CODELENGTH;i++){
-        out1<<"{"<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<cargo_now[i].s1<<","<<cargo_now[i].s2<<","<<cargo_now[i].num<<","<<"0"<<","<<cargo_now[i].model<<","<<cargo_now[i].time<<"}"<<",";
-        out_sit<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<judge_type(i)<<endl;
+        out1<<"{"<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<cargo_now[i].s1<<","<<cargo_now[i].s2<<","<<cargo_now[i].num<<","
+        <<cargo_now[i].model<<","<<cargo_now[i].time<<","<<cargo_now[i].flag<<","<<cargo_now[i].line<<","<<cargo_now[i].row<<","<<cargo_now[i].column<<","<<cargo_now[i].id<<"}"<<",";
+        out_sit<<cargo_now[i].line<<","<<cargo_now[i].column<<","<<cargo_now[i].row<<","<<judge_type(i)<<endl;
         if((i+1)%5==0){
             out1<<endl;
         }
