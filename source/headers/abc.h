@@ -257,7 +257,7 @@ void abc() {
         std::cout << "The one time is: " <<(double)(endTime - startTime) / CLOCKS_PER_SEC << "s" << std::endl;
     }
     ofstream output;
-	output.open("output/Best.txt");
+	output.open("output/best.txt");
     std::cout << "*****************************" << std::endl;
     std::cout << "The best ever: " << currentBestFood << std::endl;
     std::cout << "Grid: " ;
