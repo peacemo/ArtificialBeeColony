@@ -1431,7 +1431,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 
     switch (type){
         case 'R'://该编码为入库编码
-            
+            ddj = stacker(p);
             if(a[ai]<=TI)//判断等待时间 数组a[ai]中存放的入库时间是依次从小到大的
                 wait_time = 0;
             else
@@ -1497,6 +1497,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 			arr_block(TI,ddj);
             break;
         case 'H':
+            ddj = stacker(p);
             //计算送检口送检长度
             //inspection_NUM('H',cargo_now[p-1].model);
             p_model = judge_model(p);
@@ -1597,7 +1598,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
             // outbound[outbound_i++][1] = TI + walk_time1;
             break;
         case 'C':
-            //ddj = stacker(p);
+            ddj = stacker(p);
             // walk_time1 = Walk_time(cargo_now[p-1].y,cargo_now[p-1].z);
             // if(second_type=='R'||second_type=='H')
             //     walk_time2 = Walk_time(cargo_now[p-1].y,cargo_now[p-1].z);
@@ -1637,7 +1638,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
             //获取检定口位置,以及检定资产的检定时间
             inspect(cargo_now[p-1].model);
             inspect_xyz(p);
-            //ddj = stacker(p);
+            ddj = stacker(p);
             if(two_flag == true){
                 add_ddjCode(ddj);
                 //堆垛机一次可以取两垛
@@ -1923,7 +1924,6 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 				}
 			}
         }
-			
 		ddj = stacker(p);
 		arr_block(TI,ddj);
 		break;
@@ -1931,7 +1931,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
             cout<<"read error!"<<endl;
             break;
     }
-    return TI;//返回堆垛机读取该编码的时间
+    return TI;//返回堆垛机读取该编码的时间.
 }
 // todo 重载 Storing_num()
 void Storing_num(Food f){//输入种群

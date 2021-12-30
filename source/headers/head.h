@@ -1,6 +1,3 @@
-//配置文件 测试 yoga
-//#define INPUTFILE "E:\\???\\Data sets\\Solomon\\solomon_100\\RC101.txt"
-//300:R:80 S:75 H:75 C: 70  R:1-80 S:81-155 H:156-230 C:231-300
 //萤火虫参数
 // #define TMAX 500 //迭代次数
 // #define flyNum 800//种群大小（编码的数量）
@@ -112,9 +109,9 @@ int r_volume = 10;//入库口的最大不堵塞容量
 int block_long = 0;//最长堵塞长度
 int block_times = 0;//超出最大不堵塞容量的次数
 
-int enter_x = 0;
-int enter_y = 0;
-int enter_z = 0;
+int enter_x = 0;//入库口的x坐标
+int enter_y = 0;//入库口的y坐标
+int enter_z = 0;//入库口的z坐标
 
 int inspect_x = 0;//送检口的x坐标
 int inspect_y = 0;//送检口的y坐标
