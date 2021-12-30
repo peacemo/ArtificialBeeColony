@@ -1931,7 +1931,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
             cout<<"read error!"<<endl;
             break;
     }
-    return TI;//返回堆垛机读取该编码的时间
+    return TI;//返回堆垛机读取该编码的时间.
 }
 // todo 重载 Storing_num()
 void Storing_num(Food f){//输入种群
