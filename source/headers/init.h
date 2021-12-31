@@ -118,7 +118,102 @@ void ddj_last(char type,int p){
     else
         cout<<"ddj_last error!"<<endl;
 }
-//根据编码判断入库口
+//判断资产到达的货架 1 ddj 2 'A' 'B' 货架的左或者右
+void enter_xyz(int ddj,char side){
+    if(ddj == 1){
+        if(side == 'A'){
+            enter_x = 0;
+            enter_y = 0;
+            enter_z = 0;
+        }
+        else if(side == 'B'){
+            enter_x = 0;
+            enter_y = 0;
+            enter_z = 0;
+        }
+        else{
+            cout<<"enter_xyz_ddj 1 error!"<<endl;
+        }
+    }
+    else if(ddj == 2){
+        if(side == 'A'){
+            enter_x = 0;
+            enter_y = 0;
+            enter_z = 0;
+        }
+        else if(side == 'B'){
+            enter_x = 0;
+            enter_y = 0;
+            enter_z = 0;
+        }
+        else{
+            cout<<"enter_xyz_ddj 2 error!"<<endl;
+        }
+    }
+    else if(ddj == 3){
+        if(side == 'A'){
+            enter_x = 0;
+            enter_y = 0;
+            enter_z = 0;
+        }
+        else if(side == 'B'){
+            enter_x = 0;
+            enter_y = 0;
+            enter_z = 0;
+        }
+        else{
+            cout<<"enter_xyz_ddj 3 error!"<<endl;
+        }
+    }
+    else if(ddj == 4){
+        if(side == 'A'){
+            enter_x = 0;
+            enter_y = 0;
+            enter_z = 0;
+        }
+        else if(side == 'B'){
+            enter_x = 0;
+            enter_y = 0;
+            enter_z = 0;
+        }
+        else{
+            cout<<"enter_xyz_ddj 4 error!"<<endl;
+        }
+    }
+    else if(ddj == 5){
+        if(side == 'A'){
+            enter_x = 0;
+            enter_y = 0;
+            enter_z = 0;
+        }
+        else if(side == 'B'){
+            enter_x = 0;
+            enter_y = 0;
+            enter_z = 0;
+        }
+        else{
+            cout<<"enter_xyz_ddj 5 error!"<<endl;
+        }
+    }
+    else if(ddj == 6){
+        if(side == 'A'){
+            enter_x = 0;
+            enter_y = 0;
+            enter_z = 0;
+        }
+        else if(side == 'B'){
+            enter_x = 0;
+            enter_y = 0;
+            enter_z = 0;
+        }
+        else{
+            cout<<"enter_xyz_ddj 6 error!"<<endl;
+        }
+    }
+    else
+        cout<<"enter_xyz_side error!"<<endl;
+} 
+//根据编码判断堆垛机入库口
 void enter_xyz(int p){
     int ddj = stacker(p);
     if(ddj == 1){
@@ -928,16 +1023,24 @@ void CS_swap(){
 
 //入库仿真
 //获得入库编码
+// void get_R(int g[]){
+// 	int j=0;
+// 	for(int i=0; i < CODELENGTH; i++){
+// 		if(g[i]<=R && j<R){//遍历数组，如果数组编码小于R，则说明为回库编码
+// 			r_arry[j] = g[i];
+// 			j++;
+// 		}
+// 	}
+// }
 void get_R(int g[]){
 	int j=0;
 	for(int i=0; i < CODELENGTH; i++){
-		if(g[i]<=R && j<R){//遍历数组，如果数组编码小于R，则说明为回库编码
+		if(cargo_now[g[i]-1].s1 == 0 && cargo_now[g[i]-1].s2 == 0){//遍历数组，如果数组编码小于R，则说明为回库编码
 			r_arry[j] = g[i];
 			j++;
 		}
 	}
 }
-
 //货物从上货点到叠箱机的时间
 void getT_load(int i,char type){
 	//int n_load1 = R_n/fre; //从上货点1发出的货物数量 fre为每秒中一共出货的总数量
@@ -2339,8 +2442,7 @@ void read_ddj(int gi_H[],int ddj,int gi[]){
 	}
 }
 //判断是否产生交换
-void decide_swap(int g[], int gi[], int gi_H2[], int gi_th[], int gi_H[], int thi, int p, int gi_h, int hj,
-                 int gi_n) {//hj表示堆垛机读取的当前回库编码数量
+void decide_swap(int g[], int gi[], int gi_H2[], int gi_th[], int gi_H[], int thi, int p, int gi_h, int hj,int gi_n) {//hj表示堆垛机读取的当前回库编码数量
     int u1 = 0, u2 = 0, temp = 0;//u1，u2表示需要交换编码的下标
     int p1 = 0;
     bool flag_u1 = false, flag_u2 = false;
