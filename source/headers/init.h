@@ -372,7 +372,7 @@ void out_block(int out_time){//参数为出库的时间间隔，单位 秒
     while(j!=H){
         TI += out_time;
         if(TI>=outbound[j][1]){
-            outbound[j][1] = 9999999;//出库一个
+            outbound[j][1] = INT32_MAX;//出库一个
             for(int a = 0;a<H;a++){
                 if(outbound[a][1]<TI){
                     outbound[j][0]++;
@@ -1098,6 +1098,7 @@ void R_Test(int r[]){
 	int ddj;
     int p1=0,p2=0,p3=0,p4=0,p5=0,p6=0;
     int nums = 1,send_num = 1;
+    char cargo_flag = 'C';//货架左右排 'A' 或者 'B'
     ofstream write_send,write_get;
 	write_get.open("output/r_get.txt");//表示你要把内容输出到“text.txt"这个文件里 如果没有这个文件，会自动创建这个文件
     write_send.open("output/r_send.txt");
@@ -1121,9 +1122,11 @@ void R_Test(int r[]){
         // }
         getT_load(i,'A');//按照上货箱数的编号，从1~R_n开始上货物，类型A、
        
-        if(flag_R==1 && p_R<R){//集齐两垛 开始计算到达堆垛机入口的时间
+        if(flag_R==1 && p_R<R){//集齐1垛 开始计算到达堆垛机入口的时间
 			flag_R = 0;	//将标记归0
+            cargo_flag = 'C';
             ddj = stacker(r[p_R]);//根据入库编码，计算出堆垛机序号
+            cargo_flag = cargo_now[p_R];
 			p_R++;
             get_t = send_t + getT(ddj);//计算到达时间 = 发送时间+到达堆垛机的时间
 			//cout<<"get_t:"<<get_t<<endl;
@@ -1133,7 +1136,16 @@ void R_Test(int r[]){
                     //cout<<1<<endl;
                 a[an] = get_t;//写入数组a中
                 an++;
-                gp[0][p1][1] = get_t;//同时写入数组gp中
+                if(cargo_flag == 'A'){
+                    enter_block[0][p1][0][1] = get_t; 
+                }
+                else if(cargo_flag == 'B'){
+                    enter_block[0][p1][1][1] = get_t;
+                }
+                else{
+                    cout<<"cargo_flag error!"<<endl;
+                }
+                //gp[0][p1][1] = get_t;//同时写入数组gp中
                 p1++;
                 write_send<<send_num<<" from dxj, send duo ,to ddj: "<<ddj<<" send time "<<send_t<<endl;//将发送一垛的时间记录在文件中
                 write_get<<an<<" "<<get_t<<endl;
@@ -1143,7 +1155,16 @@ void R_Test(int r[]){
             if(ddj==2){
                 a[an] = get_t;
                 an++;
-                gp[1][p2][1] = get_t;
+                if(cargo_flag == 'A'){
+                    enter_block[1][p2][0][1] = get_t; 
+                }
+                else if(cargo_flag == 'B'){
+                    enter_block[1][p2][1][1] = get_t;
+                }
+                else{
+                    cout<<"cargo_flag error!"<<endl;
+                }
+                //gp[1][p2][1] = get_t;
                 p2++;
                 write_send<<send_num<<" from dxj, send duo ,to ddj: "<<ddj<<" send time "<<send_t<<endl;//将发送一垛的时间记录在文件中
                 write_get<<an<<" "<<get_t<<endl;
@@ -1153,7 +1174,16 @@ void R_Test(int r[]){
             if(ddj==3){
                 a[an] = get_t;
                 an++;
-                gp[2][p3][1] = get_t;
+                if(cargo_flag == 'A'){
+                    enter_block[2][p3][0][1] = get_t; 
+                }
+                else if(cargo_flag == 'B'){
+                    enter_block[2][p3][1][1] = get_t;
+                }
+                else{
+                    cout<<"cargo_flag error!"<<endl;
+                }
+                //gp[2][p3][1] = get_t;
                 p3++;
                 write_send<<send_num<<" from dxj, send duo ,to ddj: "<<ddj<<" send time "<<send_t<<endl;//将发送一垛的时间记录在文件中
                 write_get<<an<<" "<<get_t<<endl;
@@ -1163,7 +1193,16 @@ void R_Test(int r[]){
             if(ddj==4){
                 a[an] = get_t;
                 an++;
-                gp[3][p4][1] = get_t;
+                if(cargo_flag == 'A'){
+                    enter_block[3][p4][0][1] = get_t; 
+                }
+                else if(cargo_flag == 'B'){
+                    enter_block[3][p4][1][1] = get_t;
+                }
+                else{
+                    cout<<"cargo_flag error!"<<endl;
+                }
+                //gp[3][p4][1] = get_t;
                 p4++;
                 write_send<<send_num<<" from dxj, send duo ,to ddj: "<<ddj<<" send time "<<send_t<<endl;//将发送一垛的时间记录在文件中
                 write_get<<an<<" "<<get_t<<endl;
@@ -1173,7 +1212,16 @@ void R_Test(int r[]){
             if(ddj==5){
                 a[an] = get_t;
                 an++;
-                gp[4][p5][1] = get_t;
+                if(cargo_flag == 'A'){
+                    enter_block[4][p5][0][1] = get_t; 
+                }
+                else if(cargo_flag == 'B'){
+                    enter_block[4][p5][1][1] = get_t;
+                }
+                else{
+                    cout<<"cargo_flag error!"<<endl;
+                }
+                //gp[4][p5][1] = get_t;
                 p5++;
                 write_send<<send_num<<" from dxj, send duo ,to ddj: "<<ddj<<" send time "<<send_t<<endl;//将发送一垛的时间记录在文件中
                 write_get<<an<<" "<<get_t<<endl;
@@ -1183,7 +1231,16 @@ void R_Test(int r[]){
             if(ddj==6){
                 a[an] = get_t;
                 an++;
-                gp[5][p6][1] = get_t;
+                if(cargo_flag == 'A'){
+                    enter_block[5][p6][0][1] = get_t; 
+                }
+                else if(cargo_flag == 'B'){
+                    enter_block[5][p6][1][1] = get_t;
+                }
+                else{
+                    cout<<"cargo_flag error!"<<endl;
+                }
+                //gp[5][p6][1] = get_t;
                 p6++;
                 write_send<<send_num<<" from dxj, send duo ,to ddj: "<<ddj<<" send time "<<send_t<<endl;//将发送一垛的时间记录在文件中
                 write_get<<an<<" "<<get_t<<endl;
@@ -1548,14 +1605,14 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 			    gi_n = g_number(ddj_1);
 			    for(int j=0;j<gi_n;j++){
 				    if(gp[ddj-1][j][0]==p){
-					    gp[ddj-1][j][1] = 99999999;
+					    gp[ddj-1][j][1] = INT32_MAX;
 					    break;
 				    }
 			    }
                 gi_n = g_number(ddj_2);
 			    for(int j=0;j<gi_n;j++){
 				    if(gp[ddj-1][j][0]==second_p){
-					    gp[ddj-1][j][1] = 99999999;
+					    gp[ddj-1][j][1] = INT32_MAX;
 					    break;
 				    }
 			    }
@@ -1575,7 +1632,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 			    gi_n = g_number(ddj);
 			    for(int j=0;j<gi_n;j++){
 				    if(gp[ddj-1][j][0]==p){
-					    gp[ddj-1][j][1] = 999999;
+					    gp[ddj-1][j][1] = INT32_MAX;
 					    break;
 				    }
 			    }
@@ -1629,14 +1686,14 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 			    gi_n = g_number(ddj_1);
 			    for(int j=0;j<gi_n;j++){
 				    if(gp[ddj-1][j][0]==p){
-					    gp[ddj-1][j][1] = 99999999;
+					    gp[ddj-1][j][1] = INT32_MAX;
 					    break;
 				    }
 			    }
                 gi_n = g_number(ddj_2);
 			    for(int j=0;j<gi_n;j++){
 				    if(gp[ddj-1][j][0]==second_p){
-					    gp[ddj-1][j][1] = 99999999;
+					    gp[ddj-1][j][1] = INT32_MAX;
 					    break;
 				    }
 			    }
@@ -1661,7 +1718,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 			        gi_n = g_number(ddj);
 			        for(int j=0;j<gi_n;j++){
 				        if(gp[ddj-1][j][0]==p){
-					        gp[ddj-1][j][1] = 99999999;
+					        gp[ddj-1][j][1] = INT32_MAX;
 					        break;
 				        }
 			        }
@@ -2698,7 +2755,7 @@ int min_h(){
     //min_times[0] 为最短回库时间
     if(min_times[0] == hi[0][a_0][1]){
         a_0++;
-        if(hi[0][a_0][0]==9999){
+        if(hi[0][a_0][0]==INT32_MAX){
             a_0--;
         }
         //cout<<hi[0][a_0 - 1][0]<<endl;
@@ -2708,7 +2765,7 @@ int min_h(){
     }
     else if(min_times[0] == hi[1][a_1][1]){
         a_1++;
-        if(hi[1][a_1][0]==9999){
+        if(hi[1][a_1][0]==INT32_MAX){
             a_1--;
         }
         if(a_1==0)
@@ -2717,7 +2774,7 @@ int min_h(){
     }
     else if(min_times[0] == hi[2][a_2][1]){
         a_2++;
-        if(hi[2][a_2][0]==9999){
+        if(hi[2][a_2][0]==INT32_MAX){
             a_2--;
         }
         if(a_2==0)
@@ -2726,7 +2783,7 @@ int min_h(){
     }
     else if(min_times[0] == hi[3][a_3][1]){
         a_3++;
-        if(hi[3][a_3][0]==9999){
+        if(hi[3][a_3][0]==INT32_MAX){
             a_3--;
         }
         if(a_3==0)
@@ -2735,7 +2792,7 @@ int min_h(){
     }
     else if(min_times[0] == hi[4][a_4][1]){
         a_4++;
-        if(hi[4][a_4][0]==9999){
+        if(hi[4][a_4][0]==INT32_MAX){
             a_4--;
         }
         if(a_4==0)
@@ -2751,7 +2808,7 @@ int min_h(){
 	//快速排序
 	//quickSortHelp(hi, m1, Th-1);
 	// m1++;//本次读取的最短回库编码的回库时间已找到，移动到下一位，此后，位于v之前的回库编码不再参与比较
-	// if(hi[m1-1][0]==9999)
+	// if(hi[m1-1][0]==INT32_MAX)
 	// 	m1--;
 	// return hi[m1-1][0];//返回最短回库时间的回库编码
 }
@@ -2782,7 +2839,7 @@ double Fintess(Food& f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
     //void decide_swap(firefly& f,int gi_H2[],int gi_th[],int gi_H[],int thi,int p,int gi_h,int hi)
     for(int i=0;i< H - _k - 6; i++){
         p = min_h();//最短回库时间的回库编码
-        if(p==9999)
+        if(p==INT32_MAX)
             break;
         if(p==0){
             cout<<"p error"<<endl;
@@ -2954,15 +3011,15 @@ void enSimpleCode(Food& f) {
 	//11.3 go
 	gp1 = 0,gp2 = 0,gp3 = 0,gp4 = 0,gp5 = 0,gp6 = 0;
 	gpi=0;
-	for(int i=0;i<6;i++)
+	for(int i=0;i<NUM_ddj;i++)
 		for(int j=0;j<ddj_num;j++)
-			gp[i][j][1] = 9999999;
+			gp[i][j][1] = INT32_MAX;
 	//11.3 end
     for(int i=0;i<R;i++){
         r_arry[i] = 0;
         a[i] = 0;
     }
-    for(int i=0;i<6;i++){
+    for(int i=0;i<NUM_ddj;i++){
         T[i] = 0;
         TD[i] = 0;
     }
@@ -2978,10 +3035,19 @@ void enSimpleCode(Food& f) {
         g5_H2[i] = 0;
         g6_H2[i] = 0;
     }
-    for(int i=0;i<5;i++){
+    for(int i=0;i<NUM_model;i++){
         for(int j=0;j<H;j++){
-            hi[i][j][0]=9999;
-            hi[i][j][1]=999999;
+            hi[i][j][0]=INT32_MAX;
+            hi[i][j][1]=INT32_MAX;
+        }
+    }
+    for(int i=0;i<NUM_ddj;i++){
+        for(int j=0;j<R;j++){
+            for(int ii=0;ii<2;ii++){
+                enter_block[i][j][ii][0] = INT32_MAX;
+                enter_block[i][j][ii][1] = INT32_MAX;
+                enter_block[i][j][ii][2] = 0;
+            }
         }
     }
     S_H(f);//送检前h-k个编码，回库后h-k个编码，形成1-1对应关系。
@@ -3001,12 +3067,12 @@ void enSimpleCode(Food& f) {
     int g1_th[g1_h],g2_th[g2_h],g3_th[g3_h],g4_th[g4_h],g5_th[g5_h],g6_th[g6_h];//6台堆垛机的回库任务的时间
     int g1[g1_n],g2[g2_n],g3[g3_n],g4[g4_n],g5[g5_n],g6[g6_n];//任务分拣到6台堆垛机
 
-    for(int i=0;i<g1_h;i++){g1_th[i]=999999;g1_H2[i]=0;}
-    for(int i=0;i<g2_h;i++){g2_th[i]=999999;g2_H2[i]=0;}
-    for(int i=0;i<g3_h;i++){g3_th[i]=999999;g3_H2[i]=0;}
-    for(int i=0;i<g4_h;i++){g4_th[i]=999999;g4_H2[i]=0;}
-    for(int i=0;i<g5_h;i++){g5_th[i]=999999;g5_H2[i]=0;}
-    for(int i=0;i<g6_h;i++){g6_th[i]=999999;g6_H2[i]=0;}
+    for(int i=0;i<g1_h;i++){g1_th[i]=INT32_MAX;g1_H2[i]=0;}
+    for(int i=0;i<g2_h;i++){g2_th[i]=INT32_MAX;g2_H2[i]=0;}
+    for(int i=0;i<g3_h;i++){g3_th[i]=INT32_MAX;g3_H2[i]=0;}
+    for(int i=0;i<g4_h;i++){g4_th[i]=INT32_MAX;g4_H2[i]=0;}
+    for(int i=0;i<g5_h;i++){g5_th[i]=INT32_MAX;g5_H2[i]=0;}
+    for(int i=0;i<g6_h;i++){g6_th[i]=INT32_MAX;g6_H2[i]=0;}
 
     Storing(f,g1,g2,g3,g4,g5,g6,g1_S,g2_S,g3_S,g4_S,g5_S,g6_S,g1_H,g2_H,g3_H,g4_H,g5_H,g6_H);//将每台堆垛机的工作和送检、回库任务分离成不同的数组。共18个数组
     //f.fitness=Fintess(f,g1,g2,g3,g4,g5,g6,g1_H,g2_H,g3_H,g4_H,g5_H,g6_H );
