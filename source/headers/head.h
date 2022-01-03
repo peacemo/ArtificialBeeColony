@@ -36,6 +36,8 @@ const int ddj_num = 6;
 #define H 500
 #define C 500
 #define _k 0
+#define NUM_ddj 6//堆垛机数量
+#define NUM_model 5//资产类型数量
 int len = CODELENGTH;
 int j_1=0,j_2=0,j_3=0,j_4=0,j_5=0,j_6=0;//每台堆垛机已读取的编码数量， 0~gi_n
 int h1=0,h2=0,h3=0,h4=0,h5=0,h6=0,h7=0,h8=0;//每台堆垛机读取到当前的回库编码数量
@@ -148,10 +150,11 @@ double a[R] ;//入库商品到达堆垛机的时间顺序
 double T[6];//总工期的适应度值
 double TD[6];//堆垛机工作的适应度值（不包含等待时间）
 int g1_H2[H],g2_H2[H],g3_H2[H],g4_H2[H],g5_H2[H],g6_H2[H];//根据送检任务将回库任务分配到相应的堆垛机
-double gp[6][1000][2];//三维数组，gp[][][0]中存储入库或回库编码，gp[][][1]中存储到达时间
+double gp[6][NUMBER][2];//三维数组，gp[][][0]中存储入库或回库编码，gp[][][1]中存储到达时间
 double arr_p[CODELENGTH+1][4];//arr_p[][0]中放读码顺序，1~2000，arr_p[][1]中放堵塞队列长度arr_p[][2]中放堆垛机序号,arr_p[][3]中当前时间
 double min_times[5]={0};
-
+//int enter_block[6][2] = {0};
+double enter_block[ddj][R][2][3];//[][][][0]表示 入库编码  [][][][1] 表示到达时间 [][][][2] 表示当前货架排队的垛资产数量 [ddj][R[cargo_now[p-1].flag]][3] flag 表示货架 'A' 或者货架 'B'
 typedef struct CS{
 	float x; //货架坐标1 ~12
 	float y;	//货架中横坐标 1~52
