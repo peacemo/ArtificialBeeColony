@@ -15,7 +15,7 @@ private:
     double fitness;
     int counts;
     double timeSpan;
-
+    int fre;
 public:
 
     virtual ~Food();
@@ -43,6 +43,10 @@ public:
     double getTimeSpan() const;
 
     void setTimeSpan(double timeSpan);
+
+    void setFre(int fre);
+
+    int getFre() const;
 
     friend std::ostream &operator<<(std::ostream &os, const Food &food);
 
