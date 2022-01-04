@@ -30,6 +30,7 @@ void fdcpy(Food &sFood, Food &tFood) {
     tFood.setFitness(sFood.getFitness());
     tFood.setSeqLen(sFood.getSeqLen());
     tFood.setTimeSpan(sFood.getTimeSpan());
+    tFood.setFre(sFood.getFre());
     tFood.setCounts(0);
 }
 
@@ -240,6 +241,7 @@ void abc() {
             while (count < countMax) {
                 count++;
                 foods[scoutIndex[s]].opt2(); // 2-opt打乱
+                foods[scoutIndex[s]].setFre(rand()%( 50 - 5 + 1) + 5);
                 // foods[s].stirSequence(); // 随机打乱（效果更好）
                 enSimpleCode(foods[scoutIndex[s]]);
                 if (foods[scoutIndex[s]].getFitness() >= oldFitness) {
@@ -251,10 +253,11 @@ void abc() {
 
         fitnessGrid.push_back(currentBestFood.getFitness());
         std::cout << "Gen " << i + 1 << ": ";
-        std::cout << "{Fitness:" << currentBestFood.getFitness() << ",\tTime:" << currentBestFood.getTimeSpan() << "}" << std::endl;
+        std::cout << "{Fitness:" << currentBestFood.getFitness() << ",\tTime:" << currentBestFood.getTimeSpan() <<",\tFre"<<currentBestFood.getFre()<< "}" << std::endl;
         if (currentBestFood.getFitness() == 0) break;
         endTime = clock();//计时结束
         std::cout << "The one time is: " <<(double)(endTime - startTime) / CLOCKS_PER_SEC << "s" << std::endl;
+        //std::cout<<enterI<<endl;
     }
     ofstream output;
 	output.open("output/best.txt");

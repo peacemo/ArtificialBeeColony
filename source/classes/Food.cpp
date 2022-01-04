@@ -39,6 +39,7 @@ Food::Food() {
     this->fitness = -1;
     this->counts = 0;
     this->timeSpan = 0;
+    this->fre = rand()%( 20 - 5 + 1) + 5;
     this->stirSequence();
     this->calFitness();
 }
@@ -83,6 +84,14 @@ double Food::getTimeSpan() const {
 
 void Food::setTimeSpan(double timeSpan) {
     Food::timeSpan = timeSpan;
+}
+
+int Food::getFre() const {
+    return fre;
+}
+
+void Food::setFre(int fre) {
+    Food::fre = fre;
 }
 
 /*!
@@ -161,7 +170,7 @@ std::ostream &operator<<(std::ostream &os, const Food &food) {
         }
     }
     os << "seq: " << tempSeq << "\tseqLen: " << food.seqLen << "\tfitness: " << food.fitness << "\tcounts: "
-       << food.counts << "\ttime: " << food.timeSpan;
+       << food.counts << "\ttime: " << food.timeSpan << "\tfre: " << food.fre;
     return os;
 }
 
