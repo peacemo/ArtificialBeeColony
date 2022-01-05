@@ -34,6 +34,9 @@ void enterBlock(double TI,int ddj,char flag){//flag = cargo_now[p-1].flag
         if(enter_block[ddj-1][i][cargo_num][1] < TI){
             block_num++;
         }
+        else{
+            break;
+        }
     }
     if(block_num>5){
         enterI++;
@@ -3080,8 +3083,8 @@ double Fintess(Food& f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
 // todo 重载 ensimpleCode()
 void enSimpleCode(Food& f) {
     //初始化一些变量
-    fre1 = f.getFre();
-    fre2 = f.getFre();
+    //fre1 = f.getFre();
+    //fre2 = f.getFre();
     int b1 = INT32_MAX;
     ai = 0;
     flag_R = 0;
