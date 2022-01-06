@@ -12,3 +12,5 @@ git pull origin
 git pull upstream main
 git push origin
 github pull request
+
+堆垛机：坐标 z轴不变，x轴在两个货位之间，y轴表示高度

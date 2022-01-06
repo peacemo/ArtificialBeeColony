@@ -515,25 +515,32 @@ void getCargo_now(string File_name1,string File_name2){
     //R:500 S:500 H:500 C:500
     //选取规则：从下往上，选取每排的堆垛机
     int j = 0,r = 0,s = 0,h = 0,c = 0;
+    int s_model[S];
     for(int i=0;i<n_total;i++){
         if(cargo[i].s1 == 0 && cargo[i].s2 == 0 && r<R){
             cargo_now[j] = cargo[i];
+            cargo_now[j].num = j + 1;
             j++,r++;
         }
         else if(cargo[i].s1 == 0 && cargo[i].s2 == 1 && s<S){
             cargo_now[j] = cargo[i];
+            cargo_now[j].num = j + 1;
+            s_model[s] = cargo_now[j].model;
             j++,s++;
         }
-        else if(cargo[i].s1 == 0 && cargo[i].s2 == 0 && r>R && h<H){
+        else if(cargo[i].s1 == 0 && cargo[i].s2 == 0 && r==R && h<H && s==S){
             cargo_now[j] = cargo[i];
+            cargo_now[j].num = j + 1;
             cargo_now[j].s1 = 1;
+            cargo_now[j].model = s_model[h];
             j++,h++;
         }
         else if(cargo[i].s1 == 1 && cargo[i].s2 == 1 && c<C){
             cargo_now[j] = cargo[i];
+            cargo_now[j].num = j + 1;
             j++,c++;
         }
-        else if(j>2000){
+        else if(j>NUMBER){
             cout<<"2000 over!"<<endl;
             break;
         }
@@ -544,7 +551,7 @@ void getCargo_now(string File_name1,string File_name2){
     out_sit.open(File_name2);
     for(int i=0;i<CODELENGTH;i++){
         out1<<"{"<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<cargo_now[i].s1<<","<<cargo_now[i].s2<<","<<cargo_now[i].num<<","
-        <<cargo_now[i].model<<","<<cargo_now[i].time<<","<<cargo_now[i].flag<<","<<cargo_now[i].line<<","<<cargo_now[i].row<<","<<cargo_now[i].column<<","<<cargo_now[i].id<<"}"<<",";
+        <<cargo_now[i].model<<","<<cargo_now[i].time<<","<<"\'"<<cargo_now[i].flag<<"\'"<<","<<cargo_now[i].line<<","<<cargo_now[i].row<<","<<cargo_now[i].column<<","<<"\""<<cargo_now[i].id<<"\""<<"}"<<",";
         out_sit<<cargo_now[i].line<<","<<cargo_now[i].column<<","<<cargo_now[i].row<<","<<judge_type(i)<<endl;
         if((i+1)%5==0){
             out1<<endl;
@@ -1094,10 +1101,19 @@ void getT_load(int i,char type){
 		//5: fre1*3 + t_load1
 		//6: fre2*3 + t_load2
 		if(i%2==0){
-			t_R = fre2*(i/2) + t_load2 + 3;  
+			t_R = fre2*(i/2) + 3;//上货点2发出
+            //t_R为发出一箱时长
+            //上货点2 -> 第一个交通点
+            //到第一个交通点的时间
+            tp[0][tp_1] =  t_R + traffic_point[0].upPoint[1].runtime;
+            tp_1++;
 		}
 		else{
-			t_R = fre1*((i+1)/2) + t_load1;
+			t_R = fre1*((i+1)/2)//上货点1发出
+            //上货点1 -> 第一个交通点
+            //到第一个交通点的时间
+            tp[0][tp_1] = t_R + traffic_point[0].upPoint[0].runtime;
+            tp_1++;
 		}
 		temp_p++;
 		if(type=='A'){//如果属于A类型 3箱成一垛  
@@ -1150,7 +1166,6 @@ void R_Test(int r[]){
 			break;
 		if(an>R)	//	防止出现数组访问越界
 			break;
-
         // if(nums<num_A+1)
         // {
         //     getT_load(i,'A');//按照上货箱数的编号，从1~R_n开始上货物，类型A    

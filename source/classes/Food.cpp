@@ -11,6 +11,8 @@
 #include "../headers/Constants.h"
 
 void randomIndex(int G[],int len) { // 对数组进行洗牌操作
+    // 打乱序列元素
+    srand((double)clock());//设置随机种子
     for(int i = 0; i < len; i++){
         int sit = rand()%(len-1) +1; // 产生一个随机位置
         int temp =G[i];	// 交换当前位置的编码和随机位置的编码
@@ -98,8 +100,6 @@ void Food::setFre(int fre) {
  * 打乱数组中的元素
  */
 void Food::stirSequence() {
-    // 打乱序列元素
-    srand((double)clock());//设置随机种子
 
     for(int j = 0; j < GoodsNum; j++){ // 初始化货物 1~GoodsNum
         this->sequence[j] = j+1;
