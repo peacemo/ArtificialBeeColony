@@ -2,7 +2,7 @@
 #include "headers/Constants.h"
 #include "classes/Food.h"
 #include "headers/head.h"
-#include "headers/init.h"
+#include "headers/initout.h"
 #include "headers/abc.h"
 //#include "headers/geneticAlgro.h"
 

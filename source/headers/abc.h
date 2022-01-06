@@ -187,6 +187,7 @@ void abc() {
         clock_t startTime,endTime;
         startTime = clock();//计时开始
         scoutIndex.clear();
+
         /**
          * 引领蜂对于每一个食物源进行访问（采集）
          * 采集过程为：
@@ -281,6 +282,8 @@ void abc() {
         }
     }
     output.close();
+    // enSimpleCode(currentBestFood);
+    // std::cout << currentBestFood.getFitness() << std::endl;
 }
 
 #endif //ABC_ABC_H
