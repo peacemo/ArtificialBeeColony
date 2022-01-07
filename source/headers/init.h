@@ -162,14 +162,14 @@ void ddj_last(char type,int p){
 void enter_xyz(int ddj,char side){
     if(ddj == 1){
         if(side == 'A'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 36.52;
         }
         else if(side == 'B'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 38.43;
         }
         else{
             cout<<"enter_xyz_ddj 1 error!"<<endl;
@@ -177,14 +177,14 @@ void enter_xyz(int ddj,char side){
     }
     else if(ddj == 2){
         if(side == 'A'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 40.34;
         }
         else if(side == 'B'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 42.23;
         }
         else{
             cout<<"enter_xyz_ddj 2 error!"<<endl;
@@ -192,14 +192,14 @@ void enter_xyz(int ddj,char side){
     }
     else if(ddj == 3){
         if(side == 'A'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 43.08;
         }
         else if(side == 'B'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 44.96;
         }
         else{
             cout<<"enter_xyz_ddj 3 error!"<<endl;
@@ -207,14 +207,14 @@ void enter_xyz(int ddj,char side){
     }
     else if(ddj == 4){
         if(side == 'A'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 45.81;
         }
         else if(side == 'B'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 47.69;
         }
         else{
             cout<<"enter_xyz_ddj 4 error!"<<endl;
@@ -222,14 +222,14 @@ void enter_xyz(int ddj,char side){
     }
     else if(ddj == 5){
         if(side == 'A'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 48.54;
         }
         else if(side == 'B'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 50.42;
         }
         else{
             cout<<"enter_xyz_ddj 5 error!"<<endl;
@@ -237,14 +237,9 @@ void enter_xyz(int ddj,char side){
     }
     else if(ddj == 6){
         if(side == 'A'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
-        }
-        else if(side == 'B'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 51.27;
         }
         else{
             cout<<"enter_xyz_ddj 6 error!"<<endl;
@@ -257,34 +252,34 @@ void enter_xyz(int ddj,char side){
 void enter_xyz(int p){
     int ddj = stacker(p);
     if(ddj == 1){
-        enter_x = 0;
-        enter_y = 0;
-        enter_z = 0;
+        enter_x = -3.88;
+        enter_y = 0.63;
+        enter_z = 37.49;
     }
     else if(ddj == 2){
-        enter_x = 10;
-        enter_y = 0;
-        enter_z = 0;
+        enter_x = -3.89;
+        enter_y = 0.63;
+        enter_z = 41.29;
     }
     else if(ddj == 3){
-        enter_x = 20;
-        enter_y = 0;
-        enter_z = 0;
+        enter_x = -3.89;
+        enter_y = 0.63;
+        enter_z = 44.04;
     }
     else if(ddj == 4){
-        enter_x = 30;
-        enter_y = 0;
-        enter_z = 0;
+        enter_x = -3.89;
+        enter_y = 0.63;
+        enter_z = 46.77;
     }
     else if(ddj == 5){
-        enter_x = 40;
-        enter_y = 0;
-        enter_z = 0;
+        enter_x = -3.89;
+        enter_y = 0.63;
+        enter_z = 49.49;
     }
     else if(ddj == 6){
-        enter_x = 50;
-        enter_y = 0;
-        enter_z = 0;
+        enter_x = -3.89;
+        enter_y = 0.63;
+        enter_z = 52.29;
     }
     else
         cout<<"enter_xyz error!"<<endl;
@@ -323,34 +318,34 @@ void inspect_xyz(int p){
 void return_xyz(int p){
     int ddj = stacker(p);
     if(ddj == 1){
-        return_x = 0;
-        return_y = 2;
-        return_z = 0;
+        return_x = -3.88;
+        return_y = 6.08;
+        return_z = 37.49;
     }
     else if(ddj == 2){
-        return_x = 0;
-        return_y = 3;
-        return_z = 0;
+        return_x = -3.89;
+        return_y = 6.08;
+        return_z = 41.29;
     }
     else if(ddj == 3){
-        return_x = 0;
-        return_y = 3;
-        return_z = 0;
+        return_x = -3.89;
+        return_y = 6.08;
+        return_z = 44.04;
     }
     else if(ddj == 4){
-        return_x = 0;
-        return_y = 4;
-        return_z = 0;
+        return_x = -3.89;
+        return_y = 6.08;
+        return_z = 46.77;
     }
     else if(ddj == 5){
-        return_x = 0;
-        return_y = 4;
-        return_z = 0;
+        return_x = -3.89;
+        return_y = 6.08;
+        return_z = 49.49;
     }
     else if(ddj == 6){
-        return_x = 0;
-        return_y = 5;
-        return_z = 0;
+        return_x = -3.89;
+        return_y = 6.08;
+        return_z = 52.29;
     }
     else
         cout<<"return_xyz error!"<<endl;
@@ -359,34 +354,34 @@ void return_xyz(int p){
 void out_xyz(int p){
     int ddj = stacker(p);
     if(ddj == 1){
-        out_x = 10;
-        out_y = 0;
-        out_z = 0;
+        out_x = -38.96;
+        out_y = 1.35;
+        out_z = 37.49;
     }
     else if(ddj == 2){
-        out_x = 20;
-        out_y = 0;
-        out_z = 0;
+        out_x = -38.97;
+        out_y = 1.35;
+        out_z = 41.29;
     }
     else if(ddj == 3){
-        out_x = 30;
-        out_y = 0;
-        out_z = 0;
+        out_x = -38.97;
+        out_y = 1.35;
+        out_z = 44.04;
     }
     else if(ddj == 4){
-        out_x = 40;
-        out_y = 0;
-        out_z = 0;
+        out_x = -38.97;
+        out_y = 1.35;
+        out_z = 46.77;
     }
     else if(ddj == 5){
-        out_x = 50;
-        out_y = 0;
-        out_z = 0;
+        out_x = -38.97;
+        out_y = 1.35;
+        out_z = 49.49;
     }
     else if(ddj == 6){
-        out_x = 60;
-        out_y = 0;
-        out_z = 0;
+        out_x = -38.97;
+        out_y = 1.35;
+        out_z = 52.29;
     }
     else
         cout<<"out_xyz error!"<<endl;
