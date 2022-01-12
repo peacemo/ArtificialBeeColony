@@ -162,14 +162,14 @@ void ddj_last(char type,int p){
 void enter_xyz(int ddj,char side){
     if(ddj == 1){
         if(side == 'A'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 36.52;
         }
         else if(side == 'B'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 38.43;
         }
         else{
             cout<<"enter_xyz_ddj 1 error!"<<endl;
@@ -177,14 +177,14 @@ void enter_xyz(int ddj,char side){
     }
     else if(ddj == 2){
         if(side == 'A'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 40.34;
         }
         else if(side == 'B'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 42.23;
         }
         else{
             cout<<"enter_xyz_ddj 2 error!"<<endl;
@@ -192,14 +192,14 @@ void enter_xyz(int ddj,char side){
     }
     else if(ddj == 3){
         if(side == 'A'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 43.08;
         }
         else if(side == 'B'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 44.96;
         }
         else{
             cout<<"enter_xyz_ddj 3 error!"<<endl;
@@ -207,14 +207,14 @@ void enter_xyz(int ddj,char side){
     }
     else if(ddj == 4){
         if(side == 'A'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 45.81;
         }
         else if(side == 'B'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 47.69;
         }
         else{
             cout<<"enter_xyz_ddj 4 error!"<<endl;
@@ -222,14 +222,14 @@ void enter_xyz(int ddj,char side){
     }
     else if(ddj == 5){
         if(side == 'A'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 48.54;
         }
         else if(side == 'B'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 50.42;
         }
         else{
             cout<<"enter_xyz_ddj 5 error!"<<endl;
@@ -237,14 +237,9 @@ void enter_xyz(int ddj,char side){
     }
     else if(ddj == 6){
         if(side == 'A'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
-        }
-        else if(side == 'B'){
-            enter_x = 0;
-            enter_y = 0;
-            enter_z = 0;
+            enter_x = -4.21;
+            enter_y = 0.71;
+            enter_z = 51.27;
         }
         else{
             cout<<"enter_xyz_ddj 6 error!"<<endl;
@@ -257,34 +252,34 @@ void enter_xyz(int ddj,char side){
 void enter_xyz(int p){
     int ddj = stacker(p);
     if(ddj == 1){
-        enter_x = 0;
-        enter_y = 0;
-        enter_z = 0;
+        enter_x = -3.88;
+        enter_y = 0.63;
+        enter_z = 37.49;
     }
     else if(ddj == 2){
-        enter_x = 10;
-        enter_y = 0;
-        enter_z = 0;
+        enter_x = -3.89;
+        enter_y = 0.63;
+        enter_z = 41.29;
     }
     else if(ddj == 3){
-        enter_x = 20;
-        enter_y = 0;
-        enter_z = 0;
+        enter_x = -3.89;
+        enter_y = 0.63;
+        enter_z = 44.04;
     }
     else if(ddj == 4){
-        enter_x = 30;
-        enter_y = 0;
-        enter_z = 0;
+        enter_x = -3.89;
+        enter_y = 0.63;
+        enter_z = 46.77;
     }
     else if(ddj == 5){
-        enter_x = 40;
-        enter_y = 0;
-        enter_z = 0;
+        enter_x = -3.89;
+        enter_y = 0.63;
+        enter_z = 49.49;
     }
     else if(ddj == 6){
-        enter_x = 50;
-        enter_y = 0;
-        enter_z = 0;
+        enter_x = -3.89;
+        enter_y = 0.63;
+        enter_z = 52.29;
     }
     else
         cout<<"enter_xyz error!"<<endl;
@@ -323,34 +318,34 @@ void inspect_xyz(int p){
 void return_xyz(int p){
     int ddj = stacker(p);
     if(ddj == 1){
-        return_x = 0;
-        return_y = 2;
-        return_z = 0;
+        return_x = -3.88;
+        return_y = 6.08;
+        return_z = 37.49;
     }
     else if(ddj == 2){
-        return_x = 0;
-        return_y = 3;
-        return_z = 0;
+        return_x = -3.89;
+        return_y = 6.08;
+        return_z = 41.29;
     }
     else if(ddj == 3){
-        return_x = 0;
-        return_y = 3;
-        return_z = 0;
+        return_x = -3.89;
+        return_y = 6.08;
+        return_z = 44.04;
     }
     else if(ddj == 4){
-        return_x = 0;
-        return_y = 4;
-        return_z = 0;
+        return_x = -3.89;
+        return_y = 6.08;
+        return_z = 46.77;
     }
     else if(ddj == 5){
-        return_x = 0;
-        return_y = 4;
-        return_z = 0;
+        return_x = -3.89;
+        return_y = 6.08;
+        return_z = 49.49;
     }
     else if(ddj == 6){
-        return_x = 0;
-        return_y = 5;
-        return_z = 0;
+        return_x = -3.89;
+        return_y = 6.08;
+        return_z = 52.29;
     }
     else
         cout<<"return_xyz error!"<<endl;
@@ -359,34 +354,34 @@ void return_xyz(int p){
 void out_xyz(int p){
     int ddj = stacker(p);
     if(ddj == 1){
-        out_x = 10;
-        out_y = 0;
-        out_z = 0;
+        out_x = -38.96;
+        out_y = 1.35;
+        out_z = 37.49;
     }
     else if(ddj == 2){
-        out_x = 20;
-        out_y = 0;
-        out_z = 0;
+        out_x = -38.97;
+        out_y = 1.35;
+        out_z = 41.29;
     }
     else if(ddj == 3){
-        out_x = 30;
-        out_y = 0;
-        out_z = 0;
+        out_x = -38.97;
+        out_y = 1.35;
+        out_z = 44.04;
     }
     else if(ddj == 4){
-        out_x = 40;
-        out_y = 0;
-        out_z = 0;
+        out_x = -38.97;
+        out_y = 1.35;
+        out_z = 46.77;
     }
     else if(ddj == 5){
-        out_x = 50;
-        out_y = 0;
-        out_z = 0;
+        out_x = -38.97;
+        out_y = 1.35;
+        out_z = 49.49;
     }
     else if(ddj == 6){
-        out_x = 60;
-        out_y = 0;
-        out_z = 0;
+        out_x = -38.97;
+        out_y = 1.35;
+        out_z = 52.29;
     }
     else
         cout<<"out_xyz error!"<<endl;
@@ -515,25 +510,32 @@ void getCargo_now(string File_name1,string File_name2){
     //R:500 S:500 H:500 C:500
     //选取规则：从下往上，选取每排的堆垛机
     int j = 0,r = 0,s = 0,h = 0,c = 0;
+    int s_model[S];
     for(int i=0;i<n_total;i++){
         if(cargo[i].s1 == 0 && cargo[i].s2 == 0 && r<R){
             cargo_now[j] = cargo[i];
+            cargo_now[j].num = j + 1;
             j++,r++;
         }
         else if(cargo[i].s1 == 0 && cargo[i].s2 == 1 && s<S){
             cargo_now[j] = cargo[i];
+            cargo_now[j].num = j + 1;
+            s_model[s] = cargo_now[j].model;
             j++,s++;
         }
-        else if(cargo[i].s1 == 0 && cargo[i].s2 == 0 && r>R && h<H){
+        else if(cargo[i].s1 == 0 && cargo[i].s2 == 0 && r==R && h<H && s==S){
             cargo_now[j] = cargo[i];
+            cargo_now[j].num = j + 1;
             cargo_now[j].s1 = 1;
+            cargo_now[j].model = s_model[h];
             j++,h++;
         }
         else if(cargo[i].s1 == 1 && cargo[i].s2 == 1 && c<C){
             cargo_now[j] = cargo[i];
+            cargo_now[j].num = j + 1;
             j++,c++;
         }
-        else if(j>2000){
+        else if(j>NUMBER){
             cout<<"2000 over!"<<endl;
             break;
         }
@@ -544,7 +546,7 @@ void getCargo_now(string File_name1,string File_name2){
     out_sit.open(File_name2);
     for(int i=0;i<CODELENGTH;i++){
         out1<<"{"<<cargo_now[i].x<<","<<cargo_now[i].y<<","<<cargo_now[i].z<<","<<cargo_now[i].s1<<","<<cargo_now[i].s2<<","<<cargo_now[i].num<<","
-        <<cargo_now[i].model<<","<<cargo_now[i].time<<","<<cargo_now[i].flag<<","<<cargo_now[i].line<<","<<cargo_now[i].row<<","<<cargo_now[i].column<<","<<cargo_now[i].id<<"}"<<",";
+        <<cargo_now[i].model<<","<<cargo_now[i].time<<","<<"\'"<<cargo_now[i].flag<<"\'"<<","<<cargo_now[i].line<<","<<cargo_now[i].row<<","<<cargo_now[i].column<<","<<"\""<<cargo_now[i].id<<"\""<<"}"<<",";
         out_sit<<cargo_now[i].line<<","<<cargo_now[i].column<<","<<cargo_now[i].row<<","<<judge_type(i)<<endl;
         if((i+1)%5==0){
             out1<<endl;
@@ -1093,27 +1095,50 @@ void getT_load(int i,char type){
 		//4: fre2*2 + t_load2
 		//5: fre1*3 + t_load1
 		//6: fre2*3 + t_load2
-		if(i%2==0){
-			t_R = fre2*(i/2) + t_load2 + 3;  
-		}
-		else{
-			t_R = fre1*((i+1)/2) + t_load1;
-		}
-		temp_p++;
-		if(type=='A'){//如果属于A类型 3箱成一垛  
-			if(temp_p==a_num){
-				temp_p = 0;
-				flag_R++;//发送一垛
-				send_t = t_R;//发送时间
-			}
-		}
-		else{
-			if(temp_p==b_num){//B类型，5箱一垛
-				temp_p = 0;
-				flag_R++;//发送一垛
-				send_t = t_R;
-			}
-		}
+    ofstream loadPointTask,crossTask;
+    loadPointTask.open("output/loadPointTask.txt",ios::app);
+    crossTask.open("output/crossTask.txt",ios::app);
+    if(i%2==0){
+        t_R = fre2*(i/2);//上货点2发出
+        enter_box_2++,temp_p++;
+        loadPointTask<<t_R<<endl<<"{"<<taskNum++<<","<<"\"上货点2\""<<","<<"["<<-2.95<<","<<0.7<<","<<19.49<<","<<"]"<<","
+        <<"\"单相表\""<<","<<temp_p<<","<<"["<<traffic_point[0].x<<","<<traffic_point[0].y<<","<<traffic_point[0].z<<","
+        <<"]"<<","<<"\"运行\""<<","<<1500<<","<<enter_box_2<<","<<5<<","<<maintenanceStatus<<"}"<<","<<endl;
+        //cout<<t_R<<"，上货点2发出一箱">>endl;
+        //t_R为发出一箱时长
+        //上货点2 -> 第一个交通点
+        //到第一个交通点的时间
+        tp[0][tp_1] =  t_R + traffic_point[0].upPoint[1].runtime;
+        //crossTask<<taskNum++<<","<<"["<<
+        //cout<<t_R + traffic_point[0].upPoint[1].runtime<<""
+        tp_1++;
+    }
+    else{
+        t_R = fre1*((i+1)/2);//上货点1发出
+        enter_box_1++,temp_p++;
+        loadPointTask<<t_R<<endl<<"{"<<taskNum++<<","<<"\"上货点1\""<<","<<"["<<0<<","<<0<<","<<0<<","<<"]"<<","
+        <<0<<","<<temp_p<<","<<"["<<traffic_point[0].x<<","<<traffic_point[0].y<<","<<traffic_point[0].z<<","
+        <<"]"<<","<<"\"运行\""<<","<<1500<<","<<enter_box_1<<","<<5<<","<<maintenanceStatus<<"}"<<","<<endl;
+        //上货点1 -> 第一个交通点
+        //到第一个交通点的时间
+        tp[0][tp_1] = t_R + traffic_point[0].upPoint[0].runtime;
+        tp_1++;
+    }
+    //temp_p++;
+    if(type=='A'){//如果属于A类型 3箱成一垛  
+        if(temp_p==a_num){
+            temp_p = 0;
+            flag_R++;//发送一垛
+            send_t = t_R;//发送时间
+        }
+    }
+    else{
+        if(temp_p==b_num){//B类型，5箱一垛
+            temp_p = 0;
+            flag_R++;//发送一垛
+            send_t = t_R;
+        }
+    }
 }       
 //传入堆垛机的序号，返回到该堆垛机的时间
 double getT(int ddj){
@@ -1146,11 +1171,13 @@ void R_Test(int r[]){
 	int p_R = 0;//入库编码下标
     flag_R = 0;//是否成功发送一垛
 	for(int i =1;i<=R_n;i++){
+        if(enter_box_1==1500 || enter_box_2 == 1500){
+            break;
+        }
 		if(p_R>R)	//	防止出现数组访问越界
 			break;
 		if(an>R)	//	防止出现数组访问越界
 			break;
-
         // if(nums<num_A+1)
         // {
         //     getT_load(i,'A');//按照上货箱数的编号，从1~R_n开始上货物，类型A    
@@ -1162,7 +1189,7 @@ void R_Test(int r[]){
         //     nums++;
         // }
         getT_load(i,'A');//按照上货箱数的编号，从1~R_n开始上货物，类型A、
-       
+
         if(flag_R==1 && p_R<R){//集齐1垛 开始计算到达堆垛机入口的时间
 			flag_R = 0;	//将标记归0
             cargo_flag = 'C';
@@ -2633,10 +2660,10 @@ void decide_swap(int g[], int gi[], int gi_H2[], int gi_th[], int gi_H[], int th
                     break;
             }
             //在G中交换位置
-           // temp = g[u1];
-           // g[u1] = g[u2];
-           // g[u2] = temp;
-            u1 = 0, u2 = 0;
+            //temp = g[u1];
+            //g[u1] = g[u2];
+            //g[u2] = temp;
+            //u1 = 0, u2 = 0;
             flag_u1 = false, flag_u2 = false;
             //在gi_h中交换
             for (int j = 0; j < gi_h; j++) {
@@ -2725,10 +2752,10 @@ void decide_swap(Food &food, int gi[], int gi_H2[], int gi_th[], int gi_H[], int
                     break;
             }
             //在G中交换位置
-            temp = g[u1];
-            g[u1] = g[u2];
-            g[u2] = temp;
-            u1 = 0, u2 = 0;
+            //temp = g[u1];
+            //g[u1] = g[u2];
+           // g[u2] = temp;
+            //u1 = 0, u2 = 0;
             flag_u1 = false, flag_u2 = false;
             //在gi_h中交换
             for (int j = 0; j < gi_h; j++) {

@@ -40,6 +40,8 @@ const int ddj_num = 6;
 #define NUM_ddj 6//堆垛机数量
 #define NUM_model 5//资产类型数量
 #define NUM_tp 20//交通点数量
+#define Today 1
+#define maintenanceStatus 5
 int len = CODELENGTH;
 int j_1=0,j_2=0,j_3=0,j_4=0,j_5=0,j_6=0;//每台堆垛机已读取的编码数量， 0~gi_n
 int h1=0,h2=0,h3=0,h4=0,h5=0,h6=0,h7=0,h8=0;//每台堆垛机读取到当前的回库编码数量
@@ -67,7 +69,7 @@ int bb = 0;//b资产的数组指针
 
 //入库
 //ofstream write; //write只是个名字 你可以定义为任何其他的名字
-int R_n=50000;//入库箱数
+int R_n=4000;//入库箱数
 double v_R = 2; //辊道的速度
 double t_R = 0;//总时间
 //bool flag_R;
@@ -132,11 +134,16 @@ int out_z = 0;//出库口的z坐标
 int outbound_i = 0;//出库次序
 int num_A = 1500;//类型A的入库箱数 垛：500
 int num_B = 2500;//类型B的入库箱数 垛：500
-int enter_n = num_A + num_B;//入库总箱数
+int num_counst = num_A + num_B;
+const int enter_n = 4000;//入库总箱数
 int third_x = 0,third_y = 0,third_z = 0;//堆垛机第三次动作的目标位置坐标 （通常为最后一次）
 
 int enterI = 0;
 int tp_1 = 0,tp_2 = 0,tp_3 = 0;
+
+int enter_box_1 = 0;
+int enter_box_2 = 0;
+int taskNum = 1;
 
 int G[CODELENGTH];
 int h[H - _k];
@@ -160,7 +167,7 @@ double arr_p[CODELENGTH+1][4];//arr_p[][0]中放读码顺序，1~2000，arr_p[][
 double min_times[5]={0};
 //int enter_block[6][2] = {0};
 double enter_block[NUM_ddj][R][2][3];//[][][][0]表示 入库编码  [][][][1] 表示到达时间 [][][][2] 表示当前货架排队的垛资产数量 [ddj][R[cargo_now[p-1].flag]][3] flag 表示货架 'A' 或者货架 'B'
-// double tp[Num_tp][enter_n];//交通点数组
+double tp[NUM_tp][enter_n];//交通点数组
 typedef struct CS{
 	float x; //货架坐标1 ~12
 	float y;	//货架中横坐标 1~52
@@ -204,8 +211,8 @@ typedef struct TP{
 Cargo_Space G_r[candidate_num],G_s[candidate_num],G_h[candidate_num],G_c[candidate_num];//四类候选集
 //交通点信息
 Traffic_Point traffic_point[] = {
-{-2.97,0.71,21.19,6,2,1,{{-18.52, 0.7, 21.24, 4, 621.9}, {-2.95, 0.7, 19.49, 5, 68.23}},{{0.03, 0.71, 21.19, 3, 120.0}}},
-{0.03,0.71,21.19,9,1,1,{{-2.97, 0.71, 21.19, 8, 120.0}},{{0.03, 0.71, 23.98, 7, 111.28}}},
+{-2.97,0.71,21.19,6,2,1,{{-18.52, 0.7, 21.24, 4, 621.9}, {-2.95, 0.7, 19.49, 5, 68.23}},{{0.03, 0.71, 21.19, 3, 120.0}}},//上货点1、2的第一个交通点
+{0.03,0.71,21.19,9,1,1,{{-2.97, 0.71, 21.19, 8, 120.0}},{{0.03, 0.71, 23.98, 7, 111.28}}},//叠箱机的上一个交通点
 {0.03,1.39,23.98,59,1,1,{{0.03, 0.71, 21.19, 9, 111.28}},{{0.03,0.71, 52.20, 12,1128.88}}},//叠箱机
 {0.03,0.71,52.2,12,1,1,{{0.03, 0.71, 23.98, 11, 1128.88}},{{-0.58, 0.71, 52.2, 10, 24.6}}},
 {-0.58,0.71,52.2,15,1,1,{{0.03, 0.71, 52.2, 14, 24.6}},{{-0.58, 0.71, 51.27, 13, 37.0}}},
