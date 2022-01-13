@@ -1104,7 +1104,7 @@ void getT_load(int i,char type){
             tp_1++;
 		}
 		else{
-			t_R = fre1*((i+1)/2)//上货点1发出
+			t_R = fre1*((i+1)/2);//上货点1发出
             //上货点1 -> 第一个交通点
             //到第一个交通点的时间
             tp[0][tp_1] = t_R + traffic_point[0].upPoint[0].runtime;
@@ -1172,7 +1172,7 @@ void R_Test(int r[]){
         //     nums++;
         // }
         getT_load(i,'A');//按照上货箱数的编号，从1~R_n开始上货物，类型A、
-       
+
         if(flag_R==1 && p_R<R){//集齐1垛 开始计算到达堆垛机入口的时间
 			flag_R = 0;	//将标记归0
             cargo_flag = 'C';
@@ -3103,6 +3103,7 @@ void enSimpleCode(Food& f) {
 	gp1 = 0,gp2 = 0,gp3 = 0,gp4 = 0,gp5 = 0,gp6 = 0;
 	gpi=0;
     enterI = 0;
+    tp_1 = 0,tp_2 = 0,tp_3 = 0;
 	for(int i=0;i<NUM_ddj;i++)
 		for(int j=0;j<ddj_num;j++)
 			gp[i][j][1] = INT32_MAX;

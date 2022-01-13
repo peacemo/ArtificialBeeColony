@@ -6,5 +6,6 @@ output/
 source/test_arr.cpp
 source/test.cpp
 source/test_out.cpp
+source/test_json.cpp
 会议内容/
 # chen added something...
