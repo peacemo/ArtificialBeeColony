@@ -277,6 +277,14 @@ typedef struct SM{
 
 }stackerMachines;
 
+loadPointTask lpt[] = {
+	{1,0,1,"运行",1000,1,5,1},{1,0,1,"运行",1000,1,5,1}
+};
+
+crossTask ct[] ={
+	{1,0.03236771,0.7085119,21.19361,1,0},{1,0.02536774,0.7085119,23.97561,1,0}
+};
+
 Cargo_Space G_r[candidate_num],G_s[candidate_num],G_h[candidate_num],G_c[candidate_num];//四类候选集
 //交通点信息
 Traffic_Point traffic_point[] = {
