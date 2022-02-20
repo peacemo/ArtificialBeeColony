@@ -4,7 +4,7 @@
 #include "headers/head.h"
 #include "headers/init.h"
 #include "headers/abc.h"
-//#include "headers/geneticAlgro.h"
+#include "headers/geneticAlgro.h"
 
 void loadCargo() {
     cout << "startCargo..." << endl;
@@ -35,6 +35,7 @@ int main() {
     mainout.open("output/best.txt",ios::app); 
     mainout<< "\nThe run time is: " <<(double)(endTime - startTime) / CLOCKS_PER_SEC << "s" <<endl;
     mainout.close();
+
     system("pause");
     return 0;
 }
