@@ -20,6 +20,39 @@
 #include <functional>
 #include <list>
 using namespace std;
+int SMcurrentTask(ddj){
+    if(ddj==1){
+        SMcurrentTask1++;
+        return SMcurrentTask1;
+    }
+    else if(ddj==2){
+        SMcurrentTask2++;
+        return SMcurrentTask2;
+    }
+    else if(ddj==3){
+        SMcurrentTask3++;
+        return SMcurrentTask3;
+    }
+    else if(ddj==4){
+        SMcurrentTask4++;
+        return SMcurrentTask4;
+    }
+    else if(ddj==5){
+        SMcurrentTask5++;
+        return SMcurrentTask5;
+    }
+    else if(ddj==6){
+        SMcurrentTask6++;
+        return SMcurrentTask6;
+    }
+    else{
+        cout<<"SMcurrentTask error!"<<endl;
+        return 0;
+    }
+}
+int taskType(){
+
+}
 //判断入库堵塞队列长度
 double ddj_r(int r_n){
     if(r_n % 11 == 1){
@@ -1188,9 +1221,12 @@ void getT_load(int i,char type){
         //t_R为发出一箱时长
         init_json();
         lpt[1].taskNumber = 1;
+        currentTask2++;//上货点1当前任务量自增
+        lpt[1].currentTask = currentTask2;//上货点1当前任务量赋值
         runTime = t_R;
+        cumulativeTask2 = R_n/2;  // 累计任务量
+        outTask = C;//总出库
         creat_json_file();
-
         // init_json();
         // runTime = t_R + 0.1;
         // creat_json_file();
@@ -1213,7 +1249,11 @@ void getT_load(int i,char type){
         //上货点1 发货
         init_json();
         lpt[0].taskNumber = 1;
+        currentTask1++;//上货点1当前任务量自增
+        lpt[0].currentTask = currentTask1;//上货点1当前任务量赋值
         runTime = t_R;
+        cumulativeTask1 = R_n/2;  // 累计任务量
+        outTask = C;//总出库
         creat_json_file();
 
         // init_json();
@@ -1625,6 +1665,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
     second_type = judge_type(second_p);
     third_p = judge_type(third_p);
     ddj = stacker(p);
+    int smcurrentTask = 0;//临时变量
     //判断 p 与 second_p ，这两相邻编码是否属于同种类型
     if (type == second_type){
         two_flag = true;
@@ -1830,6 +1871,9 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 
                 add_ddjCode(ddj);
                 init_json();
+                smcurrentTask =  SMcurrentTask(ddj);
+                smcurrentTask =  SMcurrentTask(ddj);
+                sm[ddj-1].currentTask = smcurrentTask;
                 runTime = TI;
                 sm[ddj-1].taskNumber = 1;
                 sm[ddj-1].getPosition_x1 = enter_x;
@@ -1887,6 +1931,8 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 add_ddjCode(ddj);
 
                 init_json();
+                smcurrentTask =  SMcurrentTask(ddj);
+                sm[ddj-1].currentTask = smcurrentTask;
                 runTime = TI;
                 sm[ddj-1].taskNumber = 1;
                 sm[ddj-1].getPosition_x1 = enter_x;
@@ -1979,6 +2025,9 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                     return_xyz(p);
 
                     init_json();
+                    smcurrentTask =  SMcurrentTask(ddj);
+                    smcurrentTask =  SMcurrentTask(ddj);
+                    sm[ddj-1].currentTask = smcurrentTask;
                     runTime = TI;
                     sm[ddj-1].taskNumber = 1;
                     sm[ddj-1].getPosition_x1 = return_x;
@@ -2051,6 +2100,8 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 return_xyz(p);
 
                 init_json();
+                smcurrentTask =  SMcurrentTask(ddj);
+                sm[ddj-1].currentTask = smcurrentTask;
                 runTime = TI;
                 sm[ddj-1].taskNumber = 1;
                 sm[ddj-1].getPosition_x1 = return_x;
@@ -2108,6 +2159,9 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 //当前位置（货位1）-取1垛货 -> 货位2-取1垛货 —> 出库口-放2垛货 —> 下个编码起始位置
 
                 init_json();
+                smcurrentTask =  SMcurrentTask(ddj);
+                smcurrentTask =  SMcurrentTask(ddj);
+                sm[ddj-1].currentTask = smcurrentTask;
                 runTime = TI;
                 sm[ddj-1].taskNumber = 1;
                 sm[ddj-1].getPosition_x1 = cargo_now[p-1].x + smShiftX;
@@ -2163,6 +2217,8 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
             }
             else{
                 init_json();
+                smcurrentTask =  SMcurrentTask(ddj);
+                sm[ddj-1].currentTask = smcurrentTask;
                 runTime = TI;
                 sm[ddj-1].taskNumber = 1;
                 sm[ddj-1].getPosition_x1 = cargo_now[p-1].x + smShiftX;
@@ -2214,6 +2270,9 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 if(same_flag == true){
 
                     init_json();
+                    smcurrentTask =  SMcurrentTask(ddj);
+                    smcurrentTask =  SMcurrentTask(ddj);
+                    sm[ddj-1].currentTask = smcurrentTask;
                     runTime = TI;
                     sm[ddj-1].taskNumber = 1;
                     sm[ddj-1].getPosition_x1 = cargo_now[p-1].x + smShiftX;;
@@ -2282,6 +2341,8 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
             }
             else{
                 init_json();
+                smcurrentTask =  SMcurrentTask(ddj);
+                sm[ddj-1].currentTask = smcurrentTask;
                 runTime = TI;
                 sm[ddj-1].taskNumber = 1;
                 sm[ddj-1].getPosition_x1 = cargo_now[p-1].x + smShiftX;;
