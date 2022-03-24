@@ -96,6 +96,7 @@ json j1 = {
 				{"workStatus", lpt[0].workStatus},
 				{"cumulativeTask", lpt[0].cumulativeTask}, 
 				{"currentTask", lpt[0].currentTask}, 
+				{"outTask",lpt[0].outTask},
 				{"equipmentFrequency", lpt[0].equipmentFrequency}, 
 				{"maintenanceStatus", lpt[0].maintenanceStatus} 
 				},
@@ -109,6 +110,7 @@ json j1 = {
 				{"workStatus", lpt[1].workStatus},
 				{"totalTask", 0}, 
 				{"currentTask", lpt[1].currentTask}, 
+				{"outTask",lpt[1].outTask},
 				{"equipmentFrequency", lpt[1].equipmentFrequency}, 
 				{"maintenanceStatus", lpt[1].maintenanceStatus} 
 				}
@@ -296,10 +298,12 @@ json j1 = {
 			{"stackerMachines", 
 			{
 				{
+				{"getTaskType",sm[0].getTaskType},
+				{"putTaskType",sm[0].putTaskType},
 				{"taskNumber", sm[0].taskNumber},
 				{"equipmentName", "3号堆垛机"},
 				{"workStatus", "运行"},
-				{"totalTask", sm[0].totalTask}, 
+				{"totalTask", g1_n}, 
 				{"currentTask", sm[0].currentTask}, 
 				{"equipmentFrequency", sm[0].equipmentFrequency}, 
 				{"maintenanceStatus",sm[0].maintenanceStatus}, 
@@ -347,10 +351,12 @@ json j1 = {
 				}
 				},
 				{
+				{"getTaskType",sm[1].getTaskType},
+				{"putTaskType",sm[1].putTaskType},
 				{"taskNumber", sm[1].taskNumber},
 				{"equipmentName", "4号堆垛机"},
 				{"workStatus", "运行"},
-				{"totalTask", sm[1].totalTask}, 
+				{"totalTask", g2_n}, 
 				{"currentTask", sm[1].currentTask}, 
 				{"equipmentFrequency", sm[1].equipmentFrequency}, 
 				{"maintenanceStatus",sm[1].maintenanceStatus}, 
@@ -398,10 +404,12 @@ json j1 = {
 				}
 				},
 				{
+				{"getTaskType",sm[2].getTaskType},
+				{"putTaskType",sm[2].putTaskType},
 				{"taskNumber", sm[2].taskNumber},
 				{"equipmentName", "5号堆垛机"},
 				{"workStatus", "运行"},
-				{"totalTask", sm[2].totalTask}, 
+				{"totalTask", g3_n}, 
 				{"currentTask", sm[2].currentTask}, 
 				{"equipmentFrequency", sm[2].equipmentFrequency}, 
 				{"maintenanceStatus",sm[2].maintenanceStatus}, 
@@ -449,10 +457,12 @@ json j1 = {
 				}
 				},
 				{
+				{"getTaskType",sm[3].getTaskType},
+				{"putTaskType",sm[3].putTaskType},
 				{"taskNumber", sm[3].taskNumber},
 				{"equipmentName", "6号堆垛机"},
 				{"workStatus", "运行"},
-				{"totalTask", sm[3].totalTask}, 
+				{"totalTask", g4_n}, 
 				{"currentTask", sm[3].currentTask}, 
 				{"equipmentFrequency", sm[3].equipmentFrequency}, 
 				{"maintenanceStatus",sm[3].maintenanceStatus}, 
@@ -500,10 +510,12 @@ json j1 = {
 				}
 				},
 				{
+				{"getTaskType",sm[4].getTaskType},
+				{"putTaskType",sm[4].putTaskType},
 				{"taskNumber", sm[4].taskNumber},
 				{"equipmentName", "7号堆垛机"},
 				{"workStatus", "运行"},
-				{"totalTask", sm[4].totalTask}, 
+				{"totalTask", g5_n}, 
 				{"currentTask", sm[4].currentTask}, 
 				{"equipmentFrequency", sm[4].equipmentFrequency}, 
 				{"maintenanceStatus",sm[4].maintenanceStatus}, 
@@ -551,10 +563,12 @@ json j1 = {
 				}
 				},
 				{
+				{"getTaskType",sm[5].getTaskType},
+				{"putTaskType",sm[5].putTaskType},
 				{"taskNumber", sm[5].taskNumber},
 				{"equipmentName", "8号堆垛机"},
 				{"workStatus", "运行"},
-				{"totalTask", sm[5].totalTask}, 
+				{"totalTask", g6_n}, 
 				{"currentTask", sm[5].currentTask}, 
 				{"equipmentFrequency", sm[5].equipmentFrequency}, 
 				{"maintenanceStatus",sm[5].maintenanceStatus}, 
