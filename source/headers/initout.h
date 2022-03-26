@@ -20,7 +20,7 @@
 #include <functional>
 #include <list>
 using namespace std;
-int SMcurrentTask(ddj){
+int SMcurrentTask(int ddj){
     if(ddj==1){
         SMcurrentTask1++;
         return SMcurrentTask1;
@@ -50,8 +50,25 @@ int SMcurrentTask(ddj){
         return 0;
     }
 }
-int taskType(){
-
+int getTaskType(char type){
+    if(type == 'R'){
+        return 0;
+    }
+    else if(type == 'S'){
+        return 1;
+    }
+    else if(type == 'H'){
+        return 2;
+    }
+    else if(type == 'C'){
+        return 3;
+    }
+    else if(type == 'M'){
+        return -1;
+    }
+    else{
+        cout<<"getTaskType error!"<<endl;
+    }
 }
 //判断入库堵塞队列长度
 double ddj_r(int r_n){
@@ -1871,6 +1888,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 
                 add_ddjCode(ddj);
                 init_json();
+                sm[ddj-1].TaskType = getTaskType(type);
                 smcurrentTask =  SMcurrentTask(ddj);
                 smcurrentTask =  SMcurrentTask(ddj);
                 sm[ddj-1].currentTask = smcurrentTask;
@@ -1906,6 +1924,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 walk_time3 = Walk_time(abs(second_x - third_x),abs(second_y - third_y));
                 ddj_last(third_type,third_p);
                 init_json();
+                sm[ddj-1].TaskType = getTaskType('M');
                 runTime = TI + wait_time + walk_time1 + walk_time2 + grab_time + place_time;
                 sm[ddj-1].taskNumber = 1;
                 sm[ddj-1].getPosition_x1 = third_x + smShiftX;
@@ -1931,6 +1950,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 add_ddjCode(ddj);
 
                 init_json();
+                sm[ddj-1].TaskType = getTaskType(type);
                 smcurrentTask =  SMcurrentTask(ddj);
                 sm[ddj-1].currentTask = smcurrentTask;
                 runTime = TI;
@@ -1953,6 +1973,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 walk_time2 = Walk_time(abs(first_x - third_x),abs(first_y - third_y));
 
                 init_json();
+                sm[ddj-1].TaskType = getTaskType('M');
                 runTime = TI + wait_time + walk_time1 +  grab_time + place_time;
                 sm[ddj-1].taskNumber = 1;
                 sm[ddj-1].getPosition_x1 = third_x + smShiftX;
@@ -2025,6 +2046,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                     return_xyz(p);
 
                     init_json();
+                    sm[ddj-1].TaskType = getTaskType(type);
                     smcurrentTask =  SMcurrentTask(ddj);
                     smcurrentTask =  SMcurrentTask(ddj);
                     sm[ddj-1].currentTask = smcurrentTask;
@@ -2061,6 +2083,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                     walk_time3 = Walk_time(abs(second_x - third_x),abs(second_y - third_y));
 
                     init_json();
+                    sm[ddj-1].TaskType = getTaskType('M');
                     runTime = TI + wait_time + walk_time1 + walk_time2 + grab_time + place_time;
                     sm[ddj-1].taskNumber = 1;
                     sm[ddj-1].getPosition_x1 = third_x + smShiftX;
@@ -2100,6 +2123,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 return_xyz(p);
 
                 init_json();
+                sm[ddj-1].TaskType = getTaskType(type);
                 smcurrentTask =  SMcurrentTask(ddj);
                 sm[ddj-1].currentTask = smcurrentTask;
                 runTime = TI;
@@ -2123,6 +2147,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 walk_time2 = Walk_time(abs(first_x - second_x),abs(first_y - second_y));
 
                 init_json();
+                sm[ddj-1].TaskType = getTaskType('M');
                 runTime = TI + wait_time + walk_time1 +  grab_time + place_time;
                 sm[ddj-1].taskNumber = 1;
                 sm[ddj-1].getPosition_x1 = third_x + smShiftX;
@@ -2159,6 +2184,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 //当前位置（货位1）-取1垛货 -> 货位2-取1垛货 —> 出库口-放2垛货 —> 下个编码起始位置
 
                 init_json();
+                sm[ddj-1].TaskType = getTaskType(type);
                 smcurrentTask =  SMcurrentTask(ddj);
                 smcurrentTask =  SMcurrentTask(ddj);
                 sm[ddj-1].currentTask = smcurrentTask;
@@ -2205,6 +2231,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 walk_time3 = Walk_time(abs(second_x - third_x),abs(second_y - third_y));
 
                 init_json();
+                sm[ddj-1].TaskType = getTaskType('M');
                 runTime = TI + wait_time + walk_time1 + walk_time2 + grab_time + place_time;
                 sm[ddj-1].taskNumber = 1;
                 sm[ddj-1].getPosition_x1 = third_x + smShiftX;
@@ -2217,6 +2244,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
             }
             else{
                 init_json();
+                sm[ddj-1].TaskType = getTaskType(type);
                 smcurrentTask =  SMcurrentTask(ddj);
                 sm[ddj-1].currentTask = smcurrentTask;
                 runTime = TI;
@@ -2244,6 +2272,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 walk_time2 = Walk_time(abs(first_x - second_x),abs(first_y - second_y));
 
                 init_json();
+                sm[ddj-1].TaskType = getTaskType('M');
                 runTime = TI + wait_time + walk_time1 +  grab_time + place_time;
                 sm[ddj-1].taskNumber = 1;
                 sm[ddj-1].getPosition_x1 = third_x + smShiftX;
@@ -2270,6 +2299,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 if(same_flag == true){
 
                     init_json();
+                    sm[ddj-1].TaskType = getTaskType(type);
                     smcurrentTask =  SMcurrentTask(ddj);
                     smcurrentTask =  SMcurrentTask(ddj);
                     sm[ddj-1].currentTask = smcurrentTask;
@@ -2314,6 +2344,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                     walk_time3 = Walk_time(abs(second_x - third_x),abs(second_y - third_y));
 
                     init_json();
+                    sm[ddj-1].TaskType = getTaskType('M');
                     runTime = TI + wait_time + walk_time1 + walk_time2 + grab_time + place_time;
                     sm[ddj-1].taskNumber = 1;
                     sm[ddj-1].getPosition_x1 = third_x + smShiftX;
@@ -2341,6 +2372,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
             }
             else{
                 init_json();
+                sm[ddj-1].TaskType = getTaskType(type);
                 smcurrentTask =  SMcurrentTask(ddj);
                 sm[ddj-1].currentTask = smcurrentTask;
                 runTime = TI;
@@ -2370,6 +2402,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 walk_time2 = Walk_time(abs(first_x - third_x),abs(first_y - second_y));
 
                 init_json();
+                sm[ddj-1].TaskType = getTaskType('M');
                 runTime = TI + wait_time + walk_time1 +  grab_time + place_time;
                 sm[ddj-1].taskNumber = 1;
                 sm[ddj-1].getPosition_x1 = third_x + smShiftX;
