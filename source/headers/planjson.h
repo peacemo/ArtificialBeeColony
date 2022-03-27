@@ -2,7 +2,6 @@
 #include <cstdio>
 #include "json.hpp"
 #include <iostream>  
-#include "head.h"
 #include <fstream>  
 using namespace std;
 using json = nlohmann::json;
@@ -54,8 +53,8 @@ typedef struct LI
 {
     char lineName[10] = "line1";
     float useRate;//线体利用率
-    char workTime[10];//正常工作时长
-    char overTime[10];//加班工作时长
+    double workTime;//正常工作时长
+    double overTime;//加班工作时长
 
 }LineInfo;
 
@@ -89,11 +88,11 @@ Risks original_risk[] = {
 };
 //定义原计划的检定线体信息
 LineInfo plan_li[] = {
-    {"line1",0.78,"119:45:44","119:45:44"}
+    {"line1",0.78,28800,0},{"line2",0.78,28800,0}
 };
 //定义优化计划的检定线体信息
 LineInfo original_li[] = {
-    {"line1",0.78,"119:45:44","119:45:44"}
+    {"line1",0.78,28800,0},{"line2",0.78,28800,0}
 };
 
 //初始化
@@ -123,11 +122,11 @@ void plantInitJson(){
 
     original_risk[0] = {"content1","content2","content3"};
 
-    plan_li[0] = {"line1",0.78,"119:45:44","119:45:44"};
-    plan_li[1] = {"line2",0.78,"119:45:44","119:45:44"};
+    plan_li[0] = {"line1",0.78,28800,0};
+    plan_li[1] = {"line2",0.78,28800,0};
 
-    original_li[0] = {"line1",0.78,"119:45:44","119:45:44"};
-    original_li[1] = {"line1",0.78,"119:45:44","119:45:44"};
+    original_li[0] = {"line1",0.78,28800,0};
+    original_li[1] = {"line1",0.78,28800,0};
 };
 
 void createPlanJson(){

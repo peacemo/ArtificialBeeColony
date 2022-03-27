@@ -2942,7 +2942,24 @@ int max2(double T[], Food &f){
 	punish();
 	//T[0] = T[0]/60.0;
 	//G_fintess = T[0]*0.95 + TD[0]*0.05 + block_long*block_times*50;//适应度值计算，加权重
+    original_li[0].useRate = 0.75;
+    
+    if(T[0]>28800){
+        original_li[0].workTime = 28800;
+        original_li[0].overTime = T[0] - 28800;
+    }
+    else{
+        original_li[0].workTime = T[0];
+        original_li[0].overTime = 0;
+    }
+    original_li[1].useRate = original_li[0].useRate;
+    original_li[1].workTime = original_li[0].workTime;
+    original_li[1].overTime = original_li[0].overTime ;
 
+    op[1].ave_work_hour = T[0] / 60;
+    op[1].cargo_usage = (R+S+H+C)/80;
+    op[1].line_usage = (original_li[0].useRate + original_li[1].useRate)*50;
+    op[1].efficiency = (op[1].cargo_usage + op[1].line_usage)/2;
     G_fintess = T[0] + enterI * 1000;
     //cout<<enterI<<endl;
 //    cout << T[0] << endl;
@@ -2950,6 +2967,7 @@ int max2(double T[], Food &f){
 	//G_fintess = G_fintess/60.0;//除以60 将秒转换为分钟
 	//T[0] = T[0]/60.0;//堆垛机实际工作时间 分钟
 	out.close();
+
 	return G_fintess;
     //return G_fintess;
 }
@@ -3586,10 +3604,24 @@ double Fintess(Food& f,int g1[],int g2[],int g3[],int g4[],int g5[],int g6[],int
 
 
     T[0] = T1;T[1] = T2;T[2] = T3;T[3] = T4;T[4] = T5;T[5] = T6;
+    for(int i=0;i<6;i++){
+        if(T[i]>28800){
+            original_smwt[i].normal_time = 28800;
+            original_smwt[i].ex_work_time = T[i] - 28800;
+        }
+        else{
+            original_smwt[i].normal_time = int(T[i]);
+            original_smwt[i].ex_work_time = 0;
+        }
+    }
+    original_de[0].handling_capacity = R+S+H+C;
+    original_de[0].Det_new = R;
+    original_de[0].Det_old = S;
     return max2(T, f);
 }
 // todo 重载 ensimpleCode()
 void enSimpleCode(Food& f) {
+    void plantInitJson();
     //初始化一些变量
     //fre1 = f.getFre();
     //fre2 = f.getFre();
@@ -3671,7 +3703,8 @@ void enSimpleCode(Food& f) {
     // get_outbound();//获取出库数组
     // out_block(10);//10s出库一垛
     // get_out_block();//出库堵塞输出到文件
-//    f.fluorescein = (1-rou)*f.fluorescein + mgamma / f.fitness;
+    //f.fluorescein = (1-rou)*f.fluorescein + mgamma / f.fitness;
+    createPlanJson();
 
 }
 //对种群进行解码
