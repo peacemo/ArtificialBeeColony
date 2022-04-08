@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-01-08 15:59:44
  * @LastEditors: ZSudoku
- * @LastEditTime: 2022-04-05 14:11:25
+ * @LastEditTime: 2022-04-08 18:07:43
  * @FilePath: \ArtificialBeeColony\source\main.cpp
  */
 #include <iostream>
@@ -32,6 +32,9 @@ void loadCargo() {
 int main() {
     std::cout << "Hello, World!" << std::endl;
     clock_t startTime,endTime;
+    ofstream mainout;
+    mainout.open("output/best.txt"); 
+    mainout.close();
     startTime = clock();//计时开始
     //loadCargo();
     abc();
@@ -39,7 +42,7 @@ int main() {
 //    std::cout << sizeof (double ) << std::endl;
     endTime = clock();//计时结束
     std::cout << "The run time is: " <<(double)(endTime - startTime) / CLOCKS_PER_SEC << "s" << std::endl;
-    ofstream mainout;
+    
     mainout.open("output/best.txt",ios::app); 
     mainout<< "\nThe run time is: " <<(double)(endTime - startTime) / CLOCKS_PER_SEC << "s" <<endl;
     mainout.close();

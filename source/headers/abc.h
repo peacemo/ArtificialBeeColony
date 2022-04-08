@@ -164,6 +164,7 @@ void roulette(double *P, Food _foods[FoodsNum]) {
  * ABC算法主体
  */
 void abc() {
+    ofstream output;
     vector<int> fitnessGrid; // 记录最佳解的变化过程
     vector<int> scoutIndex; // 记录需要丢弃并更新的食物源的下标
 
@@ -258,10 +259,33 @@ void abc() {
         if (currentBestFood.getFitness() == 0) break;
         endTime = clock();//计时结束
         std::cout << "The one time is: " <<(double)(endTime - startTime) / CLOCKS_PER_SEC << "s" << std::endl;
-        //std::cout<<enterI<<endl;
+
+        //保留每代最优
+        output.open("output/best.txt",ios::app);
+        std::cout << "*****************************" << std::endl;
+        output << "The best ever: " << currentBestFood <<endl;
+        int len = currentBestFood.getSeqLen();
+        for(int i = 0; i < len; i++)
+        {
+            if (i == 0) { 
+                cout << "[" << currentBestFood.getSequence(i) << ", "; 
+                output << "[" << currentBestFood.getSequence(i) << ", "; 
+            }
+            else if (i == len - 1) { 
+                cout << currentBestFood.getSequence(i) << "]"; 
+                output << currentBestFood.getSequence(i) << "]"; 
+            }
+            else {
+                cout << currentBestFood.getSequence(i) << ", ";
+                output << currentBestFood.getSequence(i) << ", ";
+            }
+        }
+        std::cout << "*****************************" << std::endl;
+        output.close();
+            //std::cout<<enterI<<endl;
     }
-    ofstream output;
-	output.open("output/best.txt");
+    
+	output.open("output/best.txt",ios::app);
     std::cout << "*****************************" << std::endl;
     std::cout << "The best ever: " << currentBestFood << std::endl;
     std::cout << "Grid: " ;
