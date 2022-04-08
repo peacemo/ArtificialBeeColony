@@ -19,8 +19,8 @@ typedef struct OP
 typedef struct SMWT
 {
     int stacker_id;//堆垛机id
-    float normal_time;//正常工作时长
-    float ex_work_time;//加班工作时长
+    int normal_time;//正常工作时长
+    int ex_work_time;//加班工作时长
 }SMworkTime;
 
 //每日数据
@@ -53,8 +53,8 @@ typedef struct LI
 {
     char lineName[10] = "line1";
     float useRate;//线体利用率
-    double workTime;//正常工作时长
-    double overTime;//加班工作时长
+    char workTime[15] = "28800";//正常工作时长
+    char overTime[15] = "0";//加班工作时长
 
 }LineInfo;
 
@@ -88,11 +88,11 @@ Risks original_risk[] = {
 };
 //定义原计划的检定线体信息
 LineInfo plan_li[] = {
-    {"line1",0.78,28800,0},{"line2",0.78,28800,0}
+    {"line1",0.78,"28800","0"},{"line2",0.78,"28800","0"}
 };
 //定义优化计划的检定线体信息
 LineInfo original_li[] = {
-    {"line1",0.78,28800,0},{"line2",0.78,28800,0}
+    {"line1",0.78,"28800","0"},{"line2",0.78,"28800","0"}
 };
 
 //初始化
@@ -122,11 +122,11 @@ void plantInitJson(){
 
     original_risk[0] = {"content1","content2","content3"};
 
-    plan_li[0] = {"line1",0.78,28800,0};
-    plan_li[1] = {"line2",0.78,28800,0};
+    plan_li[0] = {"line1",0.78,"28800","0"};
+    plan_li[1] = {"line2",0.78,"28800","0"};
 
-    original_li[0] = {"line1",0.78,28800,0};
-    original_li[1] = {"line1",0.78,28800,0};
+    original_li[0] = {"line1",0.78,"21678","0"};
+    original_li[1] = {"line1",0.78,"21678","0"};
 };
 
 void createPlanJson(){
@@ -193,8 +193,10 @@ void createPlanJson(){
                             },
                             {"detail",
                             {
+                                {
                                 {"date",plan_de[0].date},
                                 {"modules",
+                                    {
                                     {
                                         {"type",plan_de[0].type},
                                         {"R",plan_de[0].Det_R},
@@ -205,6 +207,7 @@ void createPlanJson(){
                                         {"bidBatch",plan_de[0].bidBatch},
                                         {"distributionArea",plan_de[0].distributionArea}
                                     }
+                                    }
                                 },
                                 {"handling_capacity",plan_de[0].handling_capacity},
                                 {"cargo_status",
@@ -212,6 +215,7 @@ void createPlanJson(){
                                     {"new",plan_de[0].Det_new},
                                     {"old",plan_de[0].Det_old}
                                     }
+                                }
                                 }
                             }
                             },
@@ -287,8 +291,10 @@ void createPlanJson(){
                             },
                             {"detail",
                             {
+                                {
                                 {"date",original_de[0].date},
                                 {"modules",
+                                    {
                                     {
                                         {"type",original_de[0].type},
                                         {"R",original_de[0].Det_R},
@@ -299,6 +305,7 @@ void createPlanJson(){
                                         {"bidBatch",original_de[0].bidBatch},
                                         {"distributionArea",original_de[0].distributionArea}
                                     }
+                                    }
                                 },
                                 {"handling_capacity",original_de[0].handling_capacity},
                                 {"cargo_status",
@@ -306,6 +313,7 @@ void createPlanJson(){
                                     {"new",original_de[0].Det_new},
                                     {"old",original_de[0].Det_old}
                                     }
+                                }
                                 }
                             }
                             },
@@ -336,10 +344,10 @@ void createPlanJson(){
         }
         }        
     };
-    ofstream fcout;
-	fcout.open("output/planjson.json",ios::app);
-	//fcout.open("output/json.json");
-	fcout<<j2.dump(4);
-	//Sleep(100);
-	fcout.close();
+    // ofstream fcout;
+    // fcout.open("output/planjson.json");
+	// //fcout.open("output/json.json");
+	// fcout<<j2.dump(4);
+	// //Sleep(100);
+	// fcout.close();
 }
