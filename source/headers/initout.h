@@ -19,6 +19,7 @@
 #include <random>
 #include <functional>
 #include <list>
+#include <string> 
 using namespace std;
 int SMcurrentTask(int ddj){
     if(ddj==1){
@@ -68,6 +69,7 @@ int getTaskType(char type){
     }
     else{
         cout<<"getTaskType error!"<<endl;
+        return -1;
     }
 }
 //判断入库堵塞队列长度
@@ -107,6 +109,7 @@ double ddj_r(int r_n){
     }
     else{
         cout<<"ddj_r error!"<<endl;
+        return 0;
     }
 
 }
@@ -417,6 +420,9 @@ void inspect_xyz(int p){
     // }
     else
         cout<<"inspect_xyz error!"<<endl;
+    if(cargo_now[p-1].model==0){
+        inspect_y = 15.15;
+    }
 }
 //根据编码判断回库口
 void return_xyz(int p){
@@ -503,9 +509,9 @@ void ddj_last(char type,int p){
         //入库口
     }
     else if(type == 'S' || 'C'){
-        enter_xyz(p);
+        enter_xyz(p); 
         third_x = cargo_now[p-1].x + smShiftX;
-        third_y = cargo_now[p-1].y;
+        third_y = cargo_now[p-1].y + smShiftY;
         third_z = enter_z;
     }
     else if(type == 'H'){
@@ -1307,7 +1313,7 @@ void getT_load(int i,char type){
         if(temp_p==b_num){//B类型，5箱一垛
             temp_p = 0;
             flag_R++;//发送一垛
-            send_t = t_R + + ddj_r(rNum);
+            send_t = t_R + ddj_r(rNum);
             rNum++;
         }
     }
@@ -1680,7 +1686,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
     int first_flag = 0,second_flag = 0;
     type = judge_type(p);
     second_type = judge_type(second_p);
-    third_p = judge_type(third_p);
+    third_type = judge_type(third_p);
     ddj = stacker(p);
     int smcurrentTask = 0;//临时变量
     //判断 p 与 second_p ，这两相邻编码是否属于同种类型
@@ -1691,12 +1697,12 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 
         if(type == 'R'){
              //表示两相邻的编码为同种编码,堆垛机取两垛货物
-            first_x = cargo_now[p-1].x;
-            first_y = cargo_now[p-1].y;
+            first_x = cargo_now[p-1].x + smShiftX;
+            first_y = cargo_now[p-1].y + smShiftY;
             first_z = cargo_now[p-1].z;
             
-            second_x = cargo_now[second_p-1].x;
-            second_y = cargo_now[second_p-1].y;
+            second_x = cargo_now[second_p-1].x + smShiftX;
+            second_y = cargo_now[second_p-1].y + smShiftY;
             second_z = cargo_now[second_p-1].z;
         }
 
@@ -1712,8 +1718,8 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
             if(temp_x == inspect_x && temp_y == inspect_y && temp_z == inspect_z){
                 //相同
                 same_flag = true;
-                first_x = cargo_now[second_p-1].x;
-                first_y = cargo_now[second_p-1].y;
+                first_x = cargo_now[second_p-1].x + smShiftX;
+                first_y = cargo_now[second_p-1].y + smShiftY;
                 first_z = cargo_now[second_p-1].z;
 
                 second_x = inspect_x;
@@ -1721,11 +1727,12 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 second_z = inspect_z;
             }
             else{
+                same_flag = false;
                 //送检口不同
                 inspect_xyz(p);
 
-                first_x = cargo_now[second_p-1].x;
-                first_y = cargo_now[second_p-1].y;
+                first_x = cargo_now[second_p-1].x + smShiftX;
+                first_y = cargo_now[second_p-1].y + smShiftY;
                 first_z = cargo_now[second_p-1].z;
 
                 second_x = inspect_x;
@@ -1757,23 +1764,24 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
             if(temp_x == return_x && temp_y == return_y && temp_z == return_z){
                 //回库口相同
                 same_flag = true;
-                first_x = cargo_now[p-1].x;
-                first_y = cargo_now[p-1].y;
+                first_x = cargo_now[p-1].x + smShiftX;
+                first_y = cargo_now[p-1].y + smShiftY;
                 first_z = cargo_now[p-1].z;
 
-                second_x = cargo_now[second_p-1].x;
-                second_y = cargo_now[second_p-1].y;
+                second_x = cargo_now[second_p-1].x + smShiftX;
+                second_y = cargo_now[second_p-1].y + smShiftY;
                 second_z = cargo_now[second_p-1].z;
             }
             else{
+                same_flag = false;
                 //回库口不同
                 return_xyz(second_p);
                 first_x = return_x;
                 first_y = return_y;
                 first_z = return_z;
 
-                second_x = cargo_now[p-1].x;
-                second_y = cargo_now[p-1].y;
+                second_x = cargo_now[p-1].x + smShiftX;
+                second_y = cargo_now[p-1].y + smShiftY;
                 second_y = cargo_now[p-1].z;
 
                 ddj_last(third_type,third_p);
@@ -1782,16 +1790,16 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 fourth_y = third_y;
                 fourth_z = third_z;
 
-                third_x = cargo_now[second_p-1].x;
-                third_y = cargo_now[second_p-1].y;
+                third_x = cargo_now[second_p-1].x + smShiftX;
+                third_y = cargo_now[second_p-1].y + smShiftY;
                 third_z = cargo_now[second_p-1].z;
             }  
         }
         
         else if(type == 'C'){
             //出库
-            first_x = cargo_now[second_p-1].x;
-            first_y = cargo_now[second_p-1].y;
+            first_x = cargo_now[second_p-1].x + smShiftX;
+            first_y = cargo_now[second_p-1].y + smShiftY;
             first_z = cargo_now[second_p-1].z;
 
             out_xyz(second_p);
@@ -1808,20 +1816,20 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
     else{
         ddj_last(second_type,second_p);
         if(type == 'R'){
-            first_x = cargo_now[p-1].x;
-            first_y = cargo_now[p-1].y;
+            first_x = cargo_now[p-1].x + smShiftX;
+            first_y = cargo_now[p-1].y + smShiftY;
             first_z = cargo_now[p-1].z;          
         }
         else if(type == 'S'){
             inspect_xyz(p);
-            first_x = cargo_now[p-1].x;
-            first_y = cargo_now[p-1].y;
+            first_x = cargo_now[p-1].x + smShiftX;
+            first_y = cargo_now[p-1].y + smShiftY;
             first_z = cargo_now[p-1].z;
         }
         else if(type == 'H'){
             return_xyz(p);
-            first_x = cargo_now[p-1].x;
-            first_y = cargo_now[p-1].y;
+            first_x = cargo_now[p-1].x + smShiftX;
+            first_y = cargo_now[p-1].y + smShiftY;
             first_z = cargo_now[p-1].z;   
         }
         else if(type == 'C'){
@@ -1837,7 +1845,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
     }
 
     //本期送检回库口相同
-    same_flag = true;
+    //same_flag = true;
 
     switch (type){
         case 'R'://该编码为入库编码
@@ -1901,21 +1909,24 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 sm[ddj-1].getAssert1Id_1 = cargo_now[p-1].num;
                 sm[ddj-1].getDirection1_1 = 'A';
                 sm[ddj-1].getAssertType2_1 = cargo_now[second_p-1].model;
-                sm[ddj-1].getAssert2Id_1 = cargo_now[second_p-1].model;
+                sm[ddj-1].getAssert2Id_1 = cargo_now[second_p-1].num;
                 sm[ddj-1].getDirection2_1 = 'B';
+
+                sm[ddj-1].getPosition_x2 = 10000;
+                sm[ddj-1].getPosition_y2 = 10000;
                 //当前位置（入库口）-取2垛货 -> 货位1-放1垛货
                 walk_time1 = Walk_time(abs(enter_x - first_x),abs(enter_y - first_y));
                 
-                sm[ddj-1].putPosition_x1 = first_x + smShiftX;
-                sm[ddj-1].putPosition_y1 = first_y + smShiftY;
+                sm[ddj-1].putPosition_x1 = first_x;
+                sm[ddj-1].putPosition_y1 = first_y;
                 sm[ddj-1].putAssertType1_1 = cargo_now[p-1].model;
                 sm[ddj-1].putDirection1_1 = cargo_now[p-1].flag;
 
                 //货位1-放1垛货 -> 货位2-放1垛货
                 walk_time2 = Walk_time(abs(first_x - second_x),abs(first_y - second_y));
 
-                sm[ddj-1].putPosition_x2 = second_x + smShiftX;
-                sm[ddj-1].putPosition_y2 = second_y + smShiftY;
+                sm[ddj-1].putPosition_x2 = second_x;
+                sm[ddj-1].putPosition_y2 = second_y;
                 sm[ddj-1].putAssertType2_2 = cargo_now[second_p-1].model;
                 sm[ddj-1].putDirection2_2 = cargo_now[second_p-1].flag;
                 creat_json_file();
@@ -1925,15 +1936,15 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 ddj_last(third_type,third_p);
                 init_json();
                 sm[ddj-1].TaskType = getTaskType('M');
-                runTime = TI + wait_time + walk_time1 + walk_time2 + grab_time + place_time;
+                runTime = TI + wait_time + walk_time1 + walk_time2 + grab_time + 2*place_time;
                 sm[ddj-1].taskNumber = 1;
-                sm[ddj-1].getPosition_x1 = third_x + smShiftX;
-                sm[ddj-1].getPosition_y1 = third_y + smShiftY;
+                sm[ddj-1].getPosition_x1 = third_x;
+                sm[ddj-1].getPosition_y1 = third_y;
                 sm[ddj-1].getAssertType1_1 = -1;
                 creat_json_file();
 
-                TI += wait_time + walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + place_time;
-                TDI =  walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + place_time + TD[0];
+                TI += wait_time + walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + 2*place_time;
+                TDI =  walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + 2*place_time + TD[0];
 
                 enterBlock(TI,ddj,cargo_now[p-1].flag);
                 enterBlock(TI,ddj,cargo_now[second_p-1].flag);
@@ -1960,12 +1971,12 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 //sm[ddj-1].getPosition_z1 = enter_z;
                 sm[ddj-1].getAssertType1_1 = cargo_now[p-1].model;
                 sm[ddj-1].getAssert1Id_1 = cargo_now[p-1].num;
-
+                sm[ddj-1].getDirection1_1 = cargo_now[p-1].flag;
                 //当前位置（入库口）-取1垛货 -> 货位1-放1垛货
                 walk_time1 = Walk_time(abs(enter_x - first_x),abs(enter_y - first_y));
 
-                sm[ddj-1].putPosition_x1 = first_x + smShiftX;
-                sm[ddj-1].putPosition_y1 = first_y + smShiftY;
+                sm[ddj-1].putPosition_x1 = first_x;
+                sm[ddj-1].putPosition_y1 = first_y;
                 sm[ddj-1].putAssertType1_1 = cargo_now[p-1].model;
                 sm[ddj-1].putDirection1_1 = cargo_now[p-1].flag;
                 creat_json_file();
@@ -1976,8 +1987,8 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 sm[ddj-1].TaskType = getTaskType('M');
                 runTime = TI + wait_time + walk_time1 +  grab_time + place_time;
                 sm[ddj-1].taskNumber = 1;
-                sm[ddj-1].getPosition_x1 = third_x + smShiftX;
-                sm[ddj-1].getPosition_y1 = third_y + smShiftY;
+                sm[ddj-1].getPosition_x1 = third_x;
+                sm[ddj-1].getPosition_y1 = third_y;
                 sm[ddj-1].getAssertType1_1 = -1;
                 creat_json_file();
 
@@ -2065,18 +2076,18 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                     //当前位置（回库口）-取2垛货 -> 货位1-放1垛货
                     walk_time1 = Walk_time(abs(return_x - first_x),abs(return_y - first_y));
 
-                    sm[ddj-1].putPosition_x1 = first_x + smShiftX;
-                    sm[ddj-1].putPosition_y1 = first_y + smShiftY;
+                    sm[ddj-1].putPosition_x1 = first_x;
+                    sm[ddj-1].putPosition_y1 = first_y;
                     sm[ddj-1].putAssertType1_1 = cargo_now[p-1].model;
                     sm[ddj-1].putDirection1_1 = cargo_now[p-1].flag;
 
                     //货位1-放1垛货 -> 货位2-放1垛货
                     walk_time2 = Walk_time(abs(first_x - second_x),abs(first_y - second_y));
 
-                    sm[ddj-1].putPosition_x2 = second_x + smShiftX;
-                    sm[ddj-1].putPosition_y2 = second_y + smShiftY;
-                    sm[ddj-1].putAssertType2_2 = cargo_now[second_p-1].model;
-                    sm[ddj-1].putDirection2_2 = cargo_now[second_p-1].flag;
+                    sm[ddj-1].putPosition_x2 = second_x;
+                    sm[ddj-1].putPosition_y2 = second_y;
+                    sm[ddj-1].putAssertType2_1 = cargo_now[second_p-1].model;
+                    sm[ddj-1].putDirection2_1 = cargo_now[second_p-1].flag;
                     creat_json_file();
 
                     //货位2-放1垛货 -> 下个编码起始位置
@@ -2084,15 +2095,15 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 
                     init_json();
                     sm[ddj-1].TaskType = getTaskType('M');
-                    runTime = TI + wait_time + walk_time1 + walk_time2 + grab_time + place_time;
+                    runTime = TI + wait_time + walk_time1 + walk_time2 + grab_time + 2*place_time;
                     sm[ddj-1].taskNumber = 1;
-                    sm[ddj-1].getPosition_x1 = third_x + smShiftX;
-                    sm[ddj-1].getPosition_y1 = third_y + smShiftY;
+                    sm[ddj-1].getPosition_x1 = third_x;
+                    sm[ddj-1].getPosition_y1 = third_y;
                     sm[ddj-1].getAssertType1_1 = -1;
                     creat_json_file();
 
-                    TI += wait_time + walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + place_time;
-                    TDI =  walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + place_time + TD[0];
+                    TI += wait_time + walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + 2*place_time;
+                    TDI =  walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + 2*place_time + TD[0];
                 }
                 else{
                     ddj = stacker(p);
@@ -2105,17 +2116,59 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 			        }
                     //回库口不同，当前位置（回库口1）-取货 -> 回库口2-取货 -> 货位1-放货 -> 货位2-放货 -> 下个编码起始位置
                     return_xyz(p);
+                    init_json();
+                    sm[ddj-1].TaskType = getTaskType(type);
+                    smcurrentTask =  SMcurrentTask(ddj);
+                    smcurrentTask =  SMcurrentTask(ddj);
+                    sm[ddj-1].currentTask = smcurrentTask;
+                    runTime = TI;
+                    sm[ddj-1].taskNumber = 1;
+                    sm[ddj-1].getPosition_x1 = return_x;
+                    sm[ddj-1].getPosition_y1 = return_y;
+                    //sm[ddj-1].getPosition_z1 = enter_z;
+                    sm[ddj-1].getAssertType1_1 = cargo_now[p-1].model;
+                    sm[ddj-1].getAssert1Id_1 = cargo_now[p-1].num;
+                    sm[ddj-1].getDirection1_1 = cargo_now[p-1].flag;
+
+                    //sm[ddj-1].getDirection2_1 = '0';
                     //当前位置（回库口1）-取1垛货 -> 回库口2-取1垛货 
                     walk_time1 = Walk_time(abs(return_x - first_x),abs(return_y - first_y));
                     //回库口2-取1垛货 -> 货位1-放1垛货
+                    sm[ddj-1].getPosition_x1 = first_x;
+                    sm[ddj-1].getPosition_y1 = first_y;
+                    //sm[ddj-1].getPosition_z1 = enter_z;
+                    sm[ddj-1].getAssertType1_1 = cargo_now[p-1].model;
+                    sm[ddj-1].getAssert1Id_1 = cargo_now[p-1].num;
+                    sm[ddj-1].getDirection1_1 = cargo_now[p-1].flag;
+
+                    //sm[ddj-1].getDirection2_1 = '0';
                     walk_time2 = Walk_time(abs(first_x - second_x),abs(first_y - second_y));
                     //货位1-放1垛货 -> 货位2-放1垛货
+                    sm[ddj-1].putPosition_x1 = second_x;
+                    sm[ddj-1].putPosition_y1 = second_y;
+                    sm[ddj-1].putAssertType1_1 = cargo_now[p-1].model;
+                    sm[ddj-1].putDirection1_1 = cargo_now[p-1].flag;
                     walk_time3 = Walk_time(abs(second_x - third_x),abs(second_y - third_y));
                     //货位2-放1垛货 -> 下个编码起始位置
-                    walk_time4 = Walk_time(abs(third_x - fourth_x),abs(third_y - fourth_y));
 
-                    TI += wait_time + walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + place_time;
-                    TDI =  walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + place_time + TD[0];
+                    sm[ddj-1].putPosition_x1 = third_x;
+                    sm[ddj-1].putPosition_y1 = third_y;
+                    sm[ddj-1].putAssertType1_1 = cargo_now[p-1].model;
+                    sm[ddj-1].putDirection1_1 = cargo_now[p-1].flag;
+                    creat_json_file();
+
+                    //move
+                    init_json();
+                    sm[ddj-1].TaskType = getTaskType('M');
+                    runTime = TI + wait_time + walk_time1 + walk_time2 + walk_time3 +  2*grab_time + 2*place_time;
+                    sm[ddj-1].taskNumber = 1;
+                    sm[ddj-1].getPosition_x1 = fourth_x;
+                    sm[ddj-1].getPosition_y1 = fourth_y;
+                    sm[ddj-1].getAssertType1_1 = -1;
+                    creat_json_file();  
+                    walk_time4 = Walk_time(abs(third_x - fourth_x),abs(third_y - fourth_y));
+                    TI += wait_time + walk_time1 + walk_time2 + walk_time3 + walk_time4 + 2*grab_time + 2*place_time;
+                    TDI =  walk_time1 + walk_time2 + walk_time3 + walk_time4 + 2*grab_time + 2*place_time + TD[0];
                 }
             }
             else{
@@ -2137,8 +2190,8 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 //当前位置（回库口）取1垛货 -> 货位1-放1垛货 -> 下个编码起始位置
                 walk_time1 = Walk_time(abs(return_x - first_x),abs(return_y - first_y)); 
 
-                sm[ddj-1].putPosition_x1 = first_x + smShiftX;
-                sm[ddj-1].putPosition_y1 = first_y + smShiftY;
+                sm[ddj-1].putPosition_x1 = first_x;
+                sm[ddj-1].putPosition_y1 = first_y;
                 sm[ddj-1].putAssertType1_1 = cargo_now[p-1].model;
                 sm[ddj-1].putDirection1_1 = cargo_now[p-1].flag;
                 creat_json_file();
@@ -2150,8 +2203,8 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 sm[ddj-1].TaskType = getTaskType('M');
                 runTime = TI + wait_time + walk_time1 +  grab_time + place_time;
                 sm[ddj-1].taskNumber = 1;
-                sm[ddj-1].getPosition_x1 = third_x + smShiftX;
-                sm[ddj-1].getPosition_y1 = third_y + smShiftY;
+                sm[ddj-1].getPosition_x1 = third_x;
+                sm[ddj-1].getPosition_y1 = third_y;
                 sm[ddj-1].getAssertType1_1 = -1;
                 creat_json_file();
 
@@ -2196,9 +2249,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 sm[ddj-1].getAssertType1_1 = cargo_now[p-1].model;
                 sm[ddj-1].getAssert1Id_1 = cargo_now[p-1].num;
                 sm[ddj-1].getDirection1_1 = cargo_now[p-1].flag;
-                sm[ddj-1].getAssertType2_1 = cargo_now[second_p-1].model;
-                sm[ddj-1].getAssert2Id_1 = cargo_now[second_p-1].model;
-                sm[ddj-1].getDirection2_1 = cargo_now[p-1].flag;;
+                //sm[ddj-1].getDirection2_1 = '0';
 
                 //当前位置（货位1）-取1垛货 -> 货位2-取货
                 walk_time1 = Walk_time(abs(first_x - cargo_now[p-1].x),abs(first_y - cargo_now[p-1].y));
@@ -2208,16 +2259,15 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 //sm[ddj-1].getPosition_z1 = enter_z;
                 sm[ddj-1].getAssertType1_2 = cargo_now[second_p-1].model;
                 sm[ddj-1].getAssert1Id_2 = cargo_now[second_p-1].num;
-                sm[ddj-1].getDirection1_2 = cargo_now[second_p-1].flag;;
-                sm[ddj-1].getAssertType2_2 = cargo_now[second_p-1].model;
-                sm[ddj-1].getAssert2Id_2 = cargo_now[second_p-1].model;
-                sm[ddj-1].getDirection2_2 = cargo_now[second_p-1].flag;;
+                sm[ddj-1].getDirection1_2 = cargo_now[second_p-1].flag;
+               // sm[ddj-1].getDirection2_2 = '0';
 
                 //货位2-取1垛货 —> 出库口-放2垛货
                 walk_time2 = Walk_time(abs(first_x - second_x),abs(first_y - second_y));
 
                 sm[ddj-1].putPosition_x1 = out_x;
                 sm[ddj-1].putPosition_y1 = 1.35;
+
                 sm[ddj-1].putAssertType2_1 = cargo_now[p-1].model;
                 sm[ddj-1].putDirection2_1 = cargo_now[p-1].flag;
 
@@ -2232,15 +2282,15 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 
                 init_json();
                 sm[ddj-1].TaskType = getTaskType('M');
-                runTime = TI + wait_time + walk_time1 + walk_time2 + grab_time + place_time;
+                runTime = TI + wait_time + walk_time1 + walk_time2 + 2*grab_time + 2*place_time;
                 sm[ddj-1].taskNumber = 1;
-                sm[ddj-1].getPosition_x1 = third_x + smShiftX;
-                sm[ddj-1].getPosition_y1 = third_y + smShiftY;
+                sm[ddj-1].getPosition_x1 = third_x;
+                sm[ddj-1].getPosition_y1 = third_y;
                 sm[ddj-1].getAssertType1_1 = -1;
                 creat_json_file();
 
-                TI += wait_time + walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + place_time;
-                TDI =  walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + place_time + TD[0];
+                TI += wait_time + walk_time1 + walk_time2 + walk_time3 + walk_time4 + 2*grab_time + 2*place_time;
+                TDI =  walk_time1 + walk_time2 + walk_time3 + walk_time4 + 2*grab_time + 2*place_time + TD[0];
             }
             else{
                 init_json();
@@ -2255,9 +2305,7 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 sm[ddj-1].getAssertType1_1 = cargo_now[p-1].model;
                 sm[ddj-1].getAssert1Id_1 = cargo_now[p-1].num;
                 sm[ddj-1].getDirection1_1 = cargo_now[p-1].flag;
-                sm[ddj-1].getAssertType2_1 = cargo_now[p-1].model;
-                sm[ddj-1].getAssert2Id_1 = cargo_now[p-1].model;
-                sm[ddj-1].getDirection2_1 = cargo_now[p-1].flag;;
+                //sm[ddj-1].getDirection2_1 = '0';
 
                 //当前位置（货位1）-取1垛货 —> 出库口-放1垛货 —> 下个编码起始位置
                 walk_time1 = Walk_time(abs(out_x - first_x),abs(out_y - first_y));
@@ -2275,8 +2323,8 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 sm[ddj-1].TaskType = getTaskType('M');
                 runTime = TI + wait_time + walk_time1 +  grab_time + place_time;
                 sm[ddj-1].taskNumber = 1;
-                sm[ddj-1].getPosition_x1 = third_x + smShiftX;
-                sm[ddj-1].getPosition_y1 = third_y + smShiftY;
+                sm[ddj-1].getPosition_x1 = third_x;
+                sm[ddj-1].getPosition_y1 = third_y;
                 sm[ddj-1].getAssertType1_1 = -1;
                 creat_json_file();
 
@@ -2310,22 +2358,21 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                     //sm[ddj-1].getPosition_z1 = enter_z;
                     sm[ddj-1].getAssertType1_1 = cargo_now[p-1].model;
                     sm[ddj-1].getAssert1Id_1 = cargo_now[p-1].num;
-                    sm[ddj-1].getDirection1_1 = 'A';
-                    sm[ddj-1].getAssertType2_1 = cargo_now[second_p-1].model;
-                    sm[ddj-1].getAssert2Id_1 = cargo_now[second_p-1].model;
-                    sm[ddj-1].getDirection2_1 = 'B';
+                    sm[ddj-1].getDirection1_1 = cargo_now[p-1].flag;
+
+                    ////sm[ddj-1].getDirection2_1 = '0';
 
                     //送检口相同，当前位置（货位1）-取1垛货 -> 货位2-取1垛货 -> 送检口-放2垛货 -> 下一个编码起始位置
                     //当前位置（货位1）-取1垛货 -> 货位2-取1垛货
                     walk_time1 = Walk_time(abs(cargo_now[p-1].x - first_x),abs(cargo_now[p-1].y - first_y));
 
-                    sm[ddj-1].getPosition_x2 = first_x + smShiftX;
-                    sm[ddj-1].getPosition_y2 = first_y + smShiftY;
-                    sm[ddj-1].putAssertType1_2 = cargo_now[second_p-1].model;
-                    sm[ddj-1].putDirection1_2 = cargo_now[second_p-1].flag;
-                    sm[ddj-1].putAssertType1_2 = cargo_now[second_p-1].model;
-                    sm[ddj-1].putDirection1_2 = cargo_now[second_p-1].flag;
-
+                    sm[ddj-1].getPosition_x2 = first_x;
+                    sm[ddj-1].getPosition_y2 = first_y;
+                    sm[ddj-1].getAssertType1_2 = cargo_now[second_p-1].model;
+                    sm[ddj-1].getDirection1_2 = cargo_now[second_p-1].flag;
+                    sm[ddj-1].getAssert1Id_2 = cargo_now[second_p-1].num;
+                    //sm[ddj-1].getAssertType2_2 = cargo_now[second_p-1].model;
+                   // sm[ddj-1].getDirection2_2 = '0';
                     //货位2-取1垛货 -> 送检口-放2垛货
                     walk_time2 = Walk_time(abs(first_x - second_x),abs(first_y - second_y));
 
@@ -2333,11 +2380,13 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                     sm[ddj-1].putPosition_y1 = inspect_y;
                     sm[ddj-1].putAssertType1_1 = cargo_now[p-1].model;
                     sm[ddj-1].putDirection1_1 = cargo_now[p-1].flag;
+                    sm[ddj-1].putAssertType1_2 = cargo_now[second_p-1].model;
+                    sm[ddj-1].putDirection1_2 = cargo_now[second_p-1].flag;
 
-                    sm[ddj-1].putPosition_x2 = inspect_x;
-                    sm[ddj-1].putPosition_y2 = inspect_y;
-                    sm[ddj-1].putAssertType2_2 = cargo_now[second_p-1].model;
-                    sm[ddj-1].putDirection2_2 = cargo_now[second_p-1].flag;
+                    // sm[ddj-1].putPosition_x2 = inspect_x;
+                    // sm[ddj-1].putPosition_y2 = inspect_y;
+                    // sm[ddj-1].putAssertType2_2 = cargo_now[second_p-1].model;
+                    // sm[ddj-1].putDirection2_2 = cargo_now[second_p-1].flag;
                     creat_json_file();
 
                     //送检口-放2垛货 -> 下一个编码起始位置
@@ -2345,29 +2394,72 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
 
                     init_json();
                     sm[ddj-1].TaskType = getTaskType('M');
-                    runTime = TI + wait_time + walk_time1 + walk_time2 + grab_time + place_time;
+                    runTime = TI + wait_time + walk_time1 + walk_time2 + 2*grab_time + place_time;
                     sm[ddj-1].taskNumber = 1;
-                    sm[ddj-1].getPosition_x1 = third_x + smShiftX;
-                    sm[ddj-1].getPosition_y1 = third_y + smShiftY;
+                    sm[ddj-1].getPosition_x1 = third_x;
+                    sm[ddj-1].getPosition_y1 = third_y;
                     sm[ddj-1].getAssertType1_1 = -1;
+                    sm[ddj-1].getPosition_x2 = 100000;
+                    sm[ddj-1].getPosition_y2 = 100000;
                     creat_json_file();
 
-                    TI += wait_time + walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + place_time;
-                    TDI =  walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + place_time + TD[0];
+                    TI += wait_time + walk_time1 + walk_time2 + walk_time3 + walk_time4 + 2*grab_time + place_time;
+                    TDI =  walk_time1 + walk_time2 + walk_time3 + walk_time4 + 2*grab_time + place_time + TD[0];
                 }
                 else{
                     //送检口不同，当前位置（货位1）-取1垛货 -> 货位2-取1垛货 -> 送检口1-放1垛货 -> 送检口2-放1垛货 -> 下一个编码起始位置
+                    //当前位置取货
+                    init_json();
+                    sm[ddj-1].TaskType = getTaskType(type);
+                    smcurrentTask =  SMcurrentTask(ddj);
+                    smcurrentTask =  SMcurrentTask(ddj);
+                    sm[ddj-1].currentTask = smcurrentTask;
+                    runTime = TI;
+                    sm[ddj-1].taskNumber = 1;
+                    sm[ddj-1].getPosition_x1 = cargo_now[p-1].x + smShiftX;;
+                    sm[ddj-1].getPosition_y1 = cargo_now[p-1].y + smShiftY;
+                    //sm[ddj-1].getPosition_z1 = enter_z;
+                    sm[ddj-1].getAssertType1_1 = cargo_now[p-1].model;
+                    sm[ddj-1].getAssert1Id_1 = cargo_now[p-1].num;
+                    sm[ddj-1].getDirection1_1 = cargo_now[p-1].flag;
+
+                    //sm[ddj-1].getDirection2_1 = '0';
                     //当前位置（货位1）-取1垛货 -> 货位2-取1垛货
-                    walk_time1 = Walk_time(abs(return_x - first_x),abs(return_y - first_y));
+                    //货位2取货
+                    sm[ddj-1].getPosition_x2 = first_x;
+                    sm[ddj-1].getPosition_y2 = first_y;
+                    sm[ddj-1].getAssertType1_2 = cargo_now[second_p-1].model;
+                    sm[ddj-1].getDirection1_2 = cargo_now[second_p-1].flag;
+                    sm[ddj-1].getAssert1Id_2 = cargo_now[second_p-1].num;
+                    //sm[ddj-1].getAssertType2_2 = cargo_now[second_p-1].model;
+                   // sm[ddj-1].getDirection2_2 = '0';
+                    walk_time1 = Walk_time(abs(cargo_now[p-1].x - first_x),abs(cargo_now[p-1].y - first_y));
                     //货位2-取1垛货 -> 送检口1-放1垛货
+                    sm[ddj-1].putPosition_x1 = second_x;
+                    sm[ddj-1].putPosition_y1 = second_y;
+                    sm[ddj-1].putAssertType1_1 = cargo_now[p-1].model;
+                    sm[ddj-1].putDirection1_1 = cargo_now[p-1].flag;
                     walk_time2 = Walk_time(abs(first_x - second_x),abs(first_y - second_y));
                     //送检口1-放1垛货 -> 送检口2-放1垛货
+                    sm[ddj-1].putPosition_x1 = third_x;
+                    sm[ddj-1].putPosition_y1 = third_y;
+                    sm[ddj-1].putAssertType1_1 = cargo_now[second_p-1].model;
+                    sm[ddj-1].putDirection1_1 = cargo_now[second_p-1].flag;
+                    creat_json_file();
                     walk_time3 = Walk_time(abs(second_x - third_x),abs(second_y - third_y));
                     //送检口2-放1垛货 -> 下一个编码起始位置
+                    init_json();
+                    sm[ddj-1].TaskType = getTaskType('M');
+                    runTime = TI + wait_time + walk_time1 +  2*grab_time + 2*place_time + walk_time2 + walk_time3;
+                    sm[ddj-1].taskNumber = 1;
+                    sm[ddj-1].getPosition_x1 = fourth_x;
+                    sm[ddj-1].getPosition_y1 = fourth_y;
+                    sm[ddj-1].getAssertType1_1 = -1;
+                    creat_json_file();
                     walk_time4 = Walk_time(abs(third_x - fourth_x),abs(third_y - fourth_y));
 
-                    TI += wait_time + walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + place_time;
-                    TDI =  walk_time1 + walk_time2 + walk_time3 + walk_time4 + grab_time + place_time + TD[0];
+                    TI += wait_time + walk_time1 + walk_time2 + walk_time3 + walk_time4 + 2*grab_time +2*place_time;
+                    TDI =  walk_time1 + walk_time2 + walk_time3 + walk_time4 + 2*grab_time + 2*place_time + TD[0];
                 }
             }
             else{
@@ -2382,15 +2474,14 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 //sm[ddj-1].getPosition_z1 = enter_z;
                 sm[ddj-1].getAssertType1_1 = cargo_now[p-1].model;
                 sm[ddj-1].getAssert1Id_1 = cargo_now[p-1].num;
-                sm[ddj-1].getDirection1_1 = 'A';
-                sm[ddj-1].getAssertType2_1 = cargo_now[p-1].model;
-                sm[ddj-1].getAssert2Id_1 = cargo_now[p-1].model;
-                sm[ddj-1].getDirection2_1 = 'B';
+                sm[ddj-1].getDirection1_1 = cargo_now[p-1].flag;
+
+                //sm[ddj-1].getDirection2_1 = '0';
 
                 //堆垛机一次只能取一垛
                 //当前位置（货位1）取1垛货 -> 送检口-放1垛货 -> 下个编码起始位置
                 //当前位置（货位1）取1垛货 -> 送检口-放1垛货
-                walk_time1 = Walk_time(abs(inspect_x - first_x),abs(inspect_y - first_y)); 
+                walk_time1 = Walk_time(abs(inspect_x - cargo_now[p-1].x ),abs(inspect_y - cargo_now[p-1].y)); 
 
                 sm[ddj-1].putPosition_x1 = inspect_x;
                 sm[ddj-1].putPosition_y1 = inspect_y;
@@ -2399,14 +2490,14 @@ double read(double TI,double TDI,int p,int second_p,int third_p){
                 creat_json_file();
 
                 //送检口-放1垛货 -> 下个编码起始位置
-                walk_time2 = Walk_time(abs(first_x - third_x),abs(first_y - second_y));
+                walk_time2 = Walk_time(abs(inspect_x - third_x),abs(inspect_y - third_y));
 
                 init_json();
                 sm[ddj-1].TaskType = getTaskType('M');
                 runTime = TI + wait_time + walk_time1 +  grab_time + place_time;
                 sm[ddj-1].taskNumber = 1;
-                sm[ddj-1].getPosition_x1 = third_x + smShiftX;
-                sm[ddj-1].getPosition_y1 = third_y + smShiftY;
+                sm[ddj-1].getPosition_x1 = third_x;
+                sm[ddj-1].getPosition_y1 = third_y;
                 sm[ddj-1].getAssertType1_1 = -1;
                 creat_json_file();
 
@@ -2943,18 +3034,22 @@ int max2(double T[], Food &f){
 	//T[0] = T[0]/60.0;
 	//G_fintess = T[0]*0.95 + TD[0]*0.05 + block_long*block_times*50;//适应度值计算，加权重
     original_li[0].useRate = 0.75;
-    
+    string str;
     if(T[0]>28800){
-        original_li[0].workTime = 28800;
-        original_li[0].overTime = T[0] - 28800;
+        str = to_string(28800);
+        
+       // original_li[0].workTime = "28800";
+        str = to_string(T[0] -28800);
+       // original_li[0].overTime = "0";
     }
     else{
-        original_li[0].workTime = T[0];
-        original_li[0].overTime = 0;
-    }
-    original_li[1].useRate = original_li[0].useRate;
-    original_li[1].workTime = original_li[0].workTime;
-    original_li[1].overTime = original_li[0].overTime ;
+        str = to_string(T[0]);
+        //original_li[0].workTime = "21678";
+        str = to_string(0);
+       // original_li[0].overTime = "21678";
+    }    original_li[1].useRate = original_li[0].useRate;
+    //original_li[1].workTime = original_li[0].workTime;
+    //original_li[1].overTime = original_li[0].overTime ;
 
     op[1].ave_work_hour = T[0] / 60;
     op[1].cargo_usage = (R+S+H+C)/80;

@@ -1,8 +1,16 @@
+/*
+ * @Date: 2022-01-08 15:59:44
+ * @LastEditors: ZSudoku
+ * @LastEditTime: 2022-04-05 14:11:25
+ * @FilePath: \ArtificialBeeColony\source\main.cpp
+ */
 #include <iostream>
+#include "headers/jsonout.h"
+#include "headers/planjson.h"
 #include "headers/Constants.h"
 #include "classes/Food.h"
-#include "headers/head.h"
-#include "headers/init.h"
+// #include "headers/head.h"
+#include "headers/initout.h"
 #include "headers/abc.h"
 #include "headers/geneticAlgro.h"
 
